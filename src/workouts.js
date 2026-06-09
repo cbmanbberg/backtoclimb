@@ -119,27 +119,42 @@ export const WORKOUTS = [
   },
 ]
 
+// Mo=1 Di=2 Mi=3 Do=4 Fr=5 Sa=6 So=0
+const WEEK_PLAN = {
+  1: { 1: 'p1_pelvic_basic', 2: 'p1_walk', 3: null, 4: 'p1_breath', 5: 'p1_pelvic_basic', 6: 'p1_walk', 0: null },
+  2: { 1: 'p2_strength', 2: 'p2_tendon', 3: null, 4: 'p2_strength', 5: 'p2_tendon', 6: null, 0: null },
+  3: { 1: 'p3_fingerboard', 2: 'p3_boulder', 3: null, 4: 'p3_fingerboard', 5: 'p3_boulder', 6: 'p3_boulder', 0: null },
+}
+
+export function getWeekSchedule(phase) {
+  const plan = WEEK_PLAN[phase] || {}
+  const today = new Date()
+  const days = []
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today)
+    // start from Monday of current week
+    const dow = today.getDay()
+    const mondayOffset = dow === 0 ? -6 : 1 - dow
+    d.setDate(today.getDate() + mondayOffset + i)
+    const dayOfWeek = d.getDay()
+    const workoutId = plan[dayOfWeek] || null
+    const workout = workoutId ? WORKOUTS.find(w => w.id === workoutId) : null
+    const dateStr = d.toISOString().split('T')[0]
+    const isToday = dateStr === today.toISOString().split('T')[0]
+    const isPast = d < new Date(today.toDateString())
+    days.push({ date: dateStr, dayOfWeek, workout, isToday, isPast })
+  }
+  return days
+}
+
+export function getPhaseWorkouts(phase) {
+  return WORKOUTS.filter(w => w.phase === phase)
+}
+
 export function getTodayWorkouts(phase) {
-  const phaseWorkouts = WORKOUTS.filter(w => w.phase === phase)
-  if (phaseWorkouts.length === 0) return []
   const day = new Date().getDay()
-  if (phase === 1) {
-    if (day === 0 || day === 3) return []
-    if (day === 1 || day === 4) return [phaseWorkouts.find(w => w.id === 'p1_pelvic_basic')]
-    if (day === 2 || day === 5) return [phaseWorkouts.find(w => w.id === 'p1_walk')]
-    return [phaseWorkouts.find(w => w.id === 'p1_breath')]
-  }
-  if (phase === 2) {
-    if (day === 0 || day === 3) return []
-    if (day === 1 || day === 4) return [phaseWorkouts.find(w => w.id === 'p2_strength')]
-    return [phaseWorkouts.find(w => w.id === 'p2_tendon')]
-  }
-  if (phase === 3) {
-    if (day === 0) return []
-    if (day === 1 || day === 4) return [phaseWorkouts.find(w => w.id === 'p3_fingerboard')]
-    return [phaseWorkouts.find(w => w.id === 'p3_boulder')]
-  }
-  return []
+  const id = (WEEK_PLAN[phase] || {})[day]
+  return id ? [WORKOUTS.find(w => w.id === id)] : []
 }
 
 export function getDayMessage(weekPP, mood) {
