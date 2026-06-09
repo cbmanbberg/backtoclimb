@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BackToClimb — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F7F5F2;
+      --white: #FFFFFF;
+      --stone: #F0EDE8;
+      --teal: #2D6A65;
+      --teal-dark: #1F4F4B;
+      --teal-tint: #EAF2F1;
+      --terra: #C4704A;
+      --terra-tint: #FAF0EB;
+      --text: #1A1714;
+      --body: #3D3834;
+      --muted: #7A736C;
+      --disabled: #B8B2AC;
+      --border: #E8E4DF;
+      --border-strong: #DDD8D2;
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--body);
+      font-size: 16px;
+      line-height: 1.65;
+      padding: 64px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 80px;
+    }
+    .cover-title { font-family: var(--serif); font-size: 52px; font-weight: 700; color: var(--text); line-height: 1.1; letter-spacing: -1px; }
+    .cover-title em { font-style: italic; color: var(--teal); }
+    .cover-meta { text-align: right; font-size: 13px; color: var(--muted); font-weight: 400; line-height: 1.8; }
+
+    /* ── Section ── */
+    .section { margin-bottom: 80px; }
+    .section-label {
+      font-family: var(--sans);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: var(--serif); font-size: 32px; font-weight: 500;
+      color: var(--text); letter-spacing: -0.3px; margin-bottom: 32px;
+    }
+
+    /* ── Color Swatches ── */
+    .swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .swatch { display: flex; flex-direction: column; gap: 10px; }
+    .swatch-block { height: 80px; border-radius: 10px; }
+    .swatch-name { font-size: 13px; font-weight: 500; color: var(--text); }
+    .swatch-hex { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .swatch-role { font-size: 11px; color: var(--disabled); }
+
+    .swatches-text { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+    .swatch-text-block {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .sample-h { font-family: var(--serif); font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .sample-b { font-family: var(--sans); font-size: 14px; margin-bottom: 12px; line-height: 1.5; }
+
+    /* ── Type Scale ── */
+    .type-scale { display: flex; flex-direction: column; gap: 0; }
+    .type-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 120px;
+      align-items: baseline;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 24px;
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-meta { font-family: var(--sans); font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .type-meta strong { display: block; color: var(--teal); font-weight: 600; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px; }
+    .type-spec { font-family: var(--sans); font-size: 12px; color: var(--muted); text-align: right; line-height: 1.7; }
+
+    /* ── Spacing ── */
+    .spacing-grid { display: flex; align-items: flex-end; gap: 24px; }
+    .space-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .space-bar { background: var(--teal-tint); border: 1px solid var(--teal); border-radius: 4px; width: 48px; }
+    .space-label { font-size: 12px; color: var(--muted); text-align: center; }
+    .space-val { font-size: 13px; font-weight: 600; color: var(--text); }
+
+    /* ── Radius ── */
+    .radius-grid { display: flex; gap: 24px; margin-top: 32px; }
+    .radius-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .radius-block { width: 80px; height: 80px; background: var(--white); border: 1.5px solid var(--border); }
+    .radius-label { font-size: 12px; color: var(--muted); }
+    .radius-val { font-size: 13px; font-weight: 600; color: var(--text); }
+
+    /* ── Cards ── */
+    .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .card-demo {
+      padding: 24px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(26,23,20,0.06), 0 4px 12px rgba(26,23,20,0.04);
+    }
+    .card-demo.elevated {
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(26,23,20,0.10), 0 1px 4px rgba(26,23,20,0.06);
+    }
+    .card-demo.flat {
+      background: var(--stone);
+      border: none;
+      border-radius: 8px;
+      box-shadow: none;
+    }
+    .card-demo.highlight {
+      background: var(--teal-tint);
+      border: 1px solid #C2DFDC;
+      border-radius: 12px;
+      box-shadow: none;
+    }
+    .card-demo.terra {
+      background: var(--terra-tint);
+      border: 1px solid #EDCAB8;
+      border-radius: 12px;
+      box-shadow: none;
+    }
+    .card-type { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 10px; }
+    .card-demo h3 { font-family: var(--serif); font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+    .card-demo p { font-size: 14px; color: var(--muted); }
+
+    /* ── Buttons ── */
+    .buttons-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 24px; }
+    .btn-demo {
+      font-family: var(--sans); font-size: 15px; font-weight: 500;
+      padding: 12px 24px; border-radius: 6px; cursor: default;
+      letter-spacing: 0.1px; border: none;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary { background: var(--teal); color: #F7F5F2; box-shadow: 0 1px 3px rgba(45,106,101,0.30); }
+    .btn-secondary { background: var(--white); color: var(--teal); border: 1.5px solid var(--teal); }
+    .btn-ghost { background: transparent; color: var(--body); }
+    .btn-disabled { background: var(--disabled); color: var(--white); cursor: not-allowed; }
+    .btn-terra { background: var(--terra); color: #FAF0EB; box-shadow: 0 1px 3px rgba(196,112,74,0.30); }
+    .btn-sm { font-size: 13px; padding: 8px 16px; }
+    .btn-lg { font-size: 16px; font-weight: 600; padding: 14px 32px; }
+
+    .btn-label { font-size: 12px; color: var(--muted); text-align: center; margin-top: 4px; font-weight: 500; }
+    .btn-with-label { display: flex; flex-direction: column; align-items: flex-start; }
+
+    /* ── App Preview ── */
+    .preview-wrap { display: flex; gap: 48px; justify-content: center; }
+    .phone {
+      width: 320px;
+      background: var(--bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(26,23,20,0.15);
+      flex-shrink: 0;
+    }
+    .phone-status {
+      background: var(--white);
+      padding: 14px 24px 10px;
+      font-size: 12px; color: var(--muted);
+      display: flex; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .phone-content { padding: 24px 20px; }
+    .phone-greeting { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    .phone-h1 { font-family: var(--serif); font-size: 30px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; margin-bottom: 20px; line-height: 1.15; }
+    .phone-h1 em { color: var(--teal); font-style: italic; }
+
+    .phone-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(26,23,20,0.05), 0 2px 8px rgba(26,23,20,0.03);
+    }
+    .phone-card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--teal); margin-bottom: 6px; }
+    .phone-card h3 { font-family: var(--serif); font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .phone-card p { font-size: 13px; color: var(--muted); }
+    .phone-card-row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+    .phone-pill { background: var(--teal-tint); color: var(--teal); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; }
+    .phone-btn { background: var(--teal); color: white; font-family: var(--sans); font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 6px; }
+
+    .week-strip { display: flex; gap: 6px; margin-bottom: 20px; }
+    .day-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .day-dot { width: 28px; height: 28px; border-radius: 8px; background: var(--stone); display: flex; align-items: center; justify-content: center; font-size: 10px; }
+    .day-dot.active { background: var(--teal); color: white; font-weight: 700; }
+    .day-dot.done { background: var(--teal-tint); border: 1px solid var(--teal); font-size: 10px; color: var(--teal); }
+    .day-label { font-size: 9px; color: var(--muted); font-weight: 500; }
+    .day-label.active { color: var(--teal); font-weight: 700; }
+
+    .phone-nav {
+      border-top: 1px solid var(--border);
+      padding: 10px 20px 16px;
+      display: flex; justify-content: space-around;
+      background: rgba(247,245,242,0.95);
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; color: var(--muted); }
+    .nav-item.active { color: var(--teal); font-weight: 600; }
+    .nav-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--teal); }
+
+    /* ── Rationale ── */
+    .rationale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .rationale-item {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .rationale-item h4 { font-family: var(--serif); font-size: 17px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+    .rationale-item p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+    /* ── Print ── */
+    @media print {
+      body { padding: 40px; }
+      .section { page-break-inside: avoid; }
+      .phone { box-shadow: 0 0 0 1px var(--border); }
+    }
+
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Cover -->
+  <div class="cover">
+    <div>
+      <div class="section-label">Design System · v1.0</div>
+      <div class="cover-title">Back<br>to <em>Climb</em></div>
+    </div>
+    <div class="cover-meta">
+      Postpartum Fitness &amp; Return-to-Climbing App<br>
+      Warm · Minimalist · Confident<br>
+      Juni 2026
+    </div>
+  </div>
+
+  <!-- Colors -->
+  <div class="section">
+    <div class="section-label">01 — Farben</div>
+    <div class="section-title">Farbpalette</div>
+
+    <div class="swatches">
+      <div class="swatch">
+        <div class="swatch-block" style="background:#F7F5F2; border:1px solid #E8E4DF;"></div>
+        <div class="swatch-name">Chalk White</div>
+        <div class="swatch-hex">#F7F5F2</div>
+        <div class="swatch-role">Hintergrund</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#F0EDE8;"></div>
+        <div class="swatch-name">Warm Stone</div>
+        <div class="swatch-hex">#F0EDE8</div>
+        <div class="swatch-role">Alt. Surface</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#2D6A65;"></div>
+        <div class="swatch-name">Slate Teal</div>
+        <div class="swatch-hex">#2D6A65</div>
+        <div class="swatch-role">Primary</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#EAF2F1; border:1px solid #C2DFDC;"></div>
+        <div class="swatch-name">Sage Mist</div>
+        <div class="swatch-hex">#EAF2F1</div>
+        <div class="swatch-role">Primary Tint</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-block" style="background:#C4704A;"></div>
+        <div class="swatch-name">Terracotta</div>
+        <div class="swatch-hex">#C4704A</div>
+        <div class="swatch-role">Secondary</div>
+      </div>
+    </div>
+
+    <div class="swatches-text">
+      <div class="swatch-text-block">
+        <div class="sample-h" style="color:#1A1714;">Titel</div>
+        <div class="sample-b" style="color:#1A1714;">Headline Text</div>
+        <div class="swatch-hex">#1A1714</div>
+        <div class="swatch-role">Heading</div>
+      </div>
+      <div class="swatch-text-block">
+        <div class="sample-h" style="color:#3D3834;">Titel</div>
+        <div class="sample-b" style="color:#3D3834;">Body Text</div>
+        <div class="swatch-hex">#3D3834</div>
+        <div class="swatch-role">Body</div>
+      </div>
+      <div class="swatch-text-block">
+        <div class="sample-h" style="color:#7A736C;">Titel</div>
+        <div class="sample-b" style="color:#7A736C;">Muted Text</div>
+        <div class="swatch-hex">#7A736C</div>
+        <div class="swatch-role">Muted</div>
+      </div>
+      <div class="swatch-text-block">
+        <div class="sample-h" style="color:#B8B2AC;">Titel</div>
+        <div class="sample-b" style="color:#B8B2AC;">Disabled</div>
+        <div class="swatch-hex">#B8B2AC</div>
+        <div class="swatch-role">Disabled</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typography -->
+  <div class="section">
+    <div class="section-label">02 — Typografie</div>
+    <div class="section-title">Schriftschnitte</div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-bottom:40px;">
+      <div style="background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px;">
+        <div class="type-meta" style="margin-bottom:16px;"><strong>Serif — Headlines</strong>Playfair Display</div>
+        <div style="font-family:var(--serif); font-size:36px; font-weight:700; color:var(--text); line-height:1.15; letter-spacing:-0.5px;">Aa Bb Cc</div>
+        <div style="font-family:var(--serif); font-size:22px; font-style:italic; color:var(--teal); margin-top:8px;">Zurück ans Fels.</div>
+        <div style="font-family:var(--serif); font-size:14px; color:var(--muted); margin-top:12px; line-height:1.6;">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789 !?.,–</div>
+      </div>
+      <div style="background:var(--white); border:1px solid var(--border); border-radius:12px; padding:28px;">
+        <div class="type-meta" style="margin-bottom:16px;"><strong>Sans-Serif — UI &amp; Body</strong>DM Sans</div>
+        <div style="font-family:var(--sans); font-size:36px; font-weight:500; color:var(--text); line-height:1.15;">Aa Bb Cc</div>
+        <div style="font-family:var(--sans); font-size:15px; font-weight:600; color:var(--teal); margin-top:8px; letter-spacing:0.5px;">PHASE 1 · WOCHE 7</div>
+        <div style="font-family:var(--sans); font-size:14px; color:var(--muted); margin-top:12px; line-height:1.6;">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789 !?.,–</div>
+      </div>
+    </div>
+
+    <div class="type-scale">
+      <div class="type-row">
+        <div class="type-meta"><strong>H1</strong>Seiten-Titel</div>
+        <div style="font-family:var(--serif); font-size:40px; font-weight:700; color:var(--text); line-height:1.15; letter-spacing:-0.5px;">Heute</div>
+        <div class="type-spec">Playfair Display<br>40px · 700<br>lh 1.15</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>H2</strong>Abschnitt</div>
+        <div style="font-family:var(--serif); font-size:28px; font-weight:500; color:var(--text); line-height:1.25; letter-spacing:-0.3px;">Diese Woche</div>
+        <div class="type-spec">Playfair Display<br>28px · 500<br>lh 1.25</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>H3</strong>Card-Titel</div>
+        <div style="font-family:var(--sans); font-size:20px; font-weight:600; color:var(--text); line-height:1.35;">Beckenboden-Aktivierung</div>
+        <div class="type-spec">DM Sans<br>20px · 600<br>lh 1.35</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Body</strong>Fließtext</div>
+        <div style="font-family:var(--sans); font-size:16px; font-weight:400; color:var(--body); line-height:1.65;">Sanft und symptomgeführt — dein Beckenboden erholt sich gerade. Jeder Tag zählt, auch Ruhetage.</div>
+        <div class="type-spec">DM Sans<br>16px · 400<br>lh 1.65</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Body S</strong>Sekundär</div>
+        <div style="font-family:var(--sans); font-size:14px; font-weight:400; color:var(--muted); line-height:1.6;">Bø et al. 2015 — Pelvic floor muscle training</div>
+        <div class="type-spec">DM Sans<br>14px · 400<br>lh 1.60</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Label</strong>Tags, Kaps</div>
+        <div style="font-family:var(--sans); font-size:12px; font-weight:500; color:var(--teal); letter-spacing:0.8px; text-transform:uppercase;">Phase 1 · 15 Min</div>
+        <div class="type-spec">DM Sans<br>12px · 500<br>ls 0.8px uc</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spacing & Radius -->
+  <div class="section">
+    <div class="section-label">03 — Abstände &amp; Radien</div>
+    <div class="section-title">Spacing System</div>
+
+    <div class="spacing-grid">
+      <div class="space-item"><div class="space-bar" style="height:4px;"></div><div class="space-val">4px</div><div class="space-label">Micro</div></div>
+      <div class="space-item"><div class="space-bar" style="height:8px;"></div><div class="space-val">8px</div><div class="space-label">XS</div></div>
+      <div class="space-item"><div class="space-bar" style="height:16px;"></div><div class="space-val">16px</div><div class="space-label">S</div></div>
+      <div class="space-item"><div class="space-bar" style="height:24px;"></div><div class="space-val">24px</div><div class="space-label">M</div></div>
+      <div class="space-item"><div class="space-bar" style="height:32px;"></div><div class="space-val">32px</div><div class="space-label">L</div></div>
+      <div class="space-item"><div class="space-bar" style="height:48px;"></div><div class="space-val">48px</div><div class="space-label">XL</div></div>
+      <div class="space-item"><div class="space-bar" style="height:64px;"></div><div class="space-val">64px</div><div class="space-label">2XL</div></div>
+    </div>
+
+    <div class="radius-grid">
+      <div class="radius-item">
+        <div class="radius-block" style="border-radius:6px;"></div>
+        <div class="radius-val">6px</div>
+        <div class="radius-label">Buttons, Tags</div>
+      </div>
+      <div class="radius-item">
+        <div class="radius-block" style="border-radius:12px;"></div>
+        <div class="radius-val">12px</div>
+        <div class="radius-label">Cards, Modals</div>
+      </div>
+      <div class="radius-item">
+        <div class="radius-block" style="border-radius:20px;"></div>
+        <div class="radius-val">20px</div>
+        <div class="radius-label">Feature-Cards</div>
+      </div>
+      <div class="radius-item">
+        <div class="radius-block" style="border-radius:9999px; width:80px; height:40px;"></div>
+        <div class="radius-val">Full</div>
+        <div class="radius-label">Pills, Avatare</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="section">
+    <div class="section-label">04 — Komponenten</div>
+    <div class="section-title">Cards &amp; Surfaces</div>
+
+    <div class="cards-grid">
+      <div class="card-demo">
+        <div class="card-type">Standard Card</div>
+        <h3>Beckenboden-Aktivierung</h3>
+        <p>Basis-Aktivierung &amp; 360°-Atmung · 15 Min</p>
+      </div>
+      <div class="card-demo elevated">
+        <div class="card-type">Elevated Card</div>
+        <h3>Bereit für Phase 2?</h3>
+        <p>Alle fünf Tests müssen symptomfrei gelingen.</p>
+      </div>
+      <div class="card-demo flat">
+        <div class="card-type">Flat / Inset</div>
+        <h3>Hinweis</h3>
+        <p>Diese App ersetzt keine individuelle Befundung.</p>
+      </div>
+      <div class="card-demo highlight">
+        <div class="card-type">Highlight (Teal)</div>
+        <h3>Phase 2 freigeschaltet</h3>
+        <p>Alle Readiness-Kriterien erfüllt.</p>
+      </div>
+      <div class="card-demo terra" style="grid-column:span 2;">
+        <div class="card-type">Terracotta — Meilenstein / Warnung</div>
+        <h3>Beckenboden-Check vor jeder Einheit</h3>
+        <p>Bei Druck, Schweregefühl oder Auslaufen: Intensität reduzieren oder pausieren.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="section">
+    <div class="section-label">05 — Buttons</div>
+    <div class="section-title">Interaktionselemente</div>
+
+    <div style="background:var(--white); border:1px solid var(--border); border-radius:12px; padding:32px;">
+      <div style="margin-bottom:32px;">
+        <div class="type-meta" style="margin-bottom:16px;"><strong>Primary</strong></div>
+        <div class="buttons-row">
+          <div class="btn-with-label">
+            <div class="btn-demo btn-primary btn-sm">Small</div>
+            <div class="btn-label">Small · 13px</div>
+          </div>
+          <div class="btn-with-label">
+            <div class="btn-demo btn-primary">Einheit starten</div>
+            <div class="btn-label">Default · 15px</div>
+          </div>
+          <div class="btn-with-label">
+            <div class="btn-demo btn-primary btn-lg">Phase 2 freischalten</div>
+            <div class="btn-label">Large · 16px · 600</div>
+          </div>
+          <div class="btn-with-label">
+            <div class="btn-demo btn-disabled">Deaktiviert</div>
+            <div class="btn-label">Disabled</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:32px;">
+        <div class="type-meta" style="margin-bottom:16px;"><strong>Secondary &amp; Ghost</strong></div>
+        <div class="buttons-row">
+          <div class="btn-with-label">
+            <div class="btn-demo btn-secondary">Readiness-Check</div>
+            <div class="btn-label">Secondary</div>
+          </div>
+          <div class="btn-with-label">
+            <div class="btn-demo btn-ghost">Zurück</div>
+            <div class="btn-label">Ghost</div>
+          </div>
+          <div class="btn-with-label">
+            <div class="btn-demo btn-terra">Meilenstein</div>
+            <div class="btn-label">Terracotta</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Preview -->
+  <div class="section">
+    <div class="section-label">06 — App-Vorschau</div>
+    <div class="section-title">Screen-Mockup</div>
+
+    <div class="preview-wrap">
+      <!-- Home Screen -->
+      <div>
+        <div style="text-align:center; font-size:12px; color:var(--muted); margin-bottom:12px; font-weight:500;">Heute</div>
+        <div class="phone">
+          <div class="phone-status">
+            <span style="font-weight:600;">09:41</span>
+            <span>● ● ●</span>
+          </div>
+          <div class="phone-content">
+            <div class="phone-greeting">Guten Morgen, Anna</div>
+            <div class="phone-h1">Woche 7 —<br><em>bleib dran.</em></div>
+
+            <div class="week-strip">
+              <div class="day-item"><div class="day-dot done">✓</div><div class="day-label">Mo</div></div>
+              <div class="day-item"><div class="day-dot done">✓</div><div class="day-label">Di</div></div>
+              <div class="day-item"><div class="day-dot" style="background:var(--stone);"></div><div class="day-label">Mi</div></div>
+              <div class="day-item"><div class="day-dot active">Do</div><div class="day-label active">Do</div></div>
+              <div class="day-item"><div class="day-dot" style="background:var(--stone); opacity:.5;"></div><div class="day-label" style="opacity:.5;">Fr</div></div>
+              <div class="day-item"><div class="day-dot" style="background:var(--stone); opacity:.4;"></div><div class="day-label" style="opacity:.4;">Sa</div></div>
+              <div class="day-item"><div class="day-dot" style="opacity:.3; background:var(--stone);"></div><div class="day-label" style="opacity:.3;">So</div></div>
+            </div>
+
+            <div class="phone-card">
+              <div class="phone-card-label">Heute · Phase 1</div>
+              <h3>Beckenboden-<br>Aktivierung</h3>
+              <p>Basis-Aktivierung &amp; 360°-Atmung</p>
+              <div class="phone-card-row">
+                <div class="phone-pill">15 Min</div>
+                <div class="phone-btn">Start</div>
+              </div>
+            </div>
+
+            <div class="phone-card" style="background:var(--stone); box-shadow:none; border-color:transparent;">
+              <div class="phone-card-label">Als nächstes · Freitag</div>
+              <h3 style="font-size:15px;">Progressives Gehen</h3>
+              <p style="font-size:12px;">Low-Impact-Cardio · 20 Min</p>
+            </div>
+          </div>
+          <div class="phone-nav">
+            <div class="nav-item active">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12L12 3L21 12V21H15V15H9V21H3V12Z" fill="#2D6A65" stroke="#2D6A65" strokeWidth="1.5" strokeLinejoin="round"/></svg>
+              Heute
+            </div>
+            <div class="nav-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="3" stroke="#7A736C" strokeWidth="1.5"/><path d="M3 9H21M8 4V9M16 4V9" stroke="#7A736C" strokeWidth="1.5" strokeLinecap="round"/></svg>
+              Plan
+            </div>
+            <div class="nav-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#7A736C" strokeWidth="1.5"/><path d="M12 7V12L15 14" stroke="#7A736C" strokeWidth="1.5" strokeLinecap="round"/></svg>
+              Verlauf
+            </div>
+            <div class="nav-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="5" r="2" stroke="#7A736C" strokeWidth="1.5"/><path d="M9 7V13L6 19M9 13L13 16L15 19M13 10L16 7" stroke="#7A736C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              Klettern
+            </div>
+            <div class="nav-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#7A736C" strokeWidth="1.5"/><path d="M4 20C4 17 7.6 15 12 15C16.4 15 20 17 20 20" stroke="#7A736C" strokeWidth="1.5" strokeLinecap="round"/></svg>
+              Profil
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timer Screen -->
+      <div>
+        <div style="text-align:center; font-size:12px; color:var(--muted); margin-bottom:12px; font-weight:500;">Timer</div>
+        <div class="phone">
+          <div class="phone-status">
+            <span style="font-weight:600;">09:43</span>
+            <span>● ● ●</span>
+          </div>
+          <div class="phone-content">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px;">
+              <div style="width:36px; height:36px; border-radius:8px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--muted); background:var(--white);">←</div>
+              <div>
+                <div style="font-family:var(--sans); font-size:15px; font-weight:600; color:var(--text);">Beckenboden-Aktivierung</div>
+                <div style="font-size:12px; color:var(--muted);">Basis-Aktivierung &amp; 360°-Atmung</div>
+              </div>
+            </div>
+
+            <div style="text-align:center; margin-bottom:20px;">
+              <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:var(--teal); margin-bottom:4px;">Slow Hold ×5</div>
+              <div style="font-size:12px; color:var(--muted);">Schritt 3 von 5</div>
+            </div>
+
+            <div style="position:relative; width:160px; height:160px; margin:0 auto 20px;">
+              <svg width="160" height="160" style="transform:rotate(-90deg); position:absolute; top:0; left:0;">
+                <circle cx="80" cy="80" r="72" fill="none" stroke="#EAF2F1" strokeWidth="6"/>
+                <circle cx="80" cy="80" r="72" fill="none" stroke="#2D6A65" strokeWidth="6" stroke-dasharray="310 452" strokeLinecap="round"/>
+              </svg>
+              <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <div style="font-family:var(--serif); font-size:44px; font-weight:700; color:var(--text); line-height:1; letter-spacing:-2px;">87</div>
+                <div style="font-size:12px; color:var(--muted);">Sekunden</div>
+              </div>
+            </div>
+
+            <div class="phone-card" style="text-align:center; background:var(--teal-tint); border-color:#C2DFDC; box-shadow:none;">
+              <p style="font-size:13px; color:var(--body); line-height:1.6;">Spanne den Beckenboden langsam an (10 Sek.), halte, löse langsam (10 Sek.). 5 Wiederholungen.</p>
+            </div>
+
+            <div style="display:flex; justify-content:center; gap:16px; align-items:center; margin-top:16px;">
+              <div style="width:40px; height:40px; border-radius:8px; border:1px solid var(--border); background:var(--white); display:flex; align-items:center; justify-content:center; font-size:14px;">⏮</div>
+              <div style="width:64px; height:64px; border-radius:16px; background:var(--teal); display:flex; align-items:center; justify-content:center; font-size:24px; color:white; box-shadow:0 4px 12px rgba(45,106,101,0.30);">⏸</div>
+              <div style="width:40px; height:40px; border-radius:8px; border:1px solid var(--border); background:var(--white); display:flex; align-items:center; justify-content:center; font-size:14px;">⏭</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rationale -->
+  <div class="section">
+    <div class="section-label">07 — Begründung</div>
+    <div class="section-title">Design-Entscheidungen</div>
+
+    <div class="rationale-grid">
+      <div class="rationale-item">
+        <h4>Slate Teal als Primary</h4>
+        <p>Grün-nahe Teals stehen für Fokus, Kompetenz und Erholung — ohne Aggression (Rot) oder Weichheit (Rosa). Sportliche Premium-Brands wie Whoop und Garmin nutzen ähnliche Töne. Die Athletin soll sich capable fühlen, nicht fragil.</p>
+      </div>
+      <div class="rationale-item">
+        <h4>Terracotta als Akzent</h4>
+        <p>Erdtöne ergänzen Teal natürlich auf der warmen Seite. Terracotta hat Energie ohne Alarm-Assoziationen von Orange/Rot. Kein Pink-Washing — die Nutzerin ist Athletin, nicht Patientin.</p>
+      </div>
+      <div class="rationale-item">
+        <h4>Playfair Display für H1/H2</h4>
+        <p>Editorial-Autorität signalisiert: dieses Programm wurde mit Sorgfalt entwickelt. Playfair schafft visuellen Kontrast zur UI-Ebene (DM Sans). Angemessen selbstbewusst ohne kalt zu wirken.</p>
+      </div>
+      <div class="rationale-item">
+        <h4>DM Sans für Body &amp; UI</h4>
+        <p>Modern, gut lesbar bei 12–16px, leicht wärmer als Inter oder Roboto. Vermeidet die weiche Generik von Nunito/Lato, die in Women's Health Apps häufig als patronisierend wirkt.</p>
+      </div>
+      <div class="rationale-item">
+        <h4>Line-Height 1.65 für Body</h4>
+        <p>Postpartaler Kontext: möglicherweise schlafentzug, Lesen beim Stillen, geringe kognitive Kapazität. Großzügige Zeilenhöhe reduziert kognitive Last und verstärkt das Gefühl von Raum und Ruhe.</p>
+      </div>
+      <div class="rationale-item">
+        <h4>Chalk White #F7F5F2</h4>
+        <p>Reines Weiß wirkt klinisch und steril. Das leicht warme Off-White schafft Kohärenz mit der erdigen Palette und vermittelt Behaglichkeit — ohne ins Beige zu kippen.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+  <div style="text-align:center; font-size:12px; color:var(--disabled); padding:8px 0 32px;">
+    BackToClimb Design System · v1.0 · Juni 2026
+  </div>
+
+</body>
+</html>
