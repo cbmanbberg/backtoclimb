@@ -25,7 +25,7 @@ function WorkoutCard({ workout, onStart, accent }) {
   return (
     <div className="card" style={{
       display: 'flex', alignItems: 'center', gap: 14,
-      background: `linear-gradient(135deg, rgba(124,92,191,0.07) 0%, rgba(255,255,255,0.9) 60%)`,
+      background: `linear-gradient(135deg, rgba(124,92,220,0.18) 0%, rgba(155,127,232,0.06) 100%)`,
       borderColor: `rgba(124,92,191,0.18)`,
     }}>
       <div style={{
@@ -131,7 +131,7 @@ function WeekSchedule({ phase, sessions, onSelectWorkout, selectedId }) {
 
       {/* Swap picker for today */}
       {swapDay !== null && (
-        <div style={{ borderTop: '1px solid #E2D9F3', paddingTop: 14 }}>
+        <div style={{ borderTop: '1px solid rgba(155,127,232,0.18)', paddingTop: 14 }}>
           <p style={{ fontSize: 12, marginBottom: 10, color: '#7C5CBF', fontWeight: 600 }}>Andere Einheit wählen:</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {phaseWorkouts.map(w => {
@@ -145,14 +145,14 @@ function WeekSchedule({ phase, sessions, onSelectWorkout, selectedId }) {
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '10px 12px', borderRadius: 14,
                     border: `1.5px solid ${isActive ? '#7C5CBF' : '#E2D9F3'}`,
-                    background: isActive ? 'rgba(124,92,191,0.08)' : 'white',
+                    background: isActive ? 'rgba(124,92,220,0.18)' : 'rgba(255,255,255,0.05)',
                     cursor: 'pointer', fontFamily: 'Nunito, sans-serif',
                     transition: 'all 0.15s',
                   }}
                 >
                   <Icon size={32} />
                   <div style={{ textAlign: 'left' }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: '#2E1F3E' }}>{w.title}</div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{w.title}</div>
                     <div style={{ fontSize: 11, color: '#8E7DA8' }}>{w.durationMin} Min · {w.subtitle}</div>
                   </div>
                   {isActive && <span style={{ marginLeft: 'auto', color: '#7C5CBF', fontWeight: 700 }}>✓</span>}
@@ -168,7 +168,7 @@ function WeekSchedule({ phase, sessions, onSelectWorkout, selectedId }) {
         const upcoming = schedule.filter(d => !d.isToday && !d.isPast && d.workout).slice(0, 2)
         if (upcoming.length === 0) return null
         return (
-          <div style={{ borderTop: '1px solid #E2D9F3', marginTop: 14, paddingTop: 12 }}>
+          <div style={{ borderTop: '1px solid rgba(155,127,232,0.18)', marginTop: 14, paddingTop: 12 }}>
             <p style={{ fontSize: 11, color: '#8E7DA8', fontWeight: 600, marginBottom: 8 }}>Als nächstes</p>
             {upcoming.map(d => (
               <div key={d.date} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
@@ -177,7 +177,7 @@ function WeekSchedule({ phase, sessions, onSelectWorkout, selectedId }) {
                   background: 'rgba(124,92,191,0.10)', borderRadius: 8,
                   padding: '3px 8px', minWidth: 24, textAlign: 'center',
                 }}>{DAY_SHORT[d.dayOfWeek]}</span>
-                <span style={{ fontSize: 13, color: '#2E1F3E', fontWeight: 500 }}>{d.workout.title}</span>
+                <span style={{ fontSize: 13, color: 'var(--text)', fontWeight: 500 }}>{d.workout.title}</span>
                 <span style={{ fontSize: 11, color: '#8E7DA8', marginLeft: 'auto' }}>{d.workout.durationMin} Min</span>
               </div>
             ))}

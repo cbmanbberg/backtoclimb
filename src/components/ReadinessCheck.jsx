@@ -109,7 +109,7 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
           <button onClick={onBack} style={{
             width: 40, height: 40, borderRadius: '50%',
-            border: '1.5px solid #EBE0D4', background: 'white',
+            border: '1.5px solid rgba(155,127,232,0.15)', background: 'rgba(255,255,255,0.06)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', fontSize: 18,
           }}>←</button>
@@ -131,7 +131,7 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
           <div style={{
             flex: 1, height: 6, borderRadius: 3,
-            background: '#EBE0D4', overflow: 'hidden',
+            background: 'rgba(155,127,232,0.15)', overflow: 'hidden',
           }}>
             <div style={{
               height: '100%', borderRadius: 3,
@@ -140,7 +140,7 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
               transition: 'width 0.4s ease',
             }}/>
           </div>
-          <span style={{ fontSize: 13, fontWeight: 600, color: '#A8937F', flexShrink: 0 }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: '#9E8FC0', flexShrink: 0 }}>
             {passedCount} / 5
           </span>
         </div>
@@ -155,15 +155,15 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
               onClick={() => handleToggle(c.id)}
               style={{
                 cursor: 'pointer',
-                borderColor: checked ? '#5A9E7A' : '#EBE0D4',
-                background: checked ? 'rgba(90,158,122,0.06)' : 'white',
+                borderColor: checked ? '#5A9E7A' : 'rgba(155,127,232,0.15)',
+                background: checked ? 'rgba(90,158,122,0.10)' : 'var(--card-bg)',
                 display: 'flex', alignItems: 'flex-start', gap: 14,
                 transition: 'all 0.2s',
               }}>
               <div style={{
                 width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                border: `2px solid ${checked ? '#5A9E7A' : '#EBE0D4'}`,
-                background: checked ? '#5A9E7A' : 'white',
+                border: `2px solid ${checked ? '#5A9E7A' : 'rgba(155,127,232,0.15)'}`,
+                background: checked ? '#5A9E7A' : 'transparent',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 14, color: 'white',
                 transition: 'all 0.2s',
@@ -171,7 +171,7 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
                 {checked ? <IconCheck size={16} /> : ''}
               </div>
               <div>
-                <h3 style={{ marginBottom: 4, color: checked ? '#3D7A55' : '#3D2E26' }}>{c.label}</h3>
+                <h3 style={{ marginBottom: 4, color: checked ? '#7DD9AA' : 'var(--text)' }}>{c.label}</h3>
                 <p style={{ fontSize: 12 }}>{c.detail}</p>
               </div>
             </div>
@@ -210,7 +210,7 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
 
         {/* Note */}
         {!allPassed && (
-          <p style={{ fontSize: 12, color: '#A8937F', textAlign: 'center', margin: '16px 0', fontStyle: 'italic' }}>
+          <p style={{ fontSize: 12, color: '#9E8FC0', textAlign: 'center', margin: '16px 0', fontStyle: 'italic' }}>
             Noch nicht alle Kriterien erreicht — das ist kein Rückstand.
           </p>
         )}
@@ -224,7 +224,7 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
           Ergebnis speichern
         </button>
 
-        <p style={{ fontSize: 11, color: '#C4B4A4', textAlign: 'center', paddingBottom: 20 }}>
+        <p style={{ fontSize: 11, color: '#7A6D9A', textAlign: 'center', paddingBottom: 20 }}>
           Goom, Donnelly & Brockwell (2019) — Returning to running postnatal
         </p>
       </div>

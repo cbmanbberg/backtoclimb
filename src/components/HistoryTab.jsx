@@ -50,15 +50,15 @@ export default function HistoryTab({ state }) {
           <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
             <div>
               <div style={{ fontSize: 24, fontWeight: 700, color: '#9B7FCC' }}>{totalDone}</div>
-              <div style={{ fontSize: 11, color: '#A8937F' }}>Abgeschlossen</div>
+              <div style={{ fontSize: 11, color: '#9E8FC0' }}>Abgeschlossen</div>
             </div>
             <div>
               <div style={{ fontSize: 24, fontWeight: 700, color: '#5A9E7A' }}>{totalPause}</div>
-              <div style={{ fontSize: 11, color: '#A8937F' }}>Ruhetage</div>
+              <div style={{ fontSize: 11, color: '#9E8FC0' }}>Ruhetage</div>
             </div>
             <div>
               <div style={{ fontSize: 24, fontWeight: 700, color: '#D4876A' }}>{totalSkipped}</div>
-              <div style={{ fontSize: 11, color: '#A8937F' }}>Übersprungen</div>
+              <div style={{ fontSize: 11, color: '#9E8FC0' }}>Übersprungen</div>
             </div>
           </div>
         </div>
@@ -72,7 +72,7 @@ export default function HistoryTab({ state }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#3D2E26' }}>{dateStr}</span>
                 {entry.symptom && (
-                  <span style={{ fontSize: 12, color: '#A8937F' }}>{MOOD_LABELS[entry.symptom.mood] || entry.symptom.mood}</span>
+                  <span style={{ fontSize: 12, color: '#9E8FC0' }}>{MOOD_LABELS[entry.symptom.mood] || entry.symptom.mood}</span>
                 )}
               </div>
               {entry.sessions.length === 0 && entry.symptom?.mood === 'pause' && (
@@ -82,14 +82,14 @@ export default function HistoryTab({ state }) {
                 </div>
               )}
               {entry.sessions.map(s => (
-                <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', borderBottom: '1px solid #EBE0D4' }}>
+                <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', borderBottom: '1px solid rgba(155,127,232,0.15)' }}>
                   <div style={{
                     width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
-                    background: s.completed ? '#9B7FCC' : s.skipped ? '#5A9E7A' : '#EBE0D4',
+                    background: s.completed ? '#9B7FCC' : s.skipped ? '#5A9E7A' : 'rgba(155,127,232,0.15)',
                   }}/>
                   <div style={{ flex: 1 }}>
                     <span style={{ fontSize: 13, color: '#3D2E26' }}>{s.title || TYPE_LABELS[s.type] || s.type}</span>
-                    {s.durationMin && <span style={{ fontSize: 11, color: '#A8937F', marginLeft: 8 }}>{s.durationMin} Min</span>}
+                    {s.durationMin && <span style={{ fontSize: 11, color: '#9E8FC0', marginLeft: 8 }}>{s.durationMin} Min</span>}
                   </div>
                   <span style={{ fontSize: 11, color: s.skipped ? '#5A9E7A' : '#9B7FCC', fontWeight: 500 }}>
                     {s.skipped ? 'Pause' : s.completed ? 'Fertig' : '–'}
@@ -100,7 +100,7 @@ export default function HistoryTab({ state }) {
           )
         })}
 
-        <p style={{ fontSize: 11, color: '#C4B4A4', textAlign: 'center', padding: '8px 0 20px' }}>
+        <p style={{ fontSize: 11, color: '#7A6D9A', textAlign: 'center', padding: '8px 0 20px' }}>
           Ruhetage und übersprungene Einheiten sind gleichwertige Planteile.
         </p>
       </div>

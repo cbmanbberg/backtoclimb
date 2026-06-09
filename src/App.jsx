@@ -14,20 +14,22 @@ const GLOBAL_STYLES = `
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
   :root {
-    --bg: #F7F2FB;
+    --bg: #130D20;
+    --bg2: #1C1430;
     --white: #FFFFFF;
-    --lavender: #7C5CBF;
-    --lavender-light: #B49FE0;
-    --lavender-pale: #EDE7F9;
-    --green: #4E9171;
-    --coral: #C97055;
-    --text: #2E1F3E;
-    --muted: #8E7DA8;
-    --border: #E2D9F3;
+    --lavender: #9B7FE8;
+    --lavender-light: #C4AEFF;
+    --lavender-pale: rgba(155,127,232,0.15);
+    --green: #5BB88A;
+    --coral: #E8896A;
+    --text: #F0EAFF;
+    --muted: #9E8FC0;
+    --border: rgba(155,127,232,0.18);
+    --card-bg: rgba(255,255,255,0.06);
     --radius: 22px;
-    --shadow: 0 4px 20px rgba(100,70,160,0.10);
+    --shadow: 0 8px 32px rgba(0,0,0,0.35);
   }
-  body { overflow-x: hidden; }
+  body { overflow-x: hidden; background: var(--bg); }
   .screen {
     min-height: 100dvh;
     background: var(--bg);
@@ -40,8 +42,8 @@ const GLOBAL_STYLES = `
     content: '';
     position: fixed;
     top: -160px; left: -120px;
-    width: 480px; height: 460px;
-    background: radial-gradient(ellipse at 40% 40%, rgba(124,92,191,0.18) 0%, transparent 65%);
+    width: 520px; height: 500px;
+    background: radial-gradient(ellipse at 40% 40%, rgba(124,92,220,0.28) 0%, transparent 65%);
     border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
     pointer-events: none;
     z-index: 0;
@@ -51,8 +53,8 @@ const GLOBAL_STYLES = `
     content: '';
     position: fixed;
     bottom: 40px; right: -130px;
-    width: 400px; height: 380px;
-    background: radial-gradient(ellipse at 60% 60%, rgba(78,145,113,0.14) 0%, transparent 65%);
+    width: 440px; height: 420px;
+    background: radial-gradient(ellipse at 60% 60%, rgba(78,145,113,0.20) 0%, transparent 65%);
     border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
     pointer-events: none;
     z-index: 0;
@@ -65,17 +67,18 @@ const GLOBAL_STYLES = `
   }
   .content { position: relative; z-index: 1; padding: 28px 20px 0; }
   .card {
-    background: rgba(255,255,255,0.82);
-    backdrop-filter: blur(8px);
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: var(--radius);
-    border: 1.5px solid var(--border);
+    border: 1px solid var(--border);
     box-shadow: var(--shadow);
     padding: 20px;
     margin-bottom: 14px;
   }
   .card-lavender {
-    background: linear-gradient(135deg, rgba(124,92,191,0.10) 0%, rgba(180,159,224,0.06) 100%);
-    border-color: rgba(124,92,191,0.22);
+    background: linear-gradient(135deg, rgba(124,92,220,0.18) 0%, rgba(155,127,232,0.08) 100%);
+    border-color: rgba(155,127,232,0.30);
   }
   .pill {
     display: inline-flex; align-items: center; gap: 6px;
@@ -96,22 +99,22 @@ const GLOBAL_STYLES = `
   }
   .btn:active { transform: scale(0.96); }
   .btn-primary {
-    background: linear-gradient(135deg, #7C5CBF 0%, #9B7FCC 100%);
+    background: linear-gradient(135deg, #7C5CBF 0%, #A87FE8 100%);
     color: white;
-    box-shadow: 0 6px 20px rgba(124,92,191,0.38);
+    box-shadow: 0 8px 28px rgba(124,92,191,0.50);
   }
   .btn-secondary {
-    background: var(--white);
+    background: rgba(255,255,255,0.08);
     color: var(--text);
-    border: 1.5px solid var(--border);
+    border: 1px solid var(--border);
   }
   .btn-green {
-    background: linear-gradient(135deg, #4E9171 0%, #5AAF85 100%);
+    background: linear-gradient(135deg, #3D8060 0%, #5BB88A 100%);
     color: white;
-    box-shadow: 0 6px 20px rgba(78,145,113,0.32);
+    box-shadow: 0 8px 28px rgba(78,145,113,0.40);
   }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  h1 { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  h1 { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
   h2 { font-size: 19px; font-weight: 700; color: var(--text); }
   h3 { font-size: 15px; font-weight: 700; color: var(--text); }
   p { font-size: 14px; color: var(--muted); line-height: 1.65; }

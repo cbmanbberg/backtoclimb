@@ -11,7 +11,7 @@ function BreathingCircle({ isRunning, totalSeconds, remainingSeconds }) {
   return (
     <div style={{ position: 'relative', width: size, height: size, margin: '0 auto' }}>
       <svg width={size} height={size} style={{ transform: 'rotate(-90deg)', position: 'absolute', top: 0, left: 0 }}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#EBE0D4" strokeWidth={8}/>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(155,127,232,0.25)" strokeWidth={8}/>
         <circle
           cx={size/2} cy={size/2} r={r}
           fill="none" stroke="#9B7FCC" strokeWidth={8}
@@ -32,10 +32,10 @@ function BreathingCircle({ isRunning, totalSeconds, remainingSeconds }) {
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
           animation: isRunning ? 'breathe 5s ease-in-out infinite' : 'none',
         }}>
-          <span style={{ fontSize: 48, fontWeight: 300, color: '#3D2E26', letterSpacing: '-2px' }}>
+          <span style={{ fontSize: 48, fontWeight: 300, color: '#F0EAFF', letterSpacing: '-2px' }}>
             {remainingSeconds}
           </span>
-          <span style={{ fontSize: 12, color: '#A8937F' }}>Sekunden</span>
+          <span style={{ fontSize: 12, color: '#9E8FC0' }}>Sekunden</span>
         </div>
       </div>
       <style>{`
@@ -108,7 +108,7 @@ export default function TimerScreen({ workout, onFinish, onBack }) {
           <div style={{ marginBottom: 24, animation: 'breathe 3s ease-in-out infinite' }}><IconSparkle size={72} /></div>
           <h1 style={{ marginBottom: 8 }}>Abgeschlossen</h1>
           <p style={{ marginBottom: 8 }}>{workout.title}</p>
-          <p style={{ fontSize: 12, color: '#C4B4A4', marginBottom: 40 }}>
+          <p style={{ fontSize: 12, color: '#7A6D9A', marginBottom: 40 }}>
             Quelle: {workout.reference}
           </p>
           <button className="btn btn-primary" style={{ width: '100%', maxWidth: 280, marginBottom: 12 }}
@@ -132,7 +132,7 @@ export default function TimerScreen({ workout, onFinish, onBack }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
           <button onClick={onBack} style={{
             width: 40, height: 40, borderRadius: '50%',
-            border: '1.5px solid #EBE0D4', background: 'white',
+            border: '1px solid rgba(155,127,232,0.25)', background: 'rgba(255,255,255,0.07)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', fontSize: 18,
           }}>←</button>
@@ -147,7 +147,7 @@ export default function TimerScreen({ workout, onFinish, onBack }) {
           <span className="pill" style={{ background: 'rgba(155,127,204,0.12)', color: '#9B7FCC', marginBottom: 8 }}>
             {step.label}
           </span>
-          <p style={{ fontSize: 12, color: '#A8937F' }}>Schritt {stepIdx + 1} von {totalSteps}</p>
+          <p style={{ fontSize: 12, color: '#9E8FC0' }}>Schritt {stepIdx + 1} von {totalSteps}</p>
         </div>
 
         {/* Breathing circle */}
@@ -156,7 +156,7 @@ export default function TimerScreen({ workout, onFinish, onBack }) {
         {/* Cue card */}
         {step.cue && (
           <div className="card" style={{ margin: '24px 0', textAlign: 'center', background: 'rgba(155,127,204,0.06)' }}>
-            <p style={{ fontSize: 14, color: '#5A4E45', lineHeight: 1.7 }}>{step.cue}</p>
+            <p style={{ fontSize: 14, color: '#D8CFEE', lineHeight: 1.7 }}>{step.cue}</p>
           </div>
         )}
 
@@ -166,7 +166,7 @@ export default function TimerScreen({ workout, onFinish, onBack }) {
             <div key={i} style={{
               width: i === stepIdx ? 20 : 6, height: 6,
               borderRadius: 3,
-              background: i < stepIdx ? '#9B7FCC' : i === stepIdx ? '#9B7FCC' : '#EBE0D4',
+              background: i <= stepIdx ? '#9B7FE8' : 'rgba(155,127,232,0.2)',
               transition: 'width 0.3s ease',
             }}/>
           ))}
@@ -179,7 +179,7 @@ export default function TimerScreen({ workout, onFinish, onBack }) {
             disabled={stepIdx === 0}
             style={{
               width: 44, height: 44, borderRadius: '50%',
-              border: '1.5px solid #EBE0D4', background: 'white',
+              border: '1px solid rgba(155,127,232,0.25)', background: 'rgba(255,255,255,0.07)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: stepIdx === 0 ? 'not-allowed' : 'pointer',
               opacity: stepIdx === 0 ? 0.4 : 1, fontSize: 16,
@@ -206,7 +206,7 @@ export default function TimerScreen({ workout, onFinish, onBack }) {
             onClick={handleSkipStep}
             style={{
               width: 44, height: 44, borderRadius: '50%',
-              border: '1.5px solid #EBE0D4', background: 'white',
+              border: '1px solid rgba(155,127,232,0.25)', background: 'rgba(255,255,255,0.07)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: 'pointer', fontSize: 16,
             }}>
@@ -215,7 +215,7 @@ export default function TimerScreen({ workout, onFinish, onBack }) {
         </div>
 
         {/* Reference */}
-        <p style={{ fontSize: 11, color: '#C4B4A4', textAlign: 'center', marginTop: 24 }}>
+        <p style={{ fontSize: 11, color: '#7A6D9A', textAlign: 'center', marginTop: 24 }}>
           {workout.reference}
         </p>
 
@@ -226,7 +226,7 @@ export default function TimerScreen({ workout, onFinish, onBack }) {
             width: '100%', marginTop: 16,
             padding: '12px', borderRadius: 100,
             border: 'none', background: 'transparent',
-            color: '#A8937F', fontFamily: 'Nunito, sans-serif',
+            color: '#9E8FC0', fontFamily: 'Nunito, sans-serif',
             fontSize: 13, cursor: 'pointer',
           }}>
           Heute lieber ausruhen

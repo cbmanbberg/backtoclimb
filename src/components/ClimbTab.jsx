@@ -24,7 +24,7 @@ function LockedState({ weekPP, phase }) {
             Das Hormon erhöht die Gelenk- und Sehnenlaxität, besonders in Fingern, Handgelenken
             und ISG. Frühes Fingertendon-Training erhöht das Verletzungsrisiko deutlich.
           </p>
-          <p style={{ fontSize: 11, color: '#A8937F', marginTop: 8 }}>
+          <p style={{ fontSize: 11, color: '#9E8FC0', marginTop: 8 }}>
             Yalçınkaya et al. 2025; Herman & Wallace — Becken-Rehabilitation
           </p>
         </div>
@@ -39,17 +39,17 @@ function LockedState({ weekPP, phase }) {
             <div key={item.phase} style={{
               display: 'flex', gap: 14, alignItems: 'flex-start',
               padding: '10px 0',
-              borderBottom: '1px solid #EBE0D4',
+              borderBottom: '1px solid rgba(155,127,232,0.15)',
               opacity: item.active || phase < ['Phase 1','Phase 2','Phase 3'].indexOf(item.phase) + 1 ? 1 : 0.5,
             }}>
               <div style={{
                 width: 10, height: 10, borderRadius: '50%', flexShrink: 0,
-                background: item.active ? item.color : '#EBE0D4', marginTop: 4,
+                background: item.active ? item.color : 'rgba(155,127,232,0.15)', marginTop: 4,
               }}/>
               <div>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 2 }}>
                   <span style={{ fontSize: 13, fontWeight: 600 }}>{item.phase}</span>
-                  <span style={{ fontSize: 11, color: '#A8937F' }}>{item.time}</span>
+                  <span style={{ fontSize: 11, color: '#9E8FC0' }}>{item.time}</span>
                   {item.active && <span className="pill" style={{ background: `${item.color}20`, color: item.color, fontSize: 10, padding: '2px 8px' }}>Aktuell</span>}
                 </div>
                 <p style={{ fontSize: 12 }}>{item.desc}</p>
@@ -87,10 +87,10 @@ function ClimbCard({ workout, onStart }) {
         <div style={{ flex: 1 }}>
           <h3 style={{ marginBottom: 2 }}>{workout.title}</h3>
           <p style={{ fontSize: 12, marginBottom: 4 }}>{workout.subtitle}</p>
-          <span style={{ fontSize: 11, color: '#A8937F' }}>{workout.durationMin} Min</span>
+          <span style={{ fontSize: 11, color: '#9E8FC0' }}>{workout.durationMin} Min</span>
         </div>
       </div>
-      <p style={{ fontSize: 11, color: '#A8937F', marginBottom: 14, fontStyle: 'italic' }}>
+      <p style={{ fontSize: 11, color: '#9E8FC0', marginBottom: 14, fontStyle: 'italic' }}>
         {workout.reference}
       </p>
       <button className="btn btn-primary" style={{ width: '100%', background: '#D4876A', boxShadow: '0 4px 16px rgba(212,135,106,0.3)' }}

@@ -54,7 +54,7 @@ function PhaseCard({ phaseNum, info, current, unlocked }) {
 
   return (
     <div className="card" style={{
-      borderColor: isActive ? info.color : '#EBE0D4',
+      borderColor: isActive ? info.color : 'rgba(155,127,232,0.15)',
       background: isActive ? `${info.color}08` : 'white',
       opacity: isFuture ? 0.65 : 1,
     }}>
@@ -62,7 +62,7 @@ function PhaseCard({ phaseNum, info, current, unlocked }) {
         <span className="pill" style={{ background: `${info.color}20`, color: info.color }}>
           Phase {phaseNum}
         </span>
-        <span style={{ fontSize: 12, color: '#A8937F' }}>{info.weeks}</span>
+        <span style={{ fontSize: 12, color: '#9E8FC0' }}>{info.weeks}</span>
         {isActive && <span className="pill" style={{ background: `${info.color}30`, color: info.color, marginLeft: 'auto' }}>Aktuell</span>}
         {unlocked && !isActive && <span style={{ fontSize: 12, color: '#5A9E7A', marginLeft: 'auto' }}>✓ Abgeschlossen</span>}
       </div>
@@ -73,7 +73,7 @@ function PhaseCard({ phaseNum, info, current, unlocked }) {
           <li key={f} style={{ fontSize: 12, color: '#5A4E45', marginBottom: 4, lineHeight: 1.5 }}>{f}</li>
         ))}
       </ul>
-      <p style={{ fontSize: 11, color: '#A8937F', fontStyle: 'italic' }}>{info.note}</p>
+      <p style={{ fontSize: 11, color: '#9E8FC0', fontStyle: 'italic' }}>{info.note}</p>
     </div>
   )
 }
@@ -88,7 +88,7 @@ export default function PlanTab({ state, startWorkout, setShowReadiness }) {
         <div style={{ marginBottom: 24 }}>
           <h1 style={{ marginBottom: 6 }}>Trainingsplan</h1>
           <p>Evidenzbasiert, symptomgeführt — nie zeitplangesteuert.</p>
-          <p style={{ fontSize: 11, color: '#C4B4A4', marginTop: 4 }}>
+          <p style={{ fontSize: 11, color: '#7A6D9A', marginTop: 4 }}>
             Christopher et al. 2024 (BJSM Delphi)
           </p>
         </div>
@@ -119,7 +119,7 @@ export default function PlanTab({ state, startWorkout, setShowReadiness }) {
           <p style={{ fontSize: 12, marginTop: 6 }}>Fortschritt wird in Funktion gemessen, nicht in Gewicht oder Pace.</p>
         </div>
 
-        <p style={{ fontSize: 11, color: '#C4B4A4', textAlign: 'center', padding: '16px 0 20px' }}>
+        <p style={{ fontSize: 11, color: '#7A6D9A', textAlign: 'center', padding: '16px 0 20px' }}>
           Diese App ersetzt keine individuelle Befundung.
         </p>
       </div>

@@ -9,9 +9,9 @@ function EditRow({ label, value, onSave, type = 'text', inputProps = {} }) {
   const cancel = () => { setInput(value); setEditing(false) }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #EBE0D4' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(155,127,232,0.15)' }}>
       <div style={{ flex: 1 }}>
-        <p style={{ fontSize: 11, color: '#A8937F', marginBottom: 2 }}>{label}</p>
+        <p style={{ fontSize: 11, color: '#9E8FC0', marginBottom: 2 }}>{label}</p>
         {editing ? (
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 4 }}>
             <input
@@ -21,7 +21,7 @@ function EditRow({ label, value, onSave, type = 'text', inputProps = {} }) {
               style={{
                 fontFamily: 'Nunito, sans-serif', fontSize: 14, fontWeight: 600,
                 border: '1.5px solid #9B7FCC', borderRadius: 10,
-                padding: '6px 10px', color: '#3D2E26', background: 'white',
+                padding: '6px 10px', color: '#F0EAFF', background: 'rgba(255,255,255,0.06)',
               }}
               {...inputProps}
             />
@@ -29,7 +29,7 @@ function EditRow({ label, value, onSave, type = 'text', inputProps = {} }) {
             <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: 12 }} onClick={cancel}>✕</button>
           </div>
         ) : (
-          <p style={{ fontSize: 14, fontWeight: 600, color: '#3D2E26' }}>{value}</p>
+          <p style={{ fontSize: 14, fontWeight: 600, color: '#F0EAFF' }}>{value}</p>
         )}
       </div>
       {!editing && (
@@ -43,22 +43,22 @@ function EditRow({ label, value, onSave, type = 'text', inputProps = {} }) {
 
 function Toggle({ label, sub, value, onChange, color }) {
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #EBE0D4' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(155,127,232,0.15)' }}>
       <div>
-        <p style={{ fontSize: 13, fontWeight: 500, color: '#3D2E26', marginBottom: 2 }}>{label}</p>
+        <p style={{ fontSize: 13, fontWeight: 500, color: '#F0EAFF', marginBottom: 2 }}>{label}</p>
         {sub && <p style={{ fontSize: 11 }}>{sub}</p>}
       </div>
       <button
         onClick={onChange}
         style={{
           width: 50, height: 28, borderRadius: 14,
-          background: value ? color : '#EBE0D4',
+          background: value ? color : 'rgba(155,127,232,0.15)',
           border: 'none', cursor: 'pointer', position: 'relative',
           transition: 'background 0.2s', flexShrink: 0,
         }}>
         <div style={{
           position: 'absolute', top: 3, left: value ? 24 : 3,
-          width: 22, height: 22, borderRadius: '50%', background: 'white',
+          width: 22, height: 22, borderRadius: '50%', background: 'rgba(255,255,255,0.06)',
           boxShadow: '0 1px 4px rgba(0,0,0,0.15)', transition: 'left 0.2s',
         }}/>
       </button>
@@ -92,7 +92,7 @@ export default function ProfileTab({ state, updateState, setShowReadiness }) {
             <span className="pill" style={{ background: `${phaseColor}20`, color: phaseColor }}>
               {getPhaseLabel(currentPhase)}
             </span>
-            <span style={{ fontSize: 12, color: '#A8937F' }}>Tag {dayPP} · Woche {weekPP} postpartal</span>
+            <span style={{ fontSize: 12, color: '#9E8FC0' }}>Tag {dayPP} · Woche {weekPP} postpartal</span>
           </div>
         </div>
 
@@ -152,9 +152,9 @@ export default function ProfileTab({ state, updateState, setShowReadiness }) {
             ['Phase 2 freigeschaltet', phaseUnlocks.phase2 ? formatDate(phaseUnlocks.phase2) : '–'],
             ['Phase 3 freigeschaltet', phaseUnlocks.phase3 ? formatDate(phaseUnlocks.phase3) : '–'],
           ].map(([label, value]) => (
-            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #EBE0D4' }}>
-              <span style={{ fontSize: 13, color: '#A8937F' }}>{label}</span>
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#3D2E26' }}>{value}</span>
+            <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(155,127,232,0.15)' }}>
+              <span style={{ fontSize: 13, color: '#9E8FC0' }}>{label}</span>
+              <span style={{ fontSize: 13, fontWeight: 500, color: '#F0EAFF' }}>{value}</span>
             </div>
           ))}
         </div>
@@ -164,8 +164,8 @@ export default function ProfileTab({ state, updateState, setShowReadiness }) {
           <div className="card" style={{ marginBottom: 10 }}>
             <h3 style={{ marginBottom: 12 }}>Readiness-Checks</h3>
             {readinessChecks.slice(-3).map((c, i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #EBE0D4' }}>
-                <span style={{ fontSize: 13, color: '#A8937F' }}>
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(155,127,232,0.15)' }}>
+                <span style={{ fontSize: 13, color: '#9E8FC0' }}>
                   {new Date(c.date).toLocaleDateString('de-DE')} — Phase {c.forPhase}
                 </span>
                 <span style={{ fontSize: 13, fontWeight: 600, color: c.passed ? '#5A9E7A' : '#D4876A' }}>
@@ -181,8 +181,8 @@ export default function ProfileTab({ state, updateState, setShowReadiness }) {
           <div className="card" style={{ marginBottom: 10 }}>
             <h3 style={{ marginBottom: 12 }}>Benchmarks</h3>
             {benchmarks.map((b, i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #EBE0D4' }}>
-                <span style={{ fontSize: 13, color: '#A8937F' }}>
+              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid rgba(155,127,232,0.15)' }}>
+                <span style={{ fontSize: 13, color: '#9E8FC0' }}>
                   {new Date(b.date).toLocaleDateString('de-DE')} — {b.metric}
                 </span>
                 <span style={{ fontSize: 13, fontWeight: 600 }}>{b.value} {b.unit}</span>
@@ -203,7 +203,7 @@ export default function ProfileTab({ state, updateState, setShowReadiness }) {
         {!showReset ? (
           <button
             className="btn btn-secondary"
-            style={{ width: '100%', marginBottom: 24, color: '#C4B4A4', borderColor: '#EBE0D4' }}
+            style={{ width: '100%', marginBottom: 24, color: '#C4B4A4', borderColor: 'rgba(155,127,232,0.15)' }}
             onClick={() => setShowReset(true)}
           >
             Alle Daten zurücksetzen

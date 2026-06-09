@@ -57,9 +57,10 @@ export default function BottomNav({ activeTab, setActiveTab }) {
   return (
     <nav style={{
       position: 'fixed', bottom: 0, left: 0, right: 0,
-      background: 'rgba(253,246,239,0.95)',
-      backdropFilter: 'blur(12px)',
-      borderTop: '1px solid #EBE0D4',
+      background: 'rgba(19,13,32,0.92)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      borderTop: '1px solid rgba(155,127,232,0.18)',
       display: 'flex',
       zIndex: 100,
       paddingBottom: 'env(safe-area-inset-bottom, 0px)',
@@ -75,7 +76,7 @@ export default function BottomNav({ activeTab, setActiveTab }) {
               alignItems: 'center', gap: 3,
               padding: '10px 0',
               border: 'none', background: 'none', cursor: 'pointer',
-              color: active ? '#9B7FCC' : '#A8937F',
+              color: active ? '#C4AEFF' : '#6E5F8A',
               fontFamily: 'Nunito, sans-serif',
               fontSize: 10, fontWeight: active ? 600 : 400,
               transition: 'color 0.2s',
