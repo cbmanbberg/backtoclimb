@@ -6,7 +6,7 @@ const PHASE_INFO = {
   1: {
     title: 'Phase 1 — Regeneration & Beckenboden',
     weeks: 'Woche 0–12',
-    color: '#9B7FCC',
+    color: '#F0C38E',
     goal: 'Beckenboden aktivieren, Körper erholen, Bewegung sanft aufbauen.',
     focus: [
       'Beckenbodenaktivierung täglich',
@@ -54,7 +54,7 @@ function PhaseCard({ phaseNum, info, current, unlocked }) {
 
   return (
     <div className="card" style={{
-      borderColor: isActive ? info.color : 'rgba(155,127,232,0.15)',
+      borderColor: isActive ? info.color : 'rgba(240,195,142,0.15)',
       background: isActive ? `${info.color}08` : 'white',
       opacity: isFuture ? 0.65 : 1,
     }}>

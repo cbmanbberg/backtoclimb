@@ -109,7 +109,7 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 28 }}>
           <button onClick={onBack} style={{
             width: 40, height: 40, borderRadius: '50%',
-            border: '1.5px solid rgba(155,127,232,0.15)', background: 'rgba(255,255,255,0.06)',
+            border: '1.5px solid rgba(240,195,142,0.15)', background: 'rgba(255,255,255,0.06)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', fontSize: 18,
           }}>←</button>
@@ -120,7 +120,7 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
         </div>
 
         {/* Intro */}
-        <div className="card" style={{ background: 'rgba(155,127,204,0.06)', marginBottom: 20 }}>
+        <div className="card" style={{ background: 'rgba(240,195,142,0.06)', marginBottom: 20 }}>
           <p style={{ fontSize: 13, lineHeight: 1.7 }}>
             Alle fünf Tests müssen <strong>symptomfrei</strong> gelingen — kein Druck, kein Schweregefühl,
             kein Auslaufen. Teste erst nach Woche 12 postpartal.
@@ -131,12 +131,12 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
           <div style={{
             flex: 1, height: 6, borderRadius: 3,
-            background: 'rgba(155,127,232,0.15)', overflow: 'hidden',
+            background: 'rgba(240,195,142,0.15)', overflow: 'hidden',
           }}>
             <div style={{
               height: '100%', borderRadius: 3,
               width: `${(passedCount / 5) * 100}%`,
-              background: passedCount === 5 ? '#5A9E7A' : '#9B7FCC',
+              background: passedCount === 5 ? '#5A9E7A' : '#F0C38E',
               transition: 'width 0.4s ease',
             }}/>
           </div>
@@ -155,14 +155,14 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
               onClick={() => handleToggle(c.id)}
               style={{
                 cursor: 'pointer',
-                borderColor: checked ? '#5A9E7A' : 'rgba(155,127,232,0.15)',
+                borderColor: checked ? '#5A9E7A' : 'rgba(240,195,142,0.15)',
                 background: checked ? 'rgba(90,158,122,0.10)' : 'var(--card-bg)',
                 display: 'flex', alignItems: 'flex-start', gap: 14,
                 transition: 'all 0.2s',
               }}>
               <div style={{
                 width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                border: `2px solid ${checked ? '#5A9E7A' : 'rgba(155,127,232,0.15)'}`,
+                border: `2px solid ${checked ? '#5A9E7A' : 'rgba(240,195,142,0.15)'}`,
                 background: checked ? '#5A9E7A' : 'transparent',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 14, color: 'white',

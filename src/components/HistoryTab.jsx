@@ -49,7 +49,7 @@ export default function HistoryTab({ state }) {
         <div className="card" style={{ marginBottom: 20 }}>
           <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: '#9B7FCC' }}>{totalDone}</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: '#F0C38E' }}>{totalDone}</div>
               <div style={{ fontSize: 11, color: '#9E8FC0' }}>Abgeschlossen</div>
             </div>
             <div>
@@ -82,16 +82,16 @@ export default function HistoryTab({ state }) {
                 </div>
               )}
               {entry.sessions.map(s => (
-                <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', borderBottom: '1px solid rgba(155,127,232,0.15)' }}>
+                <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', borderBottom: '1px solid rgba(240,195,142,0.15)' }}>
                   <div style={{
                     width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
-                    background: s.completed ? '#9B7FCC' : s.skipped ? '#5A9E7A' : 'rgba(155,127,232,0.15)',
+                    background: s.completed ? '#F0C38E' : s.skipped ? '#5A9E7A' : 'rgba(240,195,142,0.15)',
                   }}/>
                   <div style={{ flex: 1 }}>
                     <span style={{ fontSize: 13, color: '#3D2E26' }}>{s.title || TYPE_LABELS[s.type] || s.type}</span>
                     {s.durationMin && <span style={{ fontSize: 11, color: '#9E8FC0', marginLeft: 8 }}>{s.durationMin} Min</span>}
                   </div>
-                  <span style={{ fontSize: 11, color: s.skipped ? '#5A9E7A' : '#9B7FCC', fontWeight: 500 }}>
+                  <span style={{ fontSize: 11, color: s.skipped ? '#5A9E7A' : '#F0C38E', fontWeight: 500 }}>
                     {s.skipped ? 'Pause' : s.completed ? 'Fertig' : '–'}
                   </span>
                 </div>

@@ -25,7 +25,7 @@ function WorkoutCard({ workout, onStart, accent }) {
   return (
     <div className="card" style={{
       display: 'flex', alignItems: 'center', gap: 14,
-      background: `linear-gradient(135deg, rgba(124,92,220,0.18) 0%, rgba(155,127,232,0.06) 100%)`,
+      background: `linear-gradient(135deg, rgba(124,92,220,0.18) 0%, rgba(240,195,142,0.06) 100%)`,
       borderColor: `rgba(124,92,191,0.18)`,
     }}>
       <div style={{
@@ -90,7 +90,7 @@ function WeekSchedule({ phase, sessions, onSelectWorkout, selectedId }) {
                 width: '100%', aspectRatio: '1',
                 borderRadius: 12,
                 background: isSelected
-                  ? `linear-gradient(135deg, #7C5CBF 0%, #9B7FCC 100%)`
+                  ? `linear-gradient(135deg, #7C5CBF 0%, #F0C38E 100%)`
                   : done ? 'rgba(78,145,113,0.15)'
                   : hasWorkout ? 'rgba(124,92,191,0.10)'
                   : 'rgba(200,191,216,0.18)',
@@ -131,7 +131,7 @@ function WeekSchedule({ phase, sessions, onSelectWorkout, selectedId }) {
 
       {/* Swap picker for today */}
       {swapDay !== null && (
-        <div style={{ borderTop: '1px solid rgba(155,127,232,0.18)', paddingTop: 14 }}>
+        <div style={{ borderTop: '1px solid rgba(240,195,142,0.18)', paddingTop: 14 }}>
           <p style={{ fontSize: 12, marginBottom: 10, color: '#7C5CBF', fontWeight: 600 }}>Andere Einheit wählen:</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {phaseWorkouts.map(w => {
@@ -168,7 +168,7 @@ function WeekSchedule({ phase, sessions, onSelectWorkout, selectedId }) {
         const upcoming = schedule.filter(d => !d.isToday && !d.isPast && d.workout).slice(0, 2)
         if (upcoming.length === 0) return null
         return (
-          <div style={{ borderTop: '1px solid rgba(155,127,232,0.18)', marginTop: 14, paddingTop: 12 }}>
+          <div style={{ borderTop: '1px solid rgba(240,195,142,0.18)', marginTop: 14, paddingTop: 12 }}>
             <p style={{ fontSize: 11, color: '#8E7DA8', fontWeight: 600, marginBottom: 8 }}>Als nächstes</p>
             {upcoming.map(d => (
               <div key={d.date} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
