@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { canUnlockPhase2, saveReadinessCheck, unlockPhase } from '../store'
+import { IconPlant, IconMedical, IconCheck, MoodNeutral } from './Characters'
 
 const CRITERIA_PHASE2 = [
   {
@@ -75,8 +76,10 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
     return (
       <div className="screen">
         <div className="content" style={{ textAlign: 'center', paddingTop: 60 }}>
-          <div style={{ fontSize: 56, marginBottom: 20 }}>
-            {allPassed && physioClear ? '🌿' : '🕐'}
+          <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'center' }}>
+            {allPassed && physioClear
+              ? <IconPlant size={64} />
+              : <MoodNeutral size={64} />}
           </div>
           <h1 style={{ marginBottom: 12 }}>
             {allPassed && physioClear ? 'Bereit für Phase 2!' : `${passedCount} von 5 erreicht`}
@@ -165,7 +168,7 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
                 fontSize: 14, color: 'white',
                 transition: 'all 0.2s',
               }}>
-                {checked ? '✓' : ''}
+                {checked ? <IconCheck size={16} /> : ''}
               </div>
               <div>
                 <h3 style={{ marginBottom: 4, color: checked ? '#3D7A55' : '#3D2E26' }}>{c.label}</h3>
@@ -182,7 +185,7 @@ export default function ReadinessCheck({ state, updateState, onBack }) {
           marginTop: 8,
         }}>
           <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-            <div style={{ fontSize: 24 }}>{physioClear ? '✅' : '🩺'}</div>
+            <div>{physioClear ? <IconCheck size={28} /> : <IconMedical size={28} />}</div>
             <div style={{ flex: 1 }}>
               <h3 style={{ marginBottom: 4, color: physioClear ? '#3D7A55' : '#8A4F2E' }}>
                 Beckenbodenphysiotherapie

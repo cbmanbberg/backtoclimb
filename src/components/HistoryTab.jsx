@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
 import { getPhaseColor } from '../store'
+import { IconBook, IconMoon } from './Characters'
 
-const MOOD_LABELS = { good: 'Gut 😊', medium: 'Mittel 😐', tired: 'Müde 😴', pause: 'Pause 🌙' }
+const MOOD_LABELS = { good: 'Gut', medium: 'Mittel', tired: 'Müde', pause: 'Pause' }
 const TYPE_LABELS = { pelvic: 'Beckenboden', breath: 'Atmung', strength: 'Kraft', cardio: 'Cardio', mobility: 'Mobilität', climb: 'Klettern' }
 
 export default function HistoryTab({ state }) {
@@ -24,7 +25,7 @@ export default function HistoryTab({ state }) {
     return (
       <div className="screen">
         <div className="content" style={{ textAlign: 'center', paddingTop: 60 }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>📖</div>
+          <div style={{ marginBottom: 16 }}><IconBook size={56} /></div>
           <h2 style={{ marginBottom: 8 }}>Noch nichts gespeichert</h2>
           <p>Starte deine erste Einheit und sie erscheint hier.</p>
         </div>
@@ -76,7 +77,7 @@ export default function HistoryTab({ state }) {
               </div>
               {entry.sessions.length === 0 && entry.symptom?.mood === 'pause' && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 16 }}>🌙</span>
+                  <IconMoon size={18} />
                   <span style={{ fontSize: 13, color: '#5A9E7A', fontWeight: 500 }}>Ruhetag — Teil des Plans</span>
                 </div>
               )}

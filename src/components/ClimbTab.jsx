@@ -1,6 +1,7 @@
 import React from 'react'
 import { getWeekPostpartum } from '../store'
 import { WORKOUTS } from '../workouts'
+import { IconSeedling, IconClimb, IconHand, IconWarning } from './Characters'
 
 function LockedState({ weekPP, phase }) {
   const weeksLeft = phase === 1 ? Math.max(0, 24 - weekPP) : 0
@@ -8,7 +9,7 @@ function LockedState({ weekPP, phase }) {
     <div className="screen">
       <div className="content" style={{ textAlign: 'center' }}>
         <div style={{ marginTop: 40, marginBottom: 32 }}>
-          <div style={{ fontSize: 64, marginBottom: 16 }}>🌱</div>
+          <div style={{ marginBottom: 16 }}><IconSeedling size={72} /></div>
           <h1 style={{ marginBottom: 12 }}>Klettern folgt</h1>
           <p style={{ maxWidth: 300, margin: '0 auto', lineHeight: 1.7 }}>
             Klettertraining ist ab Phase 3 (ca. Monat 6) vorgesehen — wenn Beckenboden
@@ -114,14 +115,14 @@ export default function ClimbTab({ state, startWorkout }) {
     <div className="screen">
       <div className="content">
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ marginBottom: 6 }}>Klettern 🧗</h1>
+          <h1 style={{ marginBottom: 6, display: 'flex', alignItems: 'center', gap: 8 }}>Klettern <IconClimb size={28} /></h1>
           <p>Phase 3 — evidenzbasierter Wiedereinstieg</p>
         </div>
 
         {/* Pelvic floor warning */}
         <div className="card" style={{ background: 'rgba(212,135,106,0.08)', border: '1px solid rgba(212,135,106,0.25)', marginBottom: 8 }}>
           <div style={{ display: 'flex', gap: 10 }}>
-            <span style={{ fontSize: 18 }}>⚠️</span>
+            <IconWarning size={22} />
             <div>
               <h3 style={{ marginBottom: 4, color: '#8A4F2E', fontSize: 14 }}>Beckenboden-Check vor jeder Einheit</h3>
               <p style={{ fontSize: 12 }}>Bei Druck, Schweregefühl oder Auslaufen: Intensität reduzieren oder pausieren.</p>
@@ -132,7 +133,7 @@ export default function ClimbTab({ state, startWorkout }) {
         {/* Crimp note */}
         <div className="card" style={{ background: 'rgba(155,127,204,0.06)', marginBottom: 20 }}>
           <div style={{ display: 'flex', gap: 10 }}>
-            <span style={{ fontSize: 18 }}>🖐️</span>
+            <IconHand size={22} />
             <div>
               <h3 style={{ marginBottom: 4, fontSize: 14 }}>Crimp frühestens Monat 8–9</h3>
               <p style={{ fontSize: 12 }}>Open-Hand bis dahin. Gilmore et al. 2024; Relaxin-Laxität normalisiert sich individuell.</p>

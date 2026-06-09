@@ -4,12 +4,17 @@ import {
   getTodaySymptom, getWeekSessions, logSymptom,
 } from '../store'
 import { getTodayWorkouts, getDayMessage } from '../workouts'
+import {
+  MoodHappy, MoodNeutral, MoodTired, MoodPause,
+  IconMoon, IconPlant, IconWater, IconMedical, IconClipboard, IconWave,
+  WORKOUT_ICONS,
+} from './Characters'
 
 const MOODS = [
-  { id: 'good', label: 'Gut', emoji: '😊' },
-  { id: 'medium', label: 'Mittel', emoji: '😐' },
-  { id: 'tired', label: 'Müde', emoji: '😴' },
-  { id: 'pause', label: 'Pause', emoji: '🌙' },
+  { id: 'good', label: 'Gut', Char: MoodHappy },
+  { id: 'medium', label: 'Mittel', Char: MoodNeutral },
+  { id: 'tired', label: 'Müde', Char: MoodTired },
+  { id: 'pause', label: 'Pause', Char: MoodPause },
 ]
 
 function WeekDot({ day }) {
@@ -20,7 +25,7 @@ function WeekDot({ day }) {
   let bg = '#EBE0D4'
   let label = ''
   if (isToday) { bg = '#9B7FCC'; label = '•' }
-  else if (isPause) { bg = '#5A9E7A'; label = '🌙' }
+  else if (isPause) { bg = '#5A9E7A' }
   else if (isDone) { bg = '#9B7FCC' }
 
   const d = new Date(day.date)
@@ -37,7 +42,7 @@ function WeekDot({ day }) {
         border: isToday ? '2px solid #9B7FCC' : 'none',
         outline: isToday ? '3px solid rgba(155,127,204,0.2)' : 'none',
       }}>
-        {label}
+        {isPause && !isToday ? <IconMoon size={16} /> : label}
       </div>
       <span style={{ fontSize: 10, color: '#A8937F', fontWeight: isToday ? 600 : 400 }}>
         {dayNames[d.getDay()]}
@@ -54,9 +59,9 @@ function WorkoutCard({ workout, onStart }) {
         borderRadius: 14,
         background: 'linear-gradient(135deg, rgba(155,127,204,0.15), rgba(155,127,204,0.05))',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 22, flexShrink: 0,
+        flexShrink: 0,
       }}>
-        {workout.icon}
+        {React.createElement(WORKOUT_ICONS[workout.id] || WORKOUT_ICONS.p1_pelvic_basic, { size: 36 })}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <h3 style={{ marginBottom: 2 }}>{workout.title}</h3>
@@ -105,7 +110,7 @@ function MoodBar({ state, updateState }) {
               transition: 'all 0.2s',
             }}
           >
-            <span style={{ fontSize: 20 }}>{m.emoji}</span>
+            <m.Char size={28} />
             <span style={{ fontSize: 11, color: currentMood === m.id ? '#9B7FCC' : '#A8937F', fontWeight: 500 }}>
               {m.label}
             </span>
@@ -161,7 +166,7 @@ export default function HomeTab({ state, updateState, startWorkout, setShowReadi
         {/* Header */}
         <div style={{ marginBottom: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-            <h1>Hallo, {profile.name} 👋</h1>
+            <h1 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>Hallo, {profile.name} <IconWave size={28} /></h1>
             <span className="pill" style={{ background: `${phaseColor}20`, color: phaseColor }}>
               {getPhaseLabel(currentPhase)}
             </span>
@@ -174,7 +179,7 @@ export default function HomeTab({ state, updateState, startWorkout, setShowReadi
         {profile.breastfeeding && (
           <div className="card" style={{ background: 'rgba(90,158,122,0.08)', border: '1px solid rgba(90,158,122,0.25)' }}>
             <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-              <span style={{ fontSize: 18 }}>💧</span>
+              <IconWater size={20} />
               <div>
                 <p style={{ fontSize: 13, color: '#3D7A55', fontWeight: 500, marginBottom: 2 }}>Stillen: +700 ml Wasser täglich</p>
                 <p style={{ fontSize: 12, color: '#5A9E7A' }}>Und ca. 330–400 kcal Mehrbedarf beim Training. (GSSI 2025 / EFSA 2010)</p>
@@ -215,7 +220,7 @@ export default function HomeTab({ state, updateState, startWorkout, setShowReadi
           </p>
           {workouts.length === 0 ? (
             <div className="card" style={{ textAlign: 'center', padding: 32 }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>🌿</div>
+              <div style={{ marginBottom: 8 }}><IconPlant size={32} /></div>
               <h3 style={{ marginBottom: 6 }}>Ruhetag</h3>
               <p>Heute steht Erholung im Plan. Das ist genauso wichtig.</p>
             </div>
@@ -231,7 +236,7 @@ export default function HomeTab({ state, updateState, startWorkout, setShowReadi
         {currentPhase === 1 && (
           <div className="card" style={{ background: 'rgba(155,127,204,0.06)', border: '1px solid rgba(155,127,204,0.2)', marginBottom: 14 }}>
             <div style={{ display: 'flex', gap: 10 }}>
-              <span style={{ fontSize: 18 }}>🩺</span>
+              <IconMedical size={24} />
               <div>
                 <h3 style={{ marginBottom: 4, color: '#9B7FCC' }}>Beckenbodenphysiotherapie</h3>
                 <p style={{ fontSize: 13 }}>Vor Phase 2 unbedingt empfohlen. Eine Befundung ist der wichtigste Schritt für sicheren Wiedereinstieg.</p>
@@ -244,7 +249,7 @@ export default function HomeTab({ state, updateState, startWorkout, setShowReadi
         {weekPP >= 6 && weekPP <= 12 && currentPhase === 1 && (
           <div className="card" style={{ background: 'rgba(212,135,106,0.08)', border: '1px solid rgba(212,135,106,0.25)', marginBottom: 14 }}>
             <div style={{ display: 'flex', gap: 10 }}>
-              <span style={{ fontSize: 18 }}>📋</span>
+              <IconClipboard size={24} />
               <div>
                 <h3 style={{ marginBottom: 4, color: '#D4876A' }}>Diastase-Assessment</h3>
                 <p style={{ fontSize: 13 }}>Woche 6–8 ist ein guter Zeitpunkt für die Untersuchung auf Rektusdiastase.</p>

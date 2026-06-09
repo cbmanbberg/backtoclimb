@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { IconSparkle } from './Characters'
 
 function BreathingCircle({ isRunning, totalSeconds, remainingSeconds }) {
   const pct = totalSeconds > 0 ? remainingSeconds / totalSeconds : 1
@@ -104,7 +105,7 @@ export default function TimerScreen({ workout, onFinish, onBack }) {
     return (
       <div className="screen" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', paddingBottom: 0 }}>
         <div className="content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100dvh' }}>
-          <div style={{ fontSize: 64, marginBottom: 24, animation: 'breathe 3s ease-in-out infinite' }}>✨</div>
+          <div style={{ marginBottom: 24, animation: 'breathe 3s ease-in-out infinite' }}><IconSparkle size={72} /></div>
           <h1 style={{ marginBottom: 8 }}>Abgeschlossen</h1>
           <p style={{ marginBottom: 8 }}>{workout.title}</p>
           <p style={{ fontSize: 12, color: '#C4B4A4', marginBottom: 40 }}>
