@@ -115,7 +115,7 @@ function save(data) {
 export function createBtcStore() {
   const saved = loadSaved()
 
-  const [profile, setProfile] = useState(saved?.profile ?? DEFAULT_PROFILE)
+  const [profile, setProfile] = useState({ ...DEFAULT_PROFILE, ...(saved?.profile ?? {}) })
   const [phase, setPhase] = useState(saved?.phase ?? 2)
   const [mood, setMood] = useState(null)
   const [workoutIdx, setWorkoutIdx] = useState(0)
