@@ -6,15 +6,16 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
   const { theme, s } = useUI()
   const b = useBtc()
 
+  // only surface "next up" when there is something actionable
   const nextUp = b.phase === 3
     ? { title: 'Klettern ist offen', sub: 'Wähl deine Einheit im Klettern-Tab', go: onGoClimb }
     : b.phase === 2
     ? { title: b.canAdvance ? 'Phase 3 wartet auf dich' : 'Readiness-Check',
         sub: b.canAdvance ? 'Alle Kriterien erfüllt. Bereit für Phase 3.'
           : `${b.readiness.filter(Boolean).length}/5 Kriterien für Phase 3 erfüllt`, go: onGoPlan }
-    : { title: b.canAdvance ? 'Phase 2 wartet auf dich' : 'Phase 2 ab Woche 6',
-        sub: b.canAdvance ? 'Kriterien erfüllt. Los geht Phase 2.'
-          : `Du bist in Woche ${b.weeksPP}. Die Grundlage zählt.`, go: onGoPlan }
+    : b.canAdvance
+    ? { title: 'Phase 2 wartet auf dich', sub: 'Kriterien erfüllt. Los geht Phase 2.', go: onGoPlan }
+    : null
 
   const days = Array.from({ length: 7 }, (_, k) => {
     const date = addDays(TODAY, -(6 - k))
@@ -94,58 +95,9 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
         )}
       </div>
 
-      {/* week register */}
+      {/* today's session — primary action, right after mood */}
       <div style={{ padding: `${s(24)}px ${s(22)}px 0` }}>
-        <SectionRule index={2} action={<DataTag tone="mute">7 TAGE</DataTag>}>Woche</SectionRule>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {days.map((d, i) => {
-            const sevCol = d.symptom === 'deutlich' ? theme.terracotta
-              : d.symptom === 'leicht' ? theme.gold : theme.primary
-            return (
-              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: s(8) }}>
-                <span style={{ fontFamily: FONTS.mono, fontSize: 10, fontWeight: 500,
-                  color: d.isToday ? theme.primary : theme.inkMute }}>
-                  {weekdayLetter(d.date)}
-                </span>
-                <div style={{
-                  width: 32, height: 32, borderRadius: '50%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: d.done ? sevCol : 'transparent',
-                  border: d.isToday
-                    ? `2px solid ${theme.primary}`
-                    : d.done ? 'none'
-                    : `1.5px solid ${d.rest ? theme.lineStrong : theme.line}`,
-                }}>
-                  {d.done && <Icon name="check" size={15} color={theme.onPrimary} stroke={2.6} />}
-                  {!d.done && d.rest && (
-                    <div style={{ width: 7, height: 7, borderRadius: '50%', border: `1.5px solid ${theme.inkMute}` }} />
-                  )}
-                  {!d.done && !d.rest && d.walk && (
-                    <div style={{ width: 7, height: 7, borderRadius: '50%', background: theme.primarySoft,
-                      border: `1.5px solid ${theme.primary}` }} />
-                  )}
-                  {d.isToday && !d.done && !d.rest && !d.walk && (
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: theme.primary }} />
-                  )}
-                </div>
-                <span style={{ fontFamily: FONTS.mono, fontSize: 10, color: theme.inkMute }}>
-                  {d.date.getDate()}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      {/* serie */}
-      <div style={{ padding: `${s(24)}px ${s(22)}px 0` }}>
-        <SectionRule index={3}>Serie</SectionRule>
-        <SerieLedger compact />
-      </div>
-
-      {/* today's session */}
-      <div style={{ padding: `${s(24)}px ${s(22)}px 0` }}>
-        <SectionRule index={4}
+        <SectionRule index={2}
           action={
             <button onClick={b.actions.swapWorkout} style={{
               display: 'inline-flex', alignItems: 'center', gap: s(5),
@@ -200,76 +152,48 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
           </div>
         </div>
 
-        {/* micro-session card */}
-        <div style={{ marginTop: s(12), border: `1px solid ${theme.line}`, borderRadius: s(13),
-          overflow: 'hidden', background: theme.surface }}>
-          <div style={{ padding: `${s(13)}px ${s(16)}px ${s(11)}px`,
-            display: 'flex', alignItems: 'center', gap: s(12) }}>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: s(8), marginBottom: s(5) }}>
-                <DataTag tone="mute">MIKRO</DataTag>
-                <DataTag tone="mute">3 MIN</DataTag>
-              </div>
-              <div style={{ fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700, color: theme.ink }}>
-                Beckenboden-Check
-              </div>
-              <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute, marginTop: s(3) }}>
-                2–3× täglich · auch beim Stillen
-              </div>
+        {/* micro + walk, side by side */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: s(10), marginTop: s(12) }}>
+          <button onClick={() => onStart(MICRO_SESSION)} style={{
+            border: `1px solid ${theme.line}`, borderRadius: s(13), background: theme.surface,
+            cursor: 'pointer', padding: `${s(13)}px ${s(14)}px`, textAlign: 'left',
+            display: 'flex', flexDirection: 'column', gap: s(4),
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: s(7) }}>
+              <Icon name="play" size={12} color={theme.primary} />
+              <DataTag tone="mute">3 MIN</DataTag>
             </div>
-            <button onClick={() => onStart(MICRO_SESSION)} style={{
-              border: 'none', cursor: 'pointer', background: theme.surface2,
-              borderRadius: s(10), padding: `${s(10)}px ${s(14)}px`,
-              fontFamily: FONTS.sans, fontSize: 13, fontWeight: 700, color: theme.inkSoft,
-              display: 'flex', alignItems: 'center', gap: s(6), flexShrink: 0,
-            }}>
-              <Icon name="play" size={13} color={theme.inkSoft} />
-              Starten
-            </button>
-          </div>
-        </div>
-
-        {/* daily walk */}
-        <div style={{ marginTop: s(10), border: `1px solid ${b.walkToday ? theme.primary : theme.line}`,
-          borderRadius: s(13), background: b.walkToday ? theme.primaryTint : theme.surface,
-          transition: 'all .15s' }}>
+            <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 700, color: theme.ink }}>
+              Beckenboden-Check
+            </div>
+            <div style={{ fontFamily: FONTS.sans, fontSize: 11.5, color: theme.inkMute }}>
+              2–3× täglich · auch beim Stillen
+            </div>
+          </button>
           <button onClick={b.actions.toggleWalk} style={{
-            width: '100%', border: 'none', background: 'none', cursor: 'pointer',
-            padding: `${s(13)}px ${s(16)}px`, display: 'flex', alignItems: 'center', gap: s(12),
-            textAlign: 'left',
+            border: `1px solid ${b.walkToday ? theme.primary : theme.line}`, borderRadius: s(13),
+            background: b.walkToday ? theme.primaryTint : theme.surface,
+            cursor: 'pointer', padding: `${s(13)}px ${s(14)}px`, textAlign: 'left',
+            display: 'flex', flexDirection: 'column', gap: s(4), transition: 'all .15s',
           }}>
             <div style={{
-              width: s(22), height: s(22), borderRadius: '50%', flexShrink: 0,
+              width: s(18), height: s(18), borderRadius: '50%',
               background: b.walkToday ? theme.primary : theme.surface2,
               border: `1.5px solid ${b.walkToday ? theme.primary : theme.line}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               transition: 'all .15s',
             }}>
-              {b.walkToday && <Icon name="check" size={13} color={theme.onPrimary} stroke={2.6} />}
+              {b.walkToday && <Icon name="check" size={11} color={theme.onPrimary} stroke={2.6} />}
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700,
-                color: b.walkToday ? theme.primary : theme.ink }}>
-                Spaziergang heute
-              </div>
-              <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute, marginTop: s(2) }}>
-                {b.walkToday ? 'Zählt zur Serie. Schön gemacht.' : 'Antippen wenn erledigt · zählt zur Serie'}
-              </div>
+            <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 700,
+              color: b.walkToday ? theme.primary : theme.ink }}>
+              Spaziergang
+            </div>
+            <div style={{ fontFamily: FONTS.sans, fontSize: 11.5, color: theme.inkMute }}>
+              {b.walkToday ? 'Erledigt · zählt zur Serie'
+                : b.phase === 1 ? 'So lange er gut tut' : '20–30 Min · zählt zur Serie'}
             </div>
           </button>
-        </div>
-
-        {/* activity volume note (ACOG: 150 min/week moderate activity) */}
-        <div style={{ display: 'flex', gap: s(9), alignItems: 'flex-start', marginTop: s(10),
-          paddingLeft: s(2) }}>
-          <span style={{ marginTop: s(5), width: s(14), height: 1, flexShrink: 0,
-            background: theme.primary }} />
-          <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, lineHeight: 1.5,
-            color: theme.inkMute }}>
-            {b.phase === 1
-              ? 'Die Einheiten sind dein Kern. Dazu gehört ein täglicher Spaziergang, so lange er sich gut anfühlt.'
-              : 'Die Einheiten sind dein Kern. Mit 20 bis 30 Minuten Gehen täglich erreichst du die empfohlenen 150 Minuten Bewegung pro Woche.'}
-          </div>
         </div>
 
         {b.profile.breastfeeding && b.phase >= 2 && (
@@ -285,25 +209,73 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
         )}
       </div>
 
-      {/* up next */}
-      <div style={{ padding: `${s(22)}px ${s(22)}px 0` }}>
-        <SectionRule index={5}>Als nächstes</SectionRule>
-        <button onClick={nextUp.go} style={{
-          display: 'flex', alignItems: 'center', gap: s(14), padding: `${s(4)}px ${s(2)}px`,
-          width: '100%', border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left',
-        }}>
-          <DataTag tone="mute" style={{ fontSize: 13 }}>→</DataTag>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700, color: theme.ink }}>
-              {nextUp.title}
-            </div>
-            <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.inkMute, marginTop: 2 }}>
-              {nextUp.sub}
-            </div>
-          </div>
-          <Icon name="chevron" size={17} color={theme.inkMute} />
-        </button>
+      {/* week register + serie, one section */}
+      <div style={{ padding: `${s(24)}px ${s(22)}px 0` }}>
+        <SectionRule index={3} action={<DataTag tone="mute">7 TAGE</DataTag>}>Woche & Serie</SectionRule>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          {days.map((d, i) => {
+            const sevCol = d.symptom === 'deutlich' ? theme.terracotta
+              : d.symptom === 'leicht' ? theme.gold : theme.primary
+            return (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: s(8) }}>
+                <span style={{ fontFamily: FONTS.mono, fontSize: 10, fontWeight: 500,
+                  color: d.isToday ? theme.primary : theme.inkMute }}>
+                  {weekdayLetter(d.date)}
+                </span>
+                <div style={{
+                  width: 32, height: 32, borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: d.done ? sevCol : 'transparent',
+                  border: d.isToday
+                    ? `2px solid ${theme.primary}`
+                    : d.done ? 'none'
+                    : `1.5px solid ${d.rest ? theme.lineStrong : theme.line}`,
+                }}>
+                  {d.done && <Icon name="check" size={15} color={theme.onPrimary} stroke={2.6} />}
+                  {!d.done && d.rest && (
+                    <div style={{ width: 7, height: 7, borderRadius: '50%', border: `1.5px solid ${theme.inkMute}` }} />
+                  )}
+                  {!d.done && !d.rest && d.walk && (
+                    <div style={{ width: 7, height: 7, borderRadius: '50%', background: theme.primarySoft,
+                      border: `1.5px solid ${theme.primary}` }} />
+                  )}
+                  {d.isToday && !d.done && !d.rest && !d.walk && (
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: theme.primary }} />
+                  )}
+                </div>
+                <span style={{ fontFamily: FONTS.mono, fontSize: 10, color: theme.inkMute }}>
+                  {d.date.getDate()}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+        <div style={{ marginTop: s(16) }}>
+          <SerieLedger compact />
+        </div>
       </div>
+
+      {/* up next — only when something is actionable */}
+      {nextUp && (
+        <div style={{ padding: `${s(22)}px ${s(22)}px 0` }}>
+          <SectionRule index={4}>Als nächstes</SectionRule>
+          <button onClick={nextUp.go} style={{
+            display: 'flex', alignItems: 'center', gap: s(14), padding: `${s(4)}px ${s(2)}px`,
+            width: '100%', border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left',
+          }}>
+            <DataTag tone="mute" style={{ fontSize: 13 }}>→</DataTag>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700, color: theme.ink }}>
+                {nextUp.title}
+              </div>
+              <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.inkMute, marginTop: 2 }}>
+                {nextUp.sub}
+              </div>
+            </div>
+            <Icon name="chevron" size={17} color={theme.inkMute} />
+          </button>
+        </div>
+      )}
     </div>
   )
 }
