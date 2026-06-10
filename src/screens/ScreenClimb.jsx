@@ -2,7 +2,7 @@ import { useBtc, fmtDate, fmtShort } from '../store'
 import { FONTS } from '../tokens'
 import { useUI, Icon, SectionRule, DataTag, Card, Pill } from '../ui'
 
-const ST = (name, dur, cue) => ({ name, dur, cue })
+const ST = (name, dur, cue, pulse) => ({ name, dur, cue, ...(pulse && { pulse }) })
 
 const CLIMB = {
   fingerboard: [
@@ -10,9 +10,9 @@ const CLIMB = {
       steps: [
         ST('Aufwärmen', 90, 'Finger und Unterarme locker kreisen, dann zwei leichte Hänge. Sehnen mögen es warm.'),
         ST('Beckenboden-Set', 45, 'Kurzer Check: anspannen, halten, lösen. Nimm die Spannung mit in den Hang.'),
-        ST('Repeater 1', 60, 'Offene Hand, große Leiste. 7 Sek. hängen, 3 Sek. lösen. Schultern aktiv, ausatmen beim Belasten.'),
+        ST('Repeater 1', 60, 'Offene Hand, große Leiste. 7 Sek. hängen, 3 Sek. lösen. Schultern aktiv, ausatmen beim Belasten.', { hold: 7, release: 3, on: 'Hängen', off: 'Lösen' }),
         ST('Pause', 60, 'Komplett ausschütteln. Atme ruhig, lass die Unterarme entspannen.'),
-        ST('Repeater 2', 60, 'Zweiter Satz, gleiche Qualität. Lieber sauber als hart. Kein Crimp.'),
+        ST('Repeater 2', 60, 'Zweiter Satz, gleiche Qualität. Lieber sauber als hart. Kein Crimp.', { hold: 7, release: 3, on: 'Hängen', off: 'Lösen' }),
         ST('Ausklang', 60, 'Unterarme dehnen, Handgelenke mobilisieren.'),
       ]},
     { name: 'Aktiver Hang · Last', focus: 'Schulter · Rumpf', dur: '~7 Min', kind: 'Fingerboard',

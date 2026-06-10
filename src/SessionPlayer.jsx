@@ -1,12 +1,53 @@
-import { useState } from 'react'
-import { FONTS } from './tokens'
+import { useState, useEffect, useRef } from 'react'
+import { FONTS, mix } from './tokens'
 import { useUI, Icon, CircleTimer, Sheet, useGuidedTimer } from './ui'
-import { mix } from './tokens'
+import { setSoundEnabled, primeSound, tickOn, tickOff, stepEndChime } from './sound'
+
+const easeInOut = (x) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2)
 
 export default function SessionPlayer({ workout, onClose, onComplete }) {
   const { theme, s } = useUI()
-  const t = useGuidedTimer(workout.steps)
+  const t = useGuidedTimer(workout.steps, {
+    onStepEnd: () => stepEndChime(),
+    onComplete: () => stepEndChime(),
+  })
   const [picked, setPicked] = useState(null)
+  const [sound, setSound] = useState(() => {
+    try { return localStorage.getItem('anna_sound') !== '0' } catch { return true }
+  })
+
+  useEffect(() => {
+    setSoundEnabled(sound)
+    try { localStorage.setItem('anna_sound', sound ? '1' : '0') } catch {}
+  }, [sound])
+
+  // Contraction pacer: derive the current hold / release phase from elapsed time.
+  const pulse = t.step?.pulse
+  let pulseActive = false, pulsePhase = null, pulseScale = 0, pulseLabel = null
+  if (pulse && t.playing && !t.done) {
+    pulseActive = true
+    const period = pulse.hold + pulse.release
+    const tc = t.elapsed % period
+    if (tc < pulse.hold) {
+      pulsePhase = 'on'
+      pulseScale = easeInOut(Math.min(1, tc / pulse.hold))
+      pulseLabel = pulse.on || 'Anspannen'
+    } else {
+      pulsePhase = 'off'
+      pulseScale = 1 - easeInOut(Math.min(1, (tc - pulse.hold) / pulse.release))
+      pulseLabel = pulse.off || 'Lösen'
+    }
+  }
+
+  const lastPhaseRef = useRef(null)
+  useEffect(() => {
+    if (!pulseActive) { lastPhaseRef.current = null; return }
+    if (pulsePhase !== lastPhaseRef.current) {
+      if (pulsePhase === 'on') tickOn()
+      else if (pulsePhase === 'off') tickOff()
+      lastPhaseRef.current = pulsePhase
+    }
+  }, [pulseActive, pulsePhase])
 
   const cSec = Math.ceil(t.rem)
   const mmss = `${Math.floor(cSec / 60)}:${String(cSec % 60).padStart(2, '0')}`
@@ -40,7 +81,12 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
             {workout.name}
           </div>
         </div>
-        <div style={{ width: s(40) }} />
+        <button onClick={() => { primeSound(); setSound(v => !v) }}
+          aria-label={sound ? 'Ton aus' : 'Ton an'}
+          style={{ ...ghostBtn, width: s(40), height: s(40), border: 'none', background: theme.surface2 }}>
+          <Icon name={sound ? 'sound' : 'mute'} size={19}
+            color={sound ? theme.inkSoft : theme.inkMute} stroke={2} />
+        </button>
       </div>
 
       {/* step rail */}
@@ -64,15 +110,32 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
       {/* timer */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
         justifyContent: 'center', gap: s(4), minHeight: 0 }}>
-        <CircleTimer size={s(236)} stroke={s(13)} progress={t.done ? 1 : t.progress}
-          color={theme.primary} track={theme.primaryRing}>
-          <div style={{ fontFamily: FONTS.serif, fontSize: s(52), fontWeight: 500, color: theme.ink,
-            letterSpacing: '-.02em', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
-            {mmss}
-          </div>
-          <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, fontWeight: 600, color: theme.inkMute,
-            marginTop: s(6) }}>
-            {t.playing ? 'läuft' : t.done ? 'fertig' : 'pausiert'}
+        <CircleTimer size={s(236)} stroke={s(13)} progress={t.done ? 0 : t.remainingFraction}
+          color={theme.primary} track={theme.primaryRing} smooth={!t.playing}>
+          {pulseActive && (
+            <div style={{
+              position: 'absolute', left: '50%', top: '50%', zIndex: 0,
+              width: s(168), height: s(168), borderRadius: '50%',
+              background: theme.primary,
+              opacity: 0.05 + pulseScale * 0.20,
+              transform: `translate(-50%,-50%) scale(${0.6 + pulseScale * 0.4})`,
+              pointerEvents: 'none',
+            }} />
+          )}
+          <div style={{ position: 'relative', zIndex: 1, display: 'flex',
+            flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ fontFamily: FONTS.serif, fontSize: s(52), fontWeight: 500, color: theme.ink,
+              letterSpacing: '-.02em', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+              {mmss}
+            </div>
+            <div style={{ fontFamily: FONTS.sans, fontSize: pulseActive ? 14 : 12.5,
+              fontWeight: 700, marginTop: s(6),
+              letterSpacing: pulseActive ? '.04em' : 0,
+              color: pulseActive
+                ? (pulsePhase === 'on' ? theme.primary : theme.inkMute)
+                : theme.inkMute }}>
+              {pulseActive ? pulseLabel : (t.playing ? 'läuft' : t.done ? 'fertig' : 'pausiert')}
+            </div>
           </div>
         </CircleTimer>
       </div>
@@ -97,7 +160,7 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
         <button onClick={t.prev} style={ghostBtn}>
           <Icon name="prev" size={22} color={theme.inkSoft} />
         </button>
-        <button onClick={t.toggle} style={{
+        <button onClick={() => { primeSound(); t.toggle() }} style={{
           width: s(78), height: s(78), borderRadius: '50%', border: 'none',
           background: theme.primary, cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',

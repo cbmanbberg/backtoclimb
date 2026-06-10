@@ -34,12 +34,12 @@ export const PHASES = [
     blurb: 'Fingerboard, Boulder, erste echte Züge. Crimp kommt erst ab Monat 8.' },
 ]
 
-const ST = (name, dur, cue) => ({ name, dur, cue })
+const ST = (name, dur, cue, pulse) => ({ name, dur, cue, ...(pulse && { pulse }) })
 export const WORKOUTS = [
   { id: 'w0', phases: [1], name: 'Tiefenspannung & Atem', focus: 'Beckenboden · Rumpf', kind: 'Aufbau',
     dur: '~9 Min', steps: [
       ST('Ankommen', 60, 'Rücken am Boden, Knie gebeugt. Atme tief in den Bauch und spüre, wie sich die Rippen seitlich weiten.'),
-      ST('Beckenboden wecken', 90, 'Mit der Ausatmung den Beckenboden langsam anspannen, als würdest du eine Blaubeere anheben. Fünf Sekunden, dann vollständig lösen.'),
+      ST('Beckenboden wecken', 90, 'Mit der Ausatmung den Beckenboden langsam anspannen, als würdest du eine Blaubeere anheben. Fünf Sekunden, dann vollständig lösen.', { hold: 5, release: 5 }),
       ST('Dead Bug', 120, 'Gegengleich Arm und Bein absenken. Die Rippen bleiben unten, kein Hohlkreuz. Ruhig weiteratmen.'),
       ST('Atempause', 45, 'Lass alles los. Drei lange Atemzüge. Spüre nach, ohne zu bewerten.'),
       ST('Seitstütz (Knie)', 90, 'Auf dem Unterarm, Knie gebeugt. Hüfte heben, lange Linie von Knie zu Kopf. Schulter stabil halten.'),
@@ -49,8 +49,8 @@ export const WORKOUTS = [
   { id: 'w0b', phases: [1], name: 'Beckenboden & Becken', focus: 'Tiefe Schicht · sanft', kind: 'Aufbau',
     dur: '~8 Min', steps: [
       ST('Ankommen', 60, 'Rückenlage, Hände auf den Bauch. Spüre die Atmung, ohne etwas zu verändern.'),
-      ST('Beckenboden kurz', 90, 'Mit der Ausatmung anspannen, 2 Sek. halten, vollständig lösen. Das Lösen ist so wichtig wie das Anspannen.'),
-      ST('Beckenboden lang', 90, 'Sanft anspannen und 8 Sek. halten, dabei weiteratmen. Volle Pause zwischen den Wiederholungen.'),
+      ST('Beckenboden kurz', 90, 'Mit der Ausatmung anspannen, 2 Sek. halten, vollständig lösen. Das Lösen ist so wichtig wie das Anspannen.', { hold: 2, release: 3 }),
+      ST('Beckenboden lang', 90, 'Sanft anspannen und 8 Sek. halten, dabei weiteratmen. Volle Pause zwischen den Wiederholungen.', { hold: 8, release: 6 }),
       ST('Heel Slides', 90, 'Ein Bein langsam ausstrecken und zurückziehen. Becken bleibt ruhig, Rippen unten.'),
       ST('Sanfte Brücke', 90, 'Becken Wirbel für Wirbel heben und senken. Ausatmen beim Hochrollen.'),
       ST('Ausklang', 60, 'Knie zur Seite fallen lassen, nachspüren. Gut gemacht.'),

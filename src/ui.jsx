@@ -25,6 +25,8 @@ const PATHS = {
   plan:    'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 12h6M9 16h4',
   history: 'M12 8v4l3 3M3.05 11a9 9 0 1018 0A9 9 0 003.05 11z',
   profile: 'M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z',
+  sound:   'M11 5L6 9H2v6h4l5 4V5zM15.5 8.5a5 5 0 010 7M19 5a9 9 0 010 14',
+  mute:    'M11 5L6 9H2v6h4l5 4V5zM22 9l-6 6M16 9l6 6',
 }
 
 export function Icon({ name, size = 20, color = 'currentColor', stroke = 1.9 }) {
@@ -158,7 +160,7 @@ export function Toggle({ on, onChange, tone = 'primary' }) {
 }
 
 // ── CircleTimer ───────────────────────────────────────────────────────────────
-export function CircleTimer({ size, stroke, progress, color, track, children }) {
+export function CircleTimer({ size, stroke, progress, color, track, children, smooth }) {
   const r = (size - stroke) / 2
   const circ = 2 * Math.PI * r
   const offset = circ * (1 - Math.max(0, Math.min(1, progress)))
@@ -168,7 +170,8 @@ export function CircleTimer({ size, stroke, progress, color, track, children }) 
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={track} strokeWidth={stroke} />
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
           strokeLinecap="round" strokeDasharray={circ}
-          strokeDashoffset={offset} style={{ transition: 'stroke-dashoffset .25s linear' }} />
+          strokeDashoffset={offset}
+          style={{ transition: smooth ? 'stroke-dashoffset .3s ease' : 'none' }} />
       </svg>
       <div style={{
         position: 'absolute', inset: 0,
@@ -181,7 +184,7 @@ export function CircleTimer({ size, stroke, progress, color, track, children }) 
 }
 
 // ── useGuidedTimer ────────────────────────────────────────────────────────────
-export function useGuidedTimer(steps) {
+export function useGuidedTimer(steps, opts = {}) {
   const [i, setI] = useState(0)
   const [rem, setRem] = useState(steps[0]?.dur ?? 0)
   const [playing, setPlaying] = useState(false)
@@ -190,8 +193,10 @@ export function useGuidedTimer(steps) {
   const lastRef = useRef(null)
   const remRef = useRef(rem)
   const iRef = useRef(i)
+  const optsRef = useRef(opts)
   remRef.current = rem
   iRef.current = i
+  optsRef.current = opts
 
   const goTo = (idx) => {
     const clamped = Math.max(0, Math.min(steps.length - 1, idx))
@@ -213,7 +218,9 @@ export function useGuidedTimer(steps) {
         const nextI = iRef.current + 1
         if (nextI >= steps.length) {
           setRem(0); setPlaying(false); setDone(true)
+          optsRef.current.onComplete?.()
         } else {
+          optsRef.current.onStepEnd?.(iRef.current)
           goTo(nextI)
           lastRef.current = null
         }
@@ -233,9 +240,12 @@ export function useGuidedTimer(steps) {
     setPlaying(p => !p)
   }
 
+  const dur = steps[i]?.dur || 1
   return {
     i, n: steps.length,
-    rem, progress: 1 - rem / (steps[i]?.dur || 1),
+    rem, progress: 1 - rem / dur,
+    remainingFraction: Math.max(0, Math.min(1, rem / dur)),
+    elapsed: dur - rem,
     playing, done,
     step: steps[i] || steps[0],
     toggle,
