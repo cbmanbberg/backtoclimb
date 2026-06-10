@@ -93,6 +93,11 @@ export const WORKOUTS = [
       ST('Ruderzug Band', 120, 'Widerstandsband auf Brusthöhe. Ellbogen eng am Körper nach hinten führen, Schulterblätter zusammenziehen. Ausatmen beim Ziehen, Beckenboden sanft mitnehmen. Rumpf aufrecht, kein Schwung aus dem Rücken.'),
       ST('Außenrotation', 90, 'Oberarm am Körper, Unterarm waagerecht. Mit Band oder leichtem Gewicht den Unterarm nach außen führen, Ellbogen bleibt am Körper. Langsam und kontrolliert. Das ist der Gegenspieler für gesunde Schultern an der Wand.'),
       ST('Ausklang', 60, 'Brustöffner: Arm gestreckt an die Wand, Körper wegdrehen bis zur sanften Dehnung in der Brust. Beide Seiten, dabei lange ausatmen.'),
+    ],
+    // extra sets from phase 2, week 5+ (progressive overload)
+    durExt: '~15 Min', ext: [
+      ST('Ruderzug Satz 2', 90, 'Zweiter Satz Ruderzug. Gleiche Qualität wie der erste: Ellbogen eng, Schulterblätter zusammen, ausatmen beim Ziehen. Wenn die Form leidet, lieber abbrechen.'),
+      ST('Skapula-Pulls Satz 2', 60, 'Noch ein Satz im Hang. Klein und kontrolliert, Schulterblätter nach unten. Du bist stärker als vor vier Wochen, spür den Unterschied.'),
     ]},
   { id: 'w1b', phases: [2], name: 'Beine & Becken', focus: 'Unterkörper · Stabilität', kind: 'Aufbau',
     dur: '~11 Min', steps: [
@@ -103,6 +108,11 @@ export const WORKOUTS = [
       ST('Seitstütz', 90, 'Auf dem Unterarm, Ellbogen unter der Schulter. Gern auf den Knien, wenn nötig. Hüfte heben, lange Linie vom Knie bis zum Kopf. Körpermitte aktiv, ruhige Atmung. Beide Seiten.'),
       ST('Glute Bridge', 90, 'Rückenlage, Füße flach hüftbreit. Beim Ausatmen das Becken heben, drei Sekunden oben halten, Hüfte und Knie bilden eine Linie. Beim Einatmen langsam absenken. Der Beckenboden fließt mit der Bewegung.'),
       ST('Ausklang', 60, 'Hüftbeuger dehnen: ein Knie auf dem Boden, der andere Fuß vor dem Körper. Becken leicht nach vorne unten drücken, Oberkörper aufrecht. Beide Seiten, lange ausatmen.'),
+    ],
+    // extra sets from phase 2, week 5+ (progressive overload)
+    durExt: '~14 Min', ext: [
+      ST('Kniebeugen Satz 2', 90, 'Zweiter Satz Kniebeugen. Wenn es sich leicht anfühlt, geh etwas tiefer oder langsamer. Form bleibt vor Tempo.'),
+      ST('Glute Bridge Satz 2', 60, 'Noch ein Satz Brücke. Oben jeweils drei Sekunden halten, sauber atmen. Die Hüftkraft trägt dich an der Wand.'),
     ]},
   { id: 'w2', phases: [1, 2], name: 'Atem & Mobilität', focus: 'Regeneration', kind: 'Reset', light: true,
     dur: '~6 Min', steps: [
@@ -172,6 +182,7 @@ export function createBtcStore() {
   const [readiness, setReadiness] = useState(saved?.readiness ?? [false,false,false,false,false])
   const [sessions, setSessions] = useState(saved?.sessions ?? [])
   const [rests, setRests] = useState(saved?.rests ?? [])
+  const [walks, setWalks] = useState(saved?.walks ?? [])
   const [advancedAt, setAdvancedAt] = useState(saved?.advancedAt ?? null)
   const [startedAt, setStartedAt] = useState(saved?.startedAt ?? null)
   // date when the current phase started (reset on each phase advance)
@@ -179,8 +190,8 @@ export function createBtcStore() {
 
   // persist on change
   useEffect(() => {
-    save({ started, profile, phase, mood, moodDay: isoDay(TODAY), readiness, sessions, rests, advancedAt, workoutIdx, startedAt, phaseStartAt })
-  }, [started, profile, phase, mood, readiness, sessions, rests, advancedAt, startedAt, phaseStartAt])
+    save({ started, profile, phase, mood, moodDay: isoDay(TODAY), readiness, sessions, rests, walks, advancedAt, workoutIdx, startedAt, phaseStartAt })
+  }, [started, profile, phase, mood, readiness, sessions, rests, walks, advancedAt, startedAt, phaseStartAt])
 
   // derived
   const birth = parseD(profile.childBirth)
@@ -211,7 +222,14 @@ export function createBtcStore() {
   // workouts available this week: phase-gated + progressive weekly unlock
   const phaseKey = Math.min(phase, 2)
   const { available: availableIds, recPerWeek } = getWeekPlan(phaseKey, weekInPhase)
-  const phaseWorkouts = WORKOUTS.filter(w => availableIds.includes(w.id))
+  // phase 2, week 5+: extended variants (extra sets inserted before the cool-down)
+  const useExtended = phaseKey === 2 && weekInPhase >= 5
+  const phaseWorkouts = WORKOUTS
+    .filter(w => availableIds.includes(w.id))
+    .map(w => (useExtended && w.ext)
+      ? { ...w, dur: w.durExt || w.dur,
+          steps: [...w.steps.slice(0, -1), ...w.ext, w.steps[w.steps.length - 1]] }
+      : w)
   const lightIdx = phaseWorkouts.findIndex(w => w.light)
 
   // sessions this week (rolling 7 days) for progress indicator
@@ -224,7 +242,8 @@ export function createBtcStore() {
     else if (i > 0) break
   }
 
-  const activeDays = new Set([...sessions.map(s => s.date), ...rests])
+  // walks count toward the serie (activity continuity) but not toward session targets
+  const activeDays = new Set([...sessions.map(s => s.date), ...rests, ...walks])
   let serie = 0
   for (let i = activeDays.has(isoDay(TODAY)) ? 0 : 1; i < 120; i++) {
     if (activeDays.has(isoDay(addDays(TODAY, -i)))) serie++
@@ -236,6 +255,7 @@ export function createBtcStore() {
   const earnedMilestones = MILESTONES.filter(m => serie >= m)
   const lastEarned = earnedMilestones[earnedMilestones.length - 1] || null
   const restToday = rests.includes(isoDay(TODAY))
+  const walkToday = walks.includes(isoDay(TODAY))
   const moodObj = MOODS.find(m => m.id === mood) || null
   const restDay = mood === 'pause'
 
@@ -249,6 +269,9 @@ export function createBtcStore() {
         : r.filter(d => d !== isoDay(TODAY)))
     },
     swapWorkout: () => setWorkoutIdx(i => (i + 1) % phaseWorkouts.length),
+    toggleWalk: () => setWalks(w => w.includes(isoDay(TODAY))
+      ? w.filter(d => d !== isoDay(TODAY))
+      : [...w, isoDay(TODAY)]),
     toggleReadiness: (i) => setReadiness(r => r.map((v, j) => j === i ? !v : v)),
     setProfile,
     completeSession: (workout, symptom) => {
@@ -273,15 +296,15 @@ export function createBtcStore() {
     },
     reset: () => {
       localStorage.removeItem(STORAGE_KEY)
-      setStarted(false); setPhase(1); setMood(null); setWorkoutIdx(0); setRests([])
+      setStarted(false); setPhase(1); setMood(null); setWorkoutIdx(0); setRests([]); setWalks([])
       setReadiness([false,false,false,false,false]); setSessions([]); setAdvancedAt(null)
       setStartedAt(null); setPhaseStartAt(null); setProfile({ ...DEFAULT_PROFILE })
     },
   }
 
   return {
-    started, profile, phase, mood, moodObj, restDay, restToday, workoutIdx,
-    readiness, sessions, rests, advancedAt, startedAt, phaseStartAt,
+    started, profile, phase, mood, moodObj, restDay, restToday, walkToday, workoutIdx,
+    readiness, sessions, rests, walks, advancedAt, startedAt, phaseStartAt,
     birth, weeksPP, programWeek, weekInPhase, monthsPP, crimpUnlock, crimpUnlocked, climbingUnlocked,
     recPerWeek, sessionsThisWeek,
     deutlich7d, symptomBlock, readinessMet, physioGate, canAdvance, p2TimeMet, p2MinWeeks, streak,

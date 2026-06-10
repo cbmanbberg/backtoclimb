@@ -21,8 +21,9 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
     const iso = isoDay(date)
     const sess = b.sessions.find(x => x.date === iso)
     const rest = b.rests.includes(iso)
+    const walk = b.walks.includes(iso)
     const isToday = iso === isoDay(TODAY)
-    return { date, iso, done: !!sess, rest, symptom: sess?.symptom, isToday }
+    return { date, iso, done: !!sess, rest, walk, symptom: sess?.symptom, isToday }
   })
 
   const w = b.workout
@@ -123,7 +124,11 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
                   {!d.done && d.rest && (
                     <div style={{ width: 7, height: 7, borderRadius: '50%', border: `1.5px solid ${theme.inkMute}` }} />
                   )}
-                  {d.isToday && !d.done && !d.rest && (
+                  {!d.done && !d.rest && d.walk && (
+                    <div style={{ width: 7, height: 7, borderRadius: '50%', background: theme.primarySoft,
+                      border: `1.5px solid ${theme.primary}` }} />
+                  )}
+                  {d.isToday && !d.done && !d.rest && !d.walk && (
                     <div style={{ width: 6, height: 6, borderRadius: '50%', background: theme.primary }} />
                   )}
                 </div>
@@ -225,6 +230,49 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
               <Icon name="play" size={13} color={theme.inkSoft} />
               Starten
             </button>
+          </div>
+        </div>
+
+        {/* daily walk */}
+        <div style={{ marginTop: s(10), border: `1px solid ${b.walkToday ? theme.primary : theme.line}`,
+          borderRadius: s(13), background: b.walkToday ? theme.primaryTint : theme.surface,
+          transition: 'all .15s' }}>
+          <button onClick={b.actions.toggleWalk} style={{
+            width: '100%', border: 'none', background: 'none', cursor: 'pointer',
+            padding: `${s(13)}px ${s(16)}px`, display: 'flex', alignItems: 'center', gap: s(12),
+            textAlign: 'left',
+          }}>
+            <div style={{
+              width: s(22), height: s(22), borderRadius: '50%', flexShrink: 0,
+              background: b.walkToday ? theme.primary : theme.surface2,
+              border: `1.5px solid ${b.walkToday ? theme.primary : theme.line}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'all .15s',
+            }}>
+              {b.walkToday && <Icon name="check" size={13} color={theme.onPrimary} stroke={2.6} />}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700,
+                color: b.walkToday ? theme.primary : theme.ink }}>
+                Spaziergang heute
+              </div>
+              <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute, marginTop: s(2) }}>
+                {b.walkToday ? 'Zählt zur Serie. Schön gemacht.' : 'Antippen wenn erledigt · zählt zur Serie'}
+              </div>
+            </div>
+          </button>
+        </div>
+
+        {/* activity volume note (ACOG: 150 min/week moderate activity) */}
+        <div style={{ display: 'flex', gap: s(9), alignItems: 'flex-start', marginTop: s(10),
+          paddingLeft: s(2) }}>
+          <span style={{ marginTop: s(5), width: s(14), height: 1, flexShrink: 0,
+            background: theme.primary }} />
+          <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, lineHeight: 1.5,
+            color: theme.inkMute }}>
+            {b.phase === 1
+              ? 'Die Einheiten sind dein Kern. Dazu gehört ein täglicher Spaziergang, so lange er sich gut anfühlt.'
+              : 'Die Einheiten sind dein Kern. Mit 20 bis 30 Minuten Gehen täglich erreichst du die empfohlenen 150 Minuten Bewegung pro Woche.'}
           </div>
         </div>
 
