@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { BtcContext, createBtcStore, isoDay, TODAY } from './store'
 import { getTheme, getSpace, FONTS } from './tokens'
-import { ThemeCtx, useUI, StatusBar, ScreenHead, TabBar, MilestoneCelebration } from './ui'
+import { ThemeCtx, useUI, ScreenHead, TabBar, MilestoneCelebration } from './ui'
 import ScreenToday from './screens/ScreenToday'
 import ScreenPlan from './screens/ScreenPlan'
 import ScreenHistory from './screens/ScreenHistory'
 import ScreenClimb from './screens/ScreenClimb'
 import ScreenProfile from './screens/ScreenProfile'
+import ScreenOnboarding from './screens/ScreenOnboarding'
 import SessionPlayer from './SessionPlayer'
 
 // AppShell: called after ThemeCtx and BtcContext are both available
@@ -50,6 +51,18 @@ function AppShell({ onGoHistory }) {
   else if (tab === 'climb')   screen = <ScreenClimb onStart={startSession} onGoPlan={() => setTab('plan')} />
   else if (tab === 'profile') screen = <ScreenProfile />
 
+  if (!store.started) {
+    return (
+      <BtcContext.Provider value={store}>
+        <div style={{
+          height: '100%', background: theme.bg, maxWidth: 430, margin: '0 auto', minHeight: '100dvh',
+        }}>
+          <ScreenOnboarding />
+        </div>
+      </BtcContext.Provider>
+    )
+  }
+
   return (
     <BtcContext.Provider value={store}>
       <div style={{
@@ -57,7 +70,6 @@ function AppShell({ onGoHistory }) {
         background: theme.bg, position: 'relative', overflow: 'hidden',
         maxWidth: 430, margin: '0 auto', minHeight: '100dvh',
       }}>
-        <StatusBar />
         <div style={{ flex: 1, position: 'relative', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
           {HEADERS[tab] && (
             <div style={{ flexShrink: 0, paddingTop: s(4) }}>

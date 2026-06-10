@@ -115,8 +115,9 @@ function save(data) {
 export function createBtcStore() {
   const saved = loadSaved()
 
+  const [started, setStarted] = useState(saved?.started ?? false)
   const [profile, setProfile] = useState({ ...DEFAULT_PROFILE, ...(saved?.profile ?? {}) })
-  const [phase, setPhase] = useState(saved?.phase ?? 2)
+  const [phase, setPhase] = useState(saved?.phase ?? 1)
   const [mood, setMood] = useState(null)
   const [workoutIdx, setWorkoutIdx] = useState(0)
   const [readiness, setReadiness] = useState(saved?.readiness ?? [false,false,false,false,false])
@@ -126,8 +127,8 @@ export function createBtcStore() {
 
   // persist on change
   useEffect(() => {
-    save({ profile, phase, readiness, sessions, rests, advancedAt })
-  }, [profile, phase, readiness, sessions, rests, advancedAt])
+    save({ started, profile, phase, readiness, sessions, rests, advancedAt })
+  }, [started, profile, phase, readiness, sessions, rests, advancedAt])
 
   // derived
   const birth = parseD(profile.childBirth)
@@ -188,16 +189,21 @@ export function createBtcStore() {
     advancePhase: () => {
       if (canAdvance) { setPhase(3); setAdvancedAt(isoDay(TODAY)) }
     },
+    startProgram: (childBirth, name) => {
+      setProfile({ ...DEFAULT_PROFILE, childBirth, name: name || DEFAULT_PROFILE.name })
+      setPhase(1)
+      setStarted(true)
+    },
     reset: () => {
-      setPhase(2); setMood(null); setWorkoutIdx(0); setRests([])
-      setReadiness([false,false,false,false,false]); setSessions([]); setAdvancedAt(null)
-      setProfile(p => ({ ...p, physioCleared: false }))
       localStorage.removeItem(STORAGE_KEY)
+      setStarted(false); setPhase(1); setMood(null); setWorkoutIdx(0); setRests([])
+      setReadiness([false,false,false,false,false]); setSessions([]); setAdvancedAt(null)
+      setProfile({ ...DEFAULT_PROFILE })
     },
   }
 
   return {
-    profile, phase, mood, moodObj, restDay, restToday, workoutIdx,
+    started, profile, phase, mood, moodObj, restDay, restToday, workoutIdx,
     readiness, sessions, rests, advancedAt,
     birth, weeksPP, monthsPP, crimpUnlock, crimpUnlocked, climbingUnlocked,
     deutlich7d, symptomBlock, readinessMet, physioGate, canAdvance, streak,
