@@ -62,14 +62,10 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
                 border: 'none', borderLeft: i ? `1px solid ${theme.line}` : 'none',
                 cursor: 'pointer',
                 background: on ? theme.primary : theme.surface,
-                padding: `${s(13)}px 0 ${s(11)}px`,
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: s(7),
+                padding: `${s(15)}px 0`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'background .15s',
               }}>
-                <span style={{ fontFamily: FONTS.mono, fontSize: 10, fontWeight: 500,
-                  color: on ? theme.onPrimary : theme.inkMute, opacity: on ? .8 : 1 }}>
-                  {String(i + 1).padStart(2, '0')}
-                </span>
                 <span style={{ fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: on ? 700 : 600,
                   color: on ? theme.onPrimary : theme.inkSoft }}>
                   {m.label}
