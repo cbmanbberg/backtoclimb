@@ -79,19 +79,13 @@ export function Pill({ children, tone = 'soft' }) {
 }
 
 // ── SectionRule ───────────────────────────────────────────────────────────────
-export function SectionRule({ children, index, action, style }) {
+export function SectionRule({ children, action, style }) {
   const { theme } = useUI()
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 10,
       marginBottom: 12, ...style,
     }}>
-      <span style={{
-        fontFamily: FONTS.mono, fontSize: 11, fontWeight: 500,
-        color: theme.inkMute, flexShrink: 0,
-      }}>
-        {String(index).padStart(2, '0')}
-      </span>
       <span style={{
         fontFamily: FONTS.sans, fontSize: 11, fontWeight: 700,
         letterSpacing: '.16em', textTransform: 'uppercase',

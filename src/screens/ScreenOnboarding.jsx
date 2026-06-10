@@ -14,6 +14,7 @@ export default function ScreenOnboarding() {
   const canStart = !!childBirth
 
   const inputStyle = {
+    display: 'block',
     border: `1.5px solid ${theme.line}`,
     borderRadius: s(10),
     background: theme.surface,
@@ -22,6 +23,8 @@ export default function ScreenOnboarding() {
     color: theme.ink,
     padding: `${s(12)}px ${s(14)}px`,
     width: '100%',
+    maxWidth: '100%',
+    minWidth: 0,
     outline: 'none',
     colorScheme: theme.dark ? 'dark' : 'light',
     boxSizing: 'border-box',
@@ -30,7 +33,7 @@ export default function ScreenOnboarding() {
   const phaseColors = [theme.primary, theme.gold, theme.terracotta]
 
   return (
-    <div className="btc-scroll" style={{ overflowY: 'auto', minHeight: '100dvh',
+    <div className="btc-scroll" style={{ overflowY: 'auto', overflowX: 'hidden', minHeight: '100dvh',
       padding: `${s(48)}px ${s(24)}px ${s(40)}px` }}>
 
       {/* Header */}
