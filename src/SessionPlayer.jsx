@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { FONTS, mix } from './tokens'
 import { useUI, Icon, CircleTimer, Sheet, useGuidedTimer } from './ui'
-import { Figure } from './figures'
 import { setSoundEnabled, primeSound, tickOn, tickOff, stepEndChime } from './sound'
 
 const easeInOut = (x) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2)
@@ -144,20 +143,14 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
       {/* cue card */}
       <div style={{ padding: `0 ${s(22)}px` }}>
         <div style={{ background: theme.primaryTint, borderRadius: s(18), padding: s(18),
-          borderLeft: `3px solid ${theme.primary}`, display: 'flex', gap: s(14), alignItems: 'flex-start' }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: FONTS.sans, fontSize: 12, fontWeight: 700, letterSpacing: '.04em',
-              textTransform: 'uppercase', color: theme.primary, marginBottom: s(7) }}>
-              {t.step.name}
-            </div>
-            <div style={{ fontFamily: FONTS.sans, fontSize: 15, lineHeight: 1.5, color: theme.ink }}>
-              {t.step.cue}
-            </div>
+          borderLeft: `3px solid ${theme.primary}` }}>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 12, fontWeight: 700, letterSpacing: '.04em',
+            textTransform: 'uppercase', color: theme.primary, marginBottom: s(7) }}>
+            {t.step.name}
           </div>
-          {t.step.fig && (
-            <Figure pose={t.step.fig} size={s(74)} color={theme.primary}
-              style={{ flexShrink: 0, marginTop: s(4), opacity: .9 }} />
-          )}
+          <div style={{ fontFamily: FONTS.sans, fontSize: 15, lineHeight: 1.5, color: theme.ink }}>
+            {t.step.cue}
+          </div>
         </div>
       </div>
 

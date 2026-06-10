@@ -1,7 +1,6 @@
 import { useBtc, MOODS, TODAY, addDays, isoDay, weekdayLetter } from '../store'
 import { FONTS } from '../tokens'
 import { useUI, Icon, SectionRule, DataTag, SerieLedger, Card } from '../ui'
-import { Figure } from '../figures'
 
 export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
   const { theme, s } = useUI()
@@ -169,18 +168,10 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
               <span style={{ width: 3, height: 3, borderRadius: '50%', background: theme.inkMute }} />
               <DataTag tone="mute">{String(w.steps.length).padStart(2,'0')} SCHRITTE</DataTag>
             </div>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: s(12) }}>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: FONTS.serif, fontSize: s(28), fontWeight: 500, color: theme.ink,
-                  letterSpacing: '-.02em', lineHeight: 1.05 }}>{w.name}</div>
-                <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, color: theme.inkMute, marginTop: s(7) }}>
-                  {w.focus}
-                </div>
-              </div>
-              {w.fig && (
-                <Figure pose={w.fig} size={s(66)} color={theme.primary}
-                  style={{ flexShrink: 0, opacity: .85, marginBottom: s(2) }} />
-              )}
+            <div style={{ fontFamily: FONTS.serif, fontSize: s(28), fontWeight: 500, color: theme.ink,
+              letterSpacing: '-.02em', lineHeight: 1.05 }}>{w.name}</div>
+            <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, color: theme.inkMute, marginTop: s(7) }}>
+              {w.focus}
             </div>
           </div>
           <button onClick={() => onStart(w)} style={{
