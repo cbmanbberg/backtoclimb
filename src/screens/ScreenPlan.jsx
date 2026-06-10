@@ -9,6 +9,11 @@ export default function ScreenPlan({ onGoProfile }) {
   const prevPhase = b.phase > 1 ? PHASES[b.phase - 2] : null
 
   const advanceBlockReason = () => {
+    if (b.phase === 1) {
+      if (b.symptomBlock) return 'Aufstieg pausiert — 2× Deutlich in 7 Tagen'
+      if (!b.p2TimeMet) return `Phase 2 ab Woche 6 — du bist in Woche ${b.weeksPP}`
+      return null
+    }
     if (b.symptomBlock) return 'Aufstieg pausiert — 2× Deutlich in 7 Tagen'
     if (!b.physioGate) return 'Physio-Freigabe fehlt (Profil → Status)'
     if (!b.readinessMet) return `${b.readiness.filter(Boolean).length}/5 Kriterien erfüllt`
@@ -62,6 +67,60 @@ export default function ScreenPlan({ onGoProfile }) {
         </div>
       </Card>
 
+      {/* phase 1 gate: time + symptoms, auto-checked */}
+      {b.phase === 1 && (
+        <>
+          <SectionRule index={2}>Tor zu Phase 2</SectionRule>
+          <Card pad={`${s(2)}px ${s(16)}px`} style={{ marginBottom: s(20) }}>
+            {[
+              { ok: b.p2TimeMet, label: 'Mindestens 6 Wochen postpartum',
+                sub: b.p2TimeMet ? `Du bist in Woche ${b.weeksPP}` : `Aktuell Woche ${b.weeksPP} — Gewebe braucht diese Zeit` },
+              { ok: !b.symptomBlock, label: 'Keine wiederholten deutlichen Symptome',
+                sub: b.symptomBlock ? '2× „Deutlich" in den letzten 7 Tagen' : 'Alles im grünen Bereich' },
+            ].map((c, i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'flex-start', gap: s(14), padding: `${s(14)}px 0`,
+                borderBottom: i === 0 ? `1px solid ${theme.line}` : 'none',
+              }}>
+                <div style={{
+                  width: s(20), height: s(20), borderRadius: '50%', flexShrink: 0, marginTop: 1,
+                  background: c.ok ? theme.primary : theme.surface2,
+                  border: `1.5px solid ${c.ok ? theme.primary : theme.line}`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {c.ok && <Icon name="check" size={12} color={theme.onPrimary} stroke={2.6} />}
+                </div>
+                <div>
+                  <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 600,
+                    color: c.ok ? theme.inkSoft : theme.ink }}>{c.label}</div>
+                  <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute, marginTop: 2 }}>
+                    {c.sub}</div>
+                </div>
+              </div>
+            ))}
+            <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute, lineHeight: 1.5,
+              padding: `${s(10)}px 0 ${s(4)}px` }}>
+              Diese Kriterien prüft die App automatisch. Wenn du unsicher bist, warte auf deinen Rückbildungs-Check.
+            </div>
+            <button onClick={b.actions.advancePhase} disabled={!!blockReason} style={{
+              width: '100%', border: 'none', cursor: blockReason ? 'default' : 'pointer',
+              background: blockReason ? theme.surface2 : theme.primary,
+              color: blockReason ? theme.inkMute : theme.onPrimary,
+              borderRadius: s(13), padding: `${s(14)}px 0`,
+              fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700,
+              margin: `${s(8)}px 0 ${s(14)}px`, transition: 'all .15s',
+            }}>
+              {blockReason || 'Phase 2 starten'}
+            </button>
+          </Card>
+
+          <SectionRule index={3}>Phasen-Verlauf</SectionRule>
+          <PhasesTimeline phase={b.phase} />
+        </>
+      )}
+
+      {b.phase === 2 && (
+        <>
       {/* readiness gate */}
       <SectionRule index={2}
         action={<DataTag tone="primary">{b.readiness.filter(Boolean).length}/5</DataTag>}>
@@ -153,6 +212,8 @@ export default function ScreenPlan({ onGoProfile }) {
       {/* phase timeline */}
       <SectionRule index={3}>Phasen-Verlauf</SectionRule>
       <PhasesTimeline phase={b.phase} />
+        </>
+      )}
     </div>
   )
 }

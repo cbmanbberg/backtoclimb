@@ -45,7 +45,8 @@ function AppShell({ onGoHistory }) {
   }
 
   let screen = null
-  if (tab === 'today')        screen = <ScreenToday onStart={startSession} />
+  if (tab === 'today')        screen = <ScreenToday onStart={startSession}
+    onGoPlan={() => setTab('plan')} onGoClimb={() => setTab('climb')} />
   else if (tab === 'plan')    screen = <ScreenPlan onGoProfile={() => setTab('profile')} />
   else if (tab === 'history') screen = <ScreenHistory />
   else if (tab === 'climb')   screen = <ScreenClimb onStart={startSession} onGoPlan={() => setTab('plan')} />

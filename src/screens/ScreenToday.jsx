@@ -2,9 +2,19 @@ import { useBtc, MOODS, TODAY, addDays, isoDay, weekdayLetter } from '../store'
 import { FONTS } from '../tokens'
 import { useUI, Icon, SectionRule, DataTag, SerieLedger, Card } from '../ui'
 
-export default function ScreenToday({ onStart }) {
+export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
   const { theme, s } = useUI()
   const b = useBtc()
+
+  const nextUp = b.phase === 3
+    ? { title: 'Klettern ist offen', sub: 'Wähl deine Einheit im Klettern-Tab', go: onGoClimb }
+    : b.phase === 2
+    ? { title: b.canAdvance ? 'Phase 3 wartet auf dich' : 'Readiness-Check',
+        sub: b.canAdvance ? 'Alle Kriterien erfüllt — schalte frei'
+          : `${b.readiness.filter(Boolean).length}/5 Kriterien für Phase 3 erfüllt`, go: onGoPlan }
+    : { title: b.canAdvance ? 'Phase 2 wartet auf dich' : 'Phase 2 ab Woche 6',
+        sub: b.canAdvance ? 'Kriterien erfüllt — jetzt freischalten'
+          : `Du bist in Woche ${b.weeksPP} — die Grundlage zählt`, go: onGoPlan }
 
   const days = Array.from({ length: 7 }, (_, k) => {
     const date = addDays(TODAY, -(6 - k))
@@ -74,6 +84,15 @@ export default function ScreenToday({ onStart }) {
               background: optional ? theme.terracotta : theme.primary }} />
             <div style={{ fontFamily: FONTS.sans, fontSize: 13, lineHeight: 1.5,
               color: theme.inkSoft }}>{b.moodObj.note}</div>
+          </div>
+        )}
+        {b.symptomBlock && (
+          <div style={{ display: 'flex', gap: s(10), alignItems: 'flex-start', marginTop: s(12),
+            background: theme.terracottaSoft, borderRadius: s(13), padding: `${s(12)}px ${s(13)}px` }}>
+            <Icon name="info" size={18} color={theme.terracotta} stroke={2} />
+            <div style={{ fontFamily: FONTS.sans, fontSize: 13, lineHeight: 1.45, color: theme.terracottaInk }}>
+              2× „Deutlich" in den letzten 7 Tagen — diese Woche bewusst sanfter. Dein Körper sagt dir etwas.
+            </div>
           </div>
         )}
       </div>
@@ -170,18 +189,21 @@ export default function ScreenToday({ onStart }) {
       {/* up next */}
       <div style={{ padding: `${s(22)}px ${s(22)}px 0` }}>
         <SectionRule index={5}>Als nächstes</SectionRule>
-        <div style={{ display: 'flex', alignItems: 'center', gap: s(14), padding: `${s(4)}px ${s(2)}px` }}>
+        <button onClick={nextUp.go} style={{
+          display: 'flex', alignItems: 'center', gap: s(14), padding: `${s(4)}px ${s(2)}px`,
+          width: '100%', border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left',
+        }}>
           <DataTag tone="mute" style={{ fontSize: 13 }}>→</DataTag>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700, color: theme.ink }}>
-              Phasen-Check steht an
+              {nextUp.title}
             </div>
             <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.inkMute, marginTop: 2 }}>
-              Readiness erfüllen, um Phase 3 freizuschalten
+              {nextUp.sub}
             </div>
           </div>
           <Icon name="chevron" size={17} color={theme.inkMute} />
-        </div>
+        </button>
       </div>
     </div>
   )

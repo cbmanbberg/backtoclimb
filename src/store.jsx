@@ -36,7 +36,7 @@ export const PHASES = [
 
 const ST = (name, dur, cue) => ({ name, dur, cue })
 export const WORKOUTS = [
-  { id: 'w0', name: 'Tiefenspannung & Atem', focus: 'Beckenboden · Rumpf', kind: 'Aufbau',
+  { id: 'w0', phases: [1], name: 'Tiefenspannung & Atem', focus: 'Beckenboden · Rumpf', kind: 'Aufbau',
     dur: '~9 Min', steps: [
       ST('Ankommen', 60, 'Rücken am Boden, Knie gebeugt. Atme tief in den Bauch und spüre, wie sich die Rippen seitlich weiten.'),
       ST('Beckenboden wecken', 90, 'Mit der Ausatmung den Beckenboden langsam anspannen — als hebst du eine Blaubeere an. Halte 5 Sek., löse vollständig.'),
@@ -46,7 +46,16 @@ export const WORKOUTS = [
       ST('Aktives Hängen', 60, 'An der Stange, Schultern aktiv nach unten ziehen. Spüre die Verbindung von Schulter zu Rumpf.'),
       ST('Ausklang', 60, 'Kindshaltung. Atme in den Rücken. Du hast Spannung aufgebaut — nicht verloren.'),
     ]},
-  { id: 'w1', name: 'Zugkraft & Schulter', focus: 'Antagonist · Pull', kind: 'Aufbau',
+  { id: 'w0b', phases: [1], name: 'Beckenboden & Becken', focus: 'Tiefe Schicht · sanft', kind: 'Aufbau',
+    dur: '~8 Min', steps: [
+      ST('Ankommen', 60, 'Rückenlage, Hände auf den Bauch. Spüre die Atmung, ohne etwas zu verändern.'),
+      ST('Beckenboden kurz', 90, 'Mit der Ausatmung anspannen, 2 Sek. halten, vollständig lösen. Das Lösen ist so wichtig wie das Anspannen.'),
+      ST('Beckenboden lang', 90, 'Sanft anspannen und 8 Sek. halten, dabei weiteratmen. Volle Pause zwischen den Wiederholungen.'),
+      ST('Heel Slides', 90, 'Ein Bein langsam ausstrecken und zurückziehen. Becken bleibt ruhig, Rippen unten.'),
+      ST('Sanfte Brücke', 90, 'Becken Wirbel für Wirbel heben und senken. Ausatmen beim Hochrollen.'),
+      ST('Ausklang', 60, 'Knie zur Seite fallen lassen, nachspüren. Gut gemacht.'),
+    ]},
+  { id: 'w1', phases: [2], name: 'Zugkraft & Schulter', focus: 'Antagonist · Pull', kind: 'Aufbau',
     dur: '~12 Min', steps: [
       ST('Mobilisieren', 75, 'Schulterkreisen, Brustwirbelsäule öffnen. Atme in die Weite zwischen den Schulterblättern.'),
       ST('Skapula-Pulls', 90, 'Im Hang nur die Schulterblätter nach unten ziehen, Arme bleiben gestreckt. Klein, kontrolliert, beckenbodenbewusst.'),
@@ -56,7 +65,17 @@ export const WORKOUTS = [
       ST('Negatives Hängen', 60, 'Langsam aus dem aktiven Hang absenken. Spannung halten, nicht ins Gewebe fallen.'),
       ST('Ausklang', 60, 'Brustöffner an der Wand. Lange ausatmen.'),
     ]},
-  { id: 'w2', name: 'Atem & Mobilität', focus: 'Regeneration', kind: 'Reset', light: true,
+  { id: 'w1b', phases: [2], name: 'Beine & Becken', focus: 'Unterkörper · Stabilität', kind: 'Aufbau',
+    dur: '~11 Min', steps: [
+      ST('Aufwärmen', 75, 'Lockeres Gehen auf der Stelle, Hüftkreisen. Atme tief in die Flanken.'),
+      ST('Glute Bridge', 90, 'Becken heben, oben 3 Sek. halten. Ausatmen beim Heben, Beckenboden sanft mitnehmen.'),
+      ST('Kniebeugen', 120, 'Langsam und kontrolliert, wie auf einen Stuhl setzen. Gewicht auf der ganzen Sohle.'),
+      ST('Atempause', 45, 'Ausschütteln, drei ruhige Atemzüge.'),
+      ST('Ausfallschritte', 120, 'Kontrolliert nach hinten absteigen. Rumpf aufrecht — das ist deine Wandstabilität.'),
+      ST('Seitstütz', 90, 'Auf dem Unterarm, gern auf den Knien. Lange Linie, ruhige Atmung.'),
+      ST('Ausklang', 60, 'Hüftbeuger dehnen, beide Seiten. Lange ausatmen.'),
+    ]},
+  { id: 'w2', phases: [1, 2], name: 'Atem & Mobilität', focus: 'Regeneration', kind: 'Reset', light: true,
     dur: '~6 Min', steps: [
       ST('Ankommen', 60, 'Setz oder leg dich bequem hin. Nichts müssen. Folge dem Atem für ein paar Züge.'),
       ST('4·6 Atmung', 90, 'Vier Zähler ein, sechs Zähler aus. Die lange Ausatmung beruhigt das System.'),
@@ -118,7 +137,8 @@ export function createBtcStore() {
   const [started, setStarted] = useState(saved?.started ?? false)
   const [profile, setProfile] = useState({ ...DEFAULT_PROFILE, ...(saved?.profile ?? {}) })
   const [phase, setPhase] = useState(saved?.phase ?? 1)
-  const [mood, setMood] = useState(null)
+  // mood persists for the current day only
+  const [mood, setMood] = useState(saved?.moodDay === isoDay(TODAY) ? saved.mood : null)
   const [workoutIdx, setWorkoutIdx] = useState(0)
   const [readiness, setReadiness] = useState(saved?.readiness ?? [false,false,false,false,false])
   const [sessions, setSessions] = useState(saved?.sessions ?? [])
@@ -127,8 +147,8 @@ export function createBtcStore() {
 
   // persist on change
   useEffect(() => {
-    save({ started, profile, phase, readiness, sessions, rests, advancedAt })
-  }, [started, profile, phase, readiness, sessions, rests, advancedAt])
+    save({ started, profile, phase, mood, moodDay: isoDay(TODAY), readiness, sessions, rests, advancedAt })
+  }, [started, profile, phase, mood, readiness, sessions, rests, advancedAt])
 
   // derived
   const birth = parseD(profile.childBirth)
@@ -143,7 +163,18 @@ export function createBtcStore() {
   const symptomBlock = deutlich7d >= 2
   const readinessMet = readiness.every(Boolean)
   const physioGate = profile.physioCleared
-  const canAdvance = phase < 3 && readinessMet && physioGate && !symptomBlock
+  // phase 1→2: time + symptom gate; phase 2→3: readiness + physio gate
+  const p2TimeMet = weeksPP >= 6
+  const canAdvance = phase === 1
+    ? (p2TimeMet && !symptomBlock)
+    : phase === 2
+    ? (readinessMet && physioGate && !symptomBlock)
+    : false
+
+  // workouts available in the current phase (phase 3 keeps the phase-2 strength base)
+  const phaseKey = Math.min(phase, 2)
+  const phaseWorkouts = WORKOUTS.filter(w => w.phases.includes(phaseKey))
+  const lightIdx = phaseWorkouts.findIndex(w => w.light)
 
   const sessDays = new Set(sessions.map(s => s.date))
   let streak = 0
@@ -170,13 +201,13 @@ export function createBtcStore() {
   const actions = {
     setMood: (m) => {
       setMood(m)
-      if (m === 'muede' || m === 'pause') setWorkoutIdx(2)
-      else if (workoutIdx === 2) setWorkoutIdx(0)
+      if (m === 'muede' || m === 'pause') setWorkoutIdx(lightIdx >= 0 ? lightIdx : 0)
+      else if (workoutIdx === lightIdx) setWorkoutIdx(0)
       setRests(r => m === 'pause'
         ? Array.from(new Set([...r, isoDay(TODAY)]))
         : r.filter(d => d !== isoDay(TODAY)))
     },
-    swapWorkout: () => setWorkoutIdx(i => (i + 1) % WORKOUTS.length),
+    swapWorkout: () => setWorkoutIdx(i => (i + 1) % phaseWorkouts.length),
     toggleReadiness: (i) => setReadiness(r => r.map((v, j) => j === i ? !v : v)),
     setProfile,
     completeSession: (workout, symptom) => {
@@ -187,7 +218,9 @@ export function createBtcStore() {
       setRests(r => r.filter(d => d !== isoDay(TODAY)))
     },
     advancePhase: () => {
-      if (canAdvance) { setPhase(3); setAdvancedAt(isoDay(TODAY)) }
+      if (!canAdvance) return
+      if (phase === 1) { setPhase(2); setWorkoutIdx(0) }
+      else { setPhase(3); setAdvancedAt(isoDay(TODAY)) }
     },
     startProgram: (childBirth, name) => {
       setProfile({ ...DEFAULT_PROFILE, childBirth, name: name || DEFAULT_PROFILE.name })
@@ -206,11 +239,11 @@ export function createBtcStore() {
     started, profile, phase, mood, moodObj, restDay, restToday, workoutIdx,
     readiness, sessions, rests, advancedAt,
     birth, weeksPP, monthsPP, crimpUnlock, crimpUnlocked, climbingUnlocked,
-    deutlich7d, symptomBlock, readinessMet, physioGate, canAdvance, streak,
+    deutlich7d, symptomBlock, readinessMet, physioGate, canAdvance, p2TimeMet, streak,
     serie, milestones: {
       list: MILESTONES, next: nextMilestone, earned: earnedMilestones,
       last: lastEarned, justHit: MILESTONES.includes(serie) && activeDays.has(isoDay(TODAY)),
     },
-    workout: WORKOUTS[workoutIdx], actions,
+    workout: phaseWorkouts[workoutIdx % phaseWorkouts.length], actions,
   }
 }

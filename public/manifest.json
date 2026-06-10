@@ -2,11 +2,12 @@
   "name": "BackToClimb",
   "short_name": "BackToClimb",
   "description": "Postpartale Rückkehr zum Klettern — strukturiert, evidenzbasiert.",
-  "start_url": "/",
+  "start_url": ".",
+  "scope": ".",
   "display": "standalone",
-  "background_color": "#f0ece5",
-  "theme_color": "#f0ece5",
+  "background_color": "#EFEAE3",
+  "theme_color": "#EFEAE3",
   "icons": [
-    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
 }
