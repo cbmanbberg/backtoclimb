@@ -3,6 +3,39 @@ import { useBtc, fmtDate, fmtShort, parseD, isoDay, TODAY } from '../store'
 import { FONTS, ACCENTS } from '../tokens'
 import { useUI, Icon, SectionRule, Card, Toggle, Bar } from '../ui'
 
+const EVIDENCE = [
+  {
+    title: 'Beckenboden sofort & 3×/Tag',
+    source: 'NICE CG37 · ACOG 2020 · Continence Foundation',
+    text: 'Beckenbodenübungen sollten unmittelbar nach der Geburt beginnen und mehrfach täglich durchgeführt werden. Studien belegen, dass 3 tägliche Einheiten Kontinenz und Beckenbodenfunktion signifikant verbessern – auch nach Kaiserschnitt.',
+  },
+  {
+    title: '150 Min/Woche aerobe Bewegung',
+    source: 'ACOG Committee Opinion 804 (2020)',
+    text: 'Das American College of Obstetricians and Gynecologists empfiehlt 150 Minuten moderate Bewegung pro Woche für Frauen im Wochenbett ohne Kontraindikationen. Regelmäßige Aktivität reduziert das Risiko postpartaler Depression und verbessert kardiovaskuläre Fitness.',
+  },
+  {
+    title: 'Phasengating: 6 & 8 Wochen',
+    source: 'ACOG · Physiotherapie-Evidenz',
+    text: 'Die ersten 6–8 Wochen sind durch erhöhte Relaxin-Spiegel und aktive Gewebeheilung geprägt. Belastung auf Faszien und Gelenke sollte in dieser Zeit gering bleiben. Die 6-Wochen-Grenze entspricht dem Standard-Wochenbettcheck; nach Kaiserschnitt verlängert sich die Schonung der Bauchdecke.',
+  },
+  {
+    title: 'Progressive Belastungssteigerung',
+    source: 'ACSM Guidelines · Physiotherapie-Standard',
+    text: 'Neue Übungen werden wöchentlich eingeführt, sobald bestehende beschwerdefrei beherrscht werden. Dieses Prinzip der progressiven Überlastung ist Grundlage jeder Rehabilitation: es verhindert Überlastung und fördert nachhaltige Adaptation von Muskulatur und Bindegewebe.',
+  },
+  {
+    title: 'Relaxin & Crimp-Belastung',
+    source: 'Relaxin-Forschung · Bindegewebsheilung',
+    text: 'Relaxin ist während der Stillzeit erhöht und macht Bänder und Faszien weicher und verletzungsanfälliger. Hohe Fingerzugbelastung (Crimp-Griff) setzt ein vollständig ausgeheiltes A2-Ringband voraus. Bindegewebe benötigt 6–12 Monate für vollständige Remodellierung. BackToClimb gibt Crimp ab Monat 8 frei – als konservativer, evidenzbasierter Richtwert.',
+  },
+  {
+    title: 'Physio-Freigabe vor Phase 3',
+    source: 'Groom et al. 2019 (BJSM) · Return-to-Sport-Protokolle',
+    text: 'Internationale Leitlinien für die Rückkehr zum Sport nach der Geburt empfehlen eine physiotherapeutische Beurteilung des Beckenbodens vor belastendem Sport. Diese Freigabe ist in BackToClimb als Pflichtbedingung für Phase 3 verankert.',
+  },
+]
+
 const BACKUP_KEYS = ['anna_v1', 'anna_ui_v1']
 
 export default function ScreenProfile() {
@@ -12,6 +45,7 @@ export default function ScreenProfile() {
   const readyCount = b.readiness.filter(Boolean).length
   const [confirmReset, setConfirmReset] = useState(false)
   const [backupMsg, setBackupMsg] = useState(null)
+  const [openEvidence, setOpenEvidence] = useState(null)
   const fileRef = useRef(null)
 
   const exportBackup = () => {
@@ -200,6 +234,42 @@ export default function ScreenProfile() {
             ? 'Kurzpause: zweimal deutliche Symptome diese Woche.'
             : 'Physio-Freigabe ' + (b.physioGate ? 'erteilt.' : 'noch ausstehend.')}
         </div>
+      </Card>
+
+      {/* evidence */}
+      <SectionRule index={5}>Wissenschaftliche Basis</SectionRule>
+      <Card pad={`${s(2)}px ${s(18)}px`} style={{ marginBottom: s(18) }}>
+        {EVIDENCE.map((item, i) => {
+          const open = openEvidence === i
+          const last = i === EVIDENCE.length - 1
+          return (
+            <div key={i} style={{ borderBottom: last ? 'none' : `1px solid ${theme.line}` }}>
+              <button
+                onClick={() => setOpenEvidence(open ? null : i)}
+                style={{ width: '100%', background: 'none', border: 'none', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: s(10),
+                  padding: `${s(13)}px 0`, textAlign: 'left' }}
+              >
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 700,
+                    color: theme.ink }}>{item.title}</div>
+                  <div style={{ fontFamily: FONTS.sans, fontSize: 11.5, color: theme.inkMute,
+                    marginTop: 2 }}>{item.source}</div>
+                </div>
+                <span style={{ display: 'flex', flexShrink: 0,
+                  transform: open ? 'rotate(-90deg)' : 'rotate(90deg)', transition: 'transform .2s' }}>
+                  <Icon name="chevron" size={16} color={theme.inkMute} stroke={2.2} />
+                </span>
+              </button>
+              {open && (
+                <div style={{ fontFamily: FONTS.sans, fontSize: 13, color: theme.inkSoft,
+                  lineHeight: 1.6, paddingBottom: s(14) }}>
+                  {item.text}
+                </div>
+              )}
+            </div>
+          )
+        })}
       </Card>
 
       {/* backup */}
