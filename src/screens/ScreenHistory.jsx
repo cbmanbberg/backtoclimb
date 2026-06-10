@@ -46,13 +46,18 @@ export default function ScreenHistory() {
               background: d.sym ? sevColor(d.sym) : theme.lineStrong,
               transition: 'height .4s',
             }} />
-            <span style={{
-              fontFamily: FONTS.mono, fontSize: 10,
-              fontWeight: d.isToday ? 600 : 400,
-              color: d.isToday ? theme.primary : theme.inkMute,
-            }}>
-              {weekdayLetter(d.date)}
-            </span>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+              <span style={{
+                fontFamily: FONTS.mono, fontSize: 10,
+                fontWeight: d.isToday ? 600 : 400,
+                color: d.isToday ? theme.primary : theme.inkMute,
+              }}>
+                {weekdayLetter(d.date)}
+              </span>
+              <span style={{ fontFamily: FONTS.mono, fontSize: 9, color: theme.inkMute }}>
+                {d.date.getDate()}
+              </span>
+            </div>
           </div>
         ))}
       </div>

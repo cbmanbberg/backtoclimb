@@ -139,7 +139,7 @@ export function createBtcStore() {
   const [phase, setPhase] = useState(saved?.phase ?? 1)
   // mood persists for the current day only
   const [mood, setMood] = useState(saved?.moodDay === isoDay(TODAY) ? saved.mood : null)
-  const [workoutIdx, setWorkoutIdx] = useState(0)
+  const [workoutIdx, setWorkoutIdx] = useState(saved?.workoutIdx ?? 0)
   const [readiness, setReadiness] = useState(saved?.readiness ?? [false,false,false,false,false])
   const [sessions, setSessions] = useState(saved?.sessions ?? [])
   const [rests, setRests] = useState(saved?.rests ?? [])
@@ -147,7 +147,7 @@ export function createBtcStore() {
 
   // persist on change
   useEffect(() => {
-    save({ started, profile, phase, mood, moodDay: isoDay(TODAY), readiness, sessions, rests, advancedAt })
+    save({ started, profile, phase, mood, moodDay: isoDay(TODAY), readiness, sessions, rests, advancedAt, workoutIdx })
   }, [started, profile, phase, mood, readiness, sessions, rests, advancedAt])
 
   // derived
@@ -163,8 +163,9 @@ export function createBtcStore() {
   const symptomBlock = deutlich7d >= 2
   const readinessMet = readiness.every(Boolean)
   const physioGate = profile.physioCleared
-  // phase 1→2: time + symptom gate; phase 2→3: readiness + physio gate
-  const p2TimeMet = weeksPP >= 6
+  // phase 1→2: time + symptom gate (c-section needs 8 weeks); phase 2→3: readiness + physio gate
+  const p2MinWeeks = profile.cSection ? 8 : 6
+  const p2TimeMet = weeksPP >= p2MinWeeks
   const canAdvance = phase === 1
     ? (p2TimeMet && !symptomBlock)
     : phase === 2
@@ -239,7 +240,7 @@ export function createBtcStore() {
     started, profile, phase, mood, moodObj, restDay, restToday, workoutIdx,
     readiness, sessions, rests, advancedAt,
     birth, weeksPP, monthsPP, crimpUnlock, crimpUnlocked, climbingUnlocked,
-    deutlich7d, symptomBlock, readinessMet, physioGate, canAdvance, p2TimeMet, streak,
+    deutlich7d, symptomBlock, readinessMet, physioGate, canAdvance, p2TimeMet, p2MinWeeks, streak,
     serie, milestones: {
       list: MILESTONES, next: nextMilestone, earned: earnedMilestones,
       last: lastEarned, justHit: MILESTONES.includes(serie) && activeDays.has(isoDay(TODAY)),

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useBtc, fmtDate, fmtShort, parseD } from '../store'
 import { FONTS } from '../tokens'
 import { useUI, Icon, SectionRule, Card, Toggle, Bar } from '../ui'
@@ -7,6 +8,7 @@ export default function ScreenProfile() {
   const b = useBtc()
   const set = (k, v) => b.actions.setProfile(p => ({ ...p, [k]: v }))
   const readyCount = b.readiness.filter(Boolean).length
+  const [confirmReset, setConfirmReset] = useState(false)
 
   const Field = ({ label, children }) => (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -135,13 +137,43 @@ export default function ScreenProfile() {
       </Card>
 
       {/* reset */}
-      <button onClick={b.actions.reset} style={{
-        width: '100%', border: `1.5px solid ${theme.line}`,
-        background: 'none', cursor: 'pointer', borderRadius: s(13), padding: `${s(13)}px 0`,
-        fontFamily: FONTS.sans, fontSize: 14, fontWeight: 700, color: theme.terracottaInk,
-      }}>
-        Fortschritt zurücksetzen
-      </button>
+      {!confirmReset ? (
+        <button onClick={() => setConfirmReset(true)} style={{
+          width: '100%', border: `1.5px solid ${theme.line}`,
+          background: 'none', cursor: 'pointer', borderRadius: s(13), padding: `${s(13)}px 0`,
+          fontFamily: FONTS.sans, fontSize: 14, fontWeight: 700, color: theme.terracottaInk,
+        }}>
+          Fortschritt zurücksetzen
+        </button>
+      ) : (
+        <div style={{ border: `1.5px solid ${theme.terracotta}`, borderRadius: s(13),
+          padding: `${s(16)}px ${s(18)}px`, background: theme.terracottaSoft }}>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 700,
+            color: theme.terracottaInk, marginBottom: s(6) }}>
+            Alles löschen?
+          </div>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.terracottaInk,
+            lineHeight: 1.5, marginBottom: s(14) }}>
+            Sessions, Serie und alle Einstellungen werden unwiderruflich gelöscht.
+          </div>
+          <div style={{ display: 'flex', gap: s(10) }}>
+            <button onClick={() => setConfirmReset(false)} style={{
+              flex: 1, border: `1.5px solid ${theme.line}`, background: theme.surface,
+              cursor: 'pointer', borderRadius: s(11), padding: `${s(11)}px 0`,
+              fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 700, color: theme.inkSoft,
+            }}>
+              Abbrechen
+            </button>
+            <button onClick={() => { b.actions.reset(); setConfirmReset(false) }} style={{
+              flex: 1, border: 'none', background: theme.terracotta,
+              cursor: 'pointer', borderRadius: s(11), padding: `${s(11)}px 0`,
+              fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 700, color: theme.onPrimary,
+            }}>
+              Ja, löschen
+            </button>
+          </div>
+        </div>
+      )}
       <div style={{ height: s(8) }} />
     </div>
   )

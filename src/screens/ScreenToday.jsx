@@ -184,6 +184,17 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
             {optional ? 'Trotzdem starten' : 'Session starten'}
           </button>
         </div>
+        {b.profile.breastfeeding && b.phase >= 2 && (
+          <div style={{ display: 'flex', gap: s(9), alignItems: 'flex-start', marginTop: s(10),
+            paddingLeft: s(2) }}>
+            <span style={{ marginTop: s(5), width: s(14), height: 1, flexShrink: 0,
+              background: theme.gold }} />
+            <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, lineHeight: 1.5,
+              color: theme.inkMute }}>
+              Relaxin beim Stillen: Finger, Handgelenke und Schultern heute bewusst schonen.
+            </div>
+          </div>
+        )}
       </div>
 
       {/* up next */}

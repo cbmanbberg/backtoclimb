@@ -11,7 +11,7 @@ export default function ScreenPlan({ onGoProfile }) {
   const advanceBlockReason = () => {
     if (b.phase === 1) {
       if (b.symptomBlock) return 'Aufstieg pausiert — 2× Deutlich in 7 Tagen'
-      if (!b.p2TimeMet) return `Phase 2 ab Woche 6 — du bist in Woche ${b.weeksPP}`
+      if (!b.p2TimeMet) return `Phase 2 ab Woche ${b.p2MinWeeks} — du bist in Woche ${b.weeksPP}`
       return null
     }
     if (b.symptomBlock) return 'Aufstieg pausiert — 2× Deutlich in 7 Tagen'
@@ -73,7 +73,7 @@ export default function ScreenPlan({ onGoProfile }) {
           <SectionRule index={2}>Tor zu Phase 2</SectionRule>
           <Card pad={`${s(2)}px ${s(16)}px`} style={{ marginBottom: s(20) }}>
             {[
-              { ok: b.p2TimeMet, label: 'Mindestens 6 Wochen postpartum',
+              { ok: b.p2TimeMet, label: `Mindestens ${b.p2MinWeeks} Wochen postpartum${b.profile.cSection ? ' (Kaiserschnitt)' : ''}`,
                 sub: b.p2TimeMet ? `Du bist in Woche ${b.weeksPP}` : `Aktuell Woche ${b.weeksPP} — Gewebe braucht diese Zeit` },
               { ok: !b.symptomBlock, label: 'Keine wiederholten deutlichen Symptome',
                 sub: b.symptomBlock ? '2× „Deutlich" in den letzten 7 Tagen' : 'Alles im grünen Bereich' },
