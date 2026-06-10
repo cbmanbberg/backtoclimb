@@ -173,8 +173,33 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
         </button>
       </div>
 
-      {/* symptom log */}
-      {t.done && (
+      {/* completion sheet — simplified for micro-sessions */}
+      {t.done && workout.micro && (
+        <Sheet onClose={() => {}} align="center">
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ width: s(48), height: s(48), borderRadius: '50%', margin: '0 auto',
+              background: theme.primarySoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="check" size={26} color={theme.primary} stroke={2.4} />
+            </div>
+            <div style={{ fontFamily: FONTS.serif, fontSize: s(22), fontWeight: 500, color: theme.ink,
+              marginTop: s(12), letterSpacing: '-.01em' }}>Gut gemacht.</div>
+            <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, color: theme.inkSoft, marginTop: s(6),
+              lineHeight: 1.5 }}>
+              2–3 Checks täglich stärken den Beckenboden nachhaltig. Beim nächsten Stillen einfach wieder.
+            </div>
+          </div>
+          <button onClick={() => onComplete('micro')} style={{
+            marginTop: s(20), width: '100%', border: 'none', cursor: 'pointer',
+            background: theme.primary, color: theme.onPrimary, borderRadius: s(13),
+            padding: `${s(14)}px 0`, fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700,
+          }}>
+            Fertig
+          </button>
+        </Sheet>
+      )}
+
+      {/* symptom log — full sessions only */}
+      {t.done && !workout.micro && (
         <Sheet onClose={() => {}} align="center">
           <div style={{ textAlign: 'center', marginBottom: s(6) }}>
             <div style={{ width: s(48), height: s(48), borderRadius: '50%', margin: '0 auto',
@@ -230,6 +255,7 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
           )}
         </Sheet>
       )}
+
     </div>
   )
 }

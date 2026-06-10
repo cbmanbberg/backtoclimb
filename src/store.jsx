@@ -35,6 +35,35 @@ export const PHASES = [
 ]
 
 const ST = (name, dur, cue, pulse) => ({ name, dur, cue, ...(pulse && { pulse }) })
+
+// 3x/day micro-session: evidence-based pelvic floor protocol
+// (ACOG, NICE, Continence Foundation: pelvic floor exercises multiple times daily)
+export const MICRO_SESSION = {
+  id: 'w_micro', name: 'Beckenboden-Check', focus: 'Täglich · 2–3×', kind: 'Mikro',
+  dur: '~3 Min', micro: true,
+  steps: [
+    ST('Kurze Kontraktion', 60, 'Beim Ausatmen anspannen, zwei Sekunden halten, vollständig lösen und drei Sekunden warten. Zehnmal. Im Stehen, Sitzen oder Liegen. Auch beim Stillen möglich.', { hold: 2, release: 3 }),
+    ST('Lange Kontraktion', 60, 'Sanft anspannen, fünf Sekunden halten, dabei ruhig weiteratmen. Vollständig lösen und fünf Sekunden Pause. Fünfmal. Nicht pressen, nur heben und vollständig loslassen.', { hold: 5, release: 5 }),
+    ST('Nachspüren', 45, 'Einatmen, beim Ausatmen alles loslassen. Kurz wahrnehmen, ob du einen Unterschied spürst. Das war es.'),
+  ]
+}
+
+// Week-based workout availability within each phase.
+// Progressive overload principle: start minimal, add new stimulus each week.
+// Phase 1 rec: 3×/week (wk 1-4), 4×/week (wk 5+)
+// Phase 2 rec: 3×/week (wk 1-2), 4×/week (wk 3+)
+// Source: ACOG postpartum activity guidelines, pelvic health physiotherapy protocols
+function getWeekPlan(phase, wk) {
+  const w = Math.max(1, wk)
+  if (phase === 1) {
+    if (w <= 2) return { available: ['w0b', 'w2'], recPerWeek: 3 }
+    if (w <= 4) return { available: ['w0b', 'w0', 'w2'], recPerWeek: 3 }
+    return            { available: ['w0', 'w0b', 'w2'], recPerWeek: 4 }
+  }
+  if (w <= 2) return { available: ['w1b', 'w2'], recPerWeek: 3 }
+  if (w <= 4) return { available: ['w1b', 'w1', 'w2'], recPerWeek: 4 }
+  return            { available: ['w1', 'w1b', 'w2'], recPerWeek: 4 }
+}
 export const WORKOUTS = [
   { id: 'w0', phases: [1], name: 'Tiefenspannung & Atem', focus: 'Beckenboden · Rumpf', kind: 'Aufbau',
     dur: '~9 Min', steps: [
@@ -145,11 +174,13 @@ export function createBtcStore() {
   const [rests, setRests] = useState(saved?.rests ?? [])
   const [advancedAt, setAdvancedAt] = useState(saved?.advancedAt ?? null)
   const [startedAt, setStartedAt] = useState(saved?.startedAt ?? null)
+  // date when the current phase started (reset on each phase advance)
+  const [phaseStartAt, setPhaseStartAt] = useState(saved?.phaseStartAt ?? saved?.startedAt ?? null)
 
   // persist on change
   useEffect(() => {
-    save({ started, profile, phase, mood, moodDay: isoDay(TODAY), readiness, sessions, rests, advancedAt, workoutIdx, startedAt })
-  }, [started, profile, phase, mood, readiness, sessions, rests, advancedAt, startedAt])
+    save({ started, profile, phase, mood, moodDay: isoDay(TODAY), readiness, sessions, rests, advancedAt, workoutIdx, startedAt, phaseStartAt })
+  }, [started, profile, phase, mood, readiness, sessions, rests, advancedAt, startedAt, phaseStartAt])
 
   // derived
   const birth = parseD(profile.childBirth)
@@ -157,6 +188,8 @@ export function createBtcStore() {
   const monthsPP = monthsSince(birth)
   // weeks since program start (1-based); falls back to weeksPP for existing saves without startedAt
   const programWeek = startedAt ? weeksSince(parseD(startedAt)) + 1 : weeksPP
+  // weeks since current phase started (1-based)
+  const weekInPhase = phaseStartAt ? weeksSince(parseD(phaseStartAt)) + 1 : programWeek
   const crimpUnlock = addMonths(birth, 8)
   const crimpUnlocked = TODAY >= startOfDay(crimpUnlock)
   const climbingUnlocked = phase >= 3
@@ -175,10 +208,14 @@ export function createBtcStore() {
     ? (readinessMet && physioGate && !symptomBlock)
     : false
 
-  // workouts available in the current phase (phase 3 keeps the phase-2 strength base)
+  // workouts available this week: phase-gated + progressive weekly unlock
   const phaseKey = Math.min(phase, 2)
-  const phaseWorkouts = WORKOUTS.filter(w => w.phases.includes(phaseKey))
+  const { available: availableIds, recPerWeek } = getWeekPlan(phaseKey, weekInPhase)
+  const phaseWorkouts = WORKOUTS.filter(w => availableIds.includes(w.id))
   const lightIdx = phaseWorkouts.findIndex(w => w.light)
+
+  // sessions this week (rolling 7 days) for progress indicator
+  const sessionsThisWeek = sessions.filter(s => (TODAY - parseD(s.date)) < 7 * DAY).length
 
   const sessDays = new Set(sessions.map(s => s.date))
   let streak = 0
@@ -223,27 +260,30 @@ export function createBtcStore() {
     },
     advancePhase: () => {
       if (!canAdvance) return
-      if (phase === 1) { setPhase(2); setWorkoutIdx(0) }
-      else { setPhase(3); setAdvancedAt(isoDay(TODAY)) }
+      if (phase === 1) { setPhase(2); setPhaseStartAt(isoDay(TODAY)); setWorkoutIdx(0) }
+      else { setPhase(3); setPhaseStartAt(isoDay(TODAY)); setAdvancedAt(isoDay(TODAY)) }
     },
     startProgram: (childBirth, name) => {
+      const today = isoDay(TODAY)
       setProfile({ ...DEFAULT_PROFILE, childBirth, name: name || DEFAULT_PROFILE.name })
       setPhase(1)
-      setStartedAt(isoDay(TODAY))
+      setStartedAt(today)
+      setPhaseStartAt(today)
       setStarted(true)
     },
     reset: () => {
       localStorage.removeItem(STORAGE_KEY)
       setStarted(false); setPhase(1); setMood(null); setWorkoutIdx(0); setRests([])
       setReadiness([false,false,false,false,false]); setSessions([]); setAdvancedAt(null)
-      setStartedAt(null); setProfile({ ...DEFAULT_PROFILE })
+      setStartedAt(null); setPhaseStartAt(null); setProfile({ ...DEFAULT_PROFILE })
     },
   }
 
   return {
     started, profile, phase, mood, moodObj, restDay, restToday, workoutIdx,
-    readiness, sessions, rests, advancedAt, startedAt,
-    birth, weeksPP, programWeek, monthsPP, crimpUnlock, crimpUnlocked, climbingUnlocked,
+    readiness, sessions, rests, advancedAt, startedAt, phaseStartAt,
+    birth, weeksPP, programWeek, weekInPhase, monthsPP, crimpUnlock, crimpUnlocked, climbingUnlocked,
+    recPerWeek, sessionsThisWeek,
     deutlich7d, symptomBlock, readinessMet, physioGate, canAdvance, p2TimeMet, p2MinWeeks, streak,
     serie, milestones: {
       list: MILESTONES, next: nextMilestone, earned: earnedMilestones,

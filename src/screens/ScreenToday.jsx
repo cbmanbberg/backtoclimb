@@ -1,4 +1,4 @@
-import { useBtc, MOODS, TODAY, addDays, isoDay, weekdayLetter } from '../store'
+import { useBtc, MOODS, MICRO_SESSION, TODAY, addDays, isoDay, weekdayLetter } from '../store'
 import { FONTS } from '../tokens'
 import { useUI, Icon, SectionRule, DataTag, SerieLedger, Card } from '../ui'
 
@@ -184,6 +184,50 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
             {optional ? 'Trotzdem starten' : 'Session starten'}
           </button>
         </div>
+        {/* weekly sessions progress */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: s(10), marginTop: s(11), paddingLeft: s(2) }}>
+          <div style={{ display: 'flex', gap: s(5) }}>
+            {Array.from({ length: b.recPerWeek }, (_, i) => (
+              <div key={i} style={{
+                width: s(16), height: s(5), borderRadius: 999,
+                background: i < b.sessionsThisWeek ? theme.primary : theme.surface2,
+              }} />
+            ))}
+          </div>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute }}>
+            {b.sessionsThisWeek}/{b.recPerWeek} Einheiten diese Woche
+          </div>
+        </div>
+
+        {/* micro-session card */}
+        <div style={{ marginTop: s(12), border: `1px solid ${theme.line}`, borderRadius: s(13),
+          overflow: 'hidden', background: theme.surface }}>
+          <div style={{ padding: `${s(13)}px ${s(16)}px ${s(11)}px`,
+            display: 'flex', alignItems: 'center', gap: s(12) }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: s(8), marginBottom: s(5) }}>
+                <DataTag tone="mute">MIKRO</DataTag>
+                <DataTag tone="mute">3 MIN</DataTag>
+              </div>
+              <div style={{ fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700, color: theme.ink }}>
+                Beckenboden-Check
+              </div>
+              <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute, marginTop: s(3) }}>
+                2–3× täglich · auch beim Stillen
+              </div>
+            </div>
+            <button onClick={() => onStart(MICRO_SESSION)} style={{
+              border: 'none', cursor: 'pointer', background: theme.surface2,
+              borderRadius: s(10), padding: `${s(10)}px ${s(14)}px`,
+              fontFamily: FONTS.sans, fontSize: 13, fontWeight: 700, color: theme.inkSoft,
+              display: 'flex', alignItems: 'center', gap: s(6), flexShrink: 0,
+            }}>
+              <Icon name="play" size={13} color={theme.inkSoft} />
+              Starten
+            </button>
+          </div>
+        </div>
+
         {b.profile.breastfeeding && b.phase >= 2 && (
           <div style={{ display: 'flex', gap: s(9), alignItems: 'flex-start', marginTop: s(10),
             paddingLeft: s(2) }}>

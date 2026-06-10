@@ -23,6 +23,13 @@ function AppShell({ onGoHistory }) {
   const startSession = (w) => setSession(w)
 
   const completeSession = (sym) => {
+    // micro-session: no symptom logging, just a quiet confirmation
+    if (session?.micro) {
+      setSession(null)
+      setToast('Beckenboden-Check erledigt')
+      setTimeout(() => setToast(null), 2200)
+      return
+    }
     const todayActive = store.restToday || store.sessions.some(x => x.date === isoDay(TODAY))
     const newSerie = todayActive ? store.serie : store.serie + 1
     const hitsMilestone = !todayActive && store.milestones.list.includes(newSerie)
