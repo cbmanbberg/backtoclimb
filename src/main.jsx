@@ -40,3 +40,9 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register(import.meta.env.BASE_URL + 'sw.js').catch(() => {})
   })
 }
+
+// Ask the browser to exempt our storage from automatic eviction
+// (e.g. Safari's cleanup for rarely visited sites).
+if (navigator.storage?.persist) {
+  navigator.storage.persist().catch(() => {})
+}

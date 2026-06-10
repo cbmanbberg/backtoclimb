@@ -25,9 +25,15 @@ export default function ScreenOnboarding() {
     width: '100%',
     maxWidth: '100%',
     minWidth: 0,
+    height: s(46),
     outline: 'none',
     colorScheme: theme.dark ? 'dark' : 'light',
     boxSizing: 'border-box',
+    // date inputs in WebKit keep an intrinsic width unless appearance is reset
+    WebkitAppearance: 'none',
+    appearance: 'none',
+    margin: 0,
+    textAlign: 'left',
   }
 
   const phaseColors = [theme.primary, theme.gold, theme.terracotta]

@@ -254,6 +254,17 @@ const MILESTONE_META = {
   50: { title: 'Fünfzig Tage.',       body: 'Fünfzig Tage. Kein Zufall mehr — das bist du.' },
 }
 
+// Maps the serie onto the evenly spaced milestone rail: the fill line always
+// ends exactly between the two milestones the serie currently sits between.
+function serieFraction(serie, list) {
+  const n = list.length
+  if (serie >= list[n - 1]) return 1
+  if (serie < list[0]) return 0
+  let k = 0
+  while (serie >= list[k + 1]) k++
+  return (k + (serie - list[k]) / (list[k + 1] - list[k])) / (n - 1)
+}
+
 export function SerieLedger({ compact }) {
   const { theme, s } = useUI()
   const b = useBtc()
@@ -312,20 +323,20 @@ export function SerieLedger({ compact }) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 0, position: 'relative' }}>
-        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: 2,
-          background: theme.surface2, zIndex: 0, transform: 'translateY(-50%)' }} />
-        <div style={{ position: 'absolute', top: '50%', left: 0, height: 2,
-          width: `${Math.min(100, b.serie / (ml.list[ml.list.length - 1]) * 100)}%`,
-          background: theme.primary, zIndex: 1, transform: 'translateY(-50%)',
-          transition: 'width .5s cubic-bezier(.4,0,.2,1)' }} />
-        {ml.list.map((m, idx) => {
-          const earned = b.serie >= m
-          return (
-            <div key={m} style={{ flex: idx === ml.list.length - 1 ? 0 : 1,
-              display: 'flex', flexDirection: 'column', alignItems: idx === ml.list.length - 1 ? 'flex-end' : idx === 0 ? 'flex-start' : 'center',
-              zIndex: 2, position: 'relative' }}>
-              <div style={{
+      <div style={{ padding: `0 ${s(11)}px` }}>
+        <div style={{ position: 'relative', height: s(22) }}>
+          <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)',
+            left: 0, right: 0, height: 2, background: theme.surface2 }} />
+          <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)',
+            left: 0, height: 2, width: `${serieFraction(b.serie, ml.list) * 100}%`,
+            background: theme.primary,
+            transition: 'width .5s cubic-bezier(.4,0,.2,1)' }} />
+          {ml.list.map((m, idx) => {
+            const earned = b.serie >= m
+            return (
+              <div key={m} style={{
+                position: 'absolute', top: '50%', left: `${idx / (ml.list.length - 1) * 100}%`,
+                transform: 'translate(-50%,-50%)',
                 width: s(22), height: s(22), borderRadius: '50%',
                 background: earned ? theme.primary : theme.surface,
                 border: `2px solid ${earned ? theme.primary : theme.line}`,
@@ -334,11 +345,19 @@ export function SerieLedger({ compact }) {
               }}>
                 {earned && <Icon name="check" size={11} color={theme.onPrimary} stroke={2.6} />}
               </div>
-              <span style={{ fontFamily: FONTS.mono, fontSize: 9.5, color: earned ? theme.primary : theme.inkMute,
-                marginTop: s(5), fontWeight: 500 }}>{m}</span>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
+        <div style={{ position: 'relative', height: s(13), marginTop: s(6) }}>
+          {ml.list.map((m, idx) => (
+            <span key={m} style={{
+              position: 'absolute', left: `${idx / (ml.list.length - 1) * 100}%`,
+              transform: 'translateX(-50%)',
+              fontFamily: FONTS.mono, fontSize: 9.5, fontWeight: 500,
+              color: b.serie >= m ? theme.primary : theme.inkMute,
+            }}>{m}</span>
+          ))}
+        </div>
       </div>
 
       {ml.last && MILESTONE_META[ml.last] && (

@@ -1,7 +1,9 @@
-import { useState } from 'react'
-import { useBtc, fmtDate, fmtShort, parseD } from '../store'
+import { useState, useRef } from 'react'
+import { useBtc, fmtDate, fmtShort, parseD, isoDay, TODAY } from '../store'
 import { FONTS, ACCENTS } from '../tokens'
 import { useUI, Icon, SectionRule, Card, Toggle, Bar } from '../ui'
+
+const BACKUP_KEYS = ['anna_v1', 'anna_ui_v1']
 
 export default function ScreenProfile() {
   const { theme, s, appearance } = useUI()
@@ -9,6 +11,40 @@ export default function ScreenProfile() {
   const set = (k, v) => b.actions.setProfile(p => ({ ...p, [k]: v }))
   const readyCount = b.readiness.filter(Boolean).length
   const [confirmReset, setConfirmReset] = useState(false)
+  const [backupMsg, setBackupMsg] = useState(null)
+  const fileRef = useRef(null)
+
+  const exportBackup = () => {
+    const data = { app: 'backtoclimb', v: 1, exported: new Date().toISOString() }
+    for (const k of BACKUP_KEYS) {
+      try { data[k] = JSON.parse(localStorage.getItem(k)) } catch { data[k] = null }
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `backtoclimb-backup-${isoDay(TODAY)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+    setBackupMsg('Backup heruntergeladen — am besten in der Cloud (z.B. iCloud/Drive) ablegen.')
+  }
+
+  const importBackup = (file) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result)
+        if (data?.app !== 'backtoclimb' || !data.anna_v1) throw new Error('invalid')
+        for (const k of BACKUP_KEYS) {
+          if (data[k]) localStorage.setItem(k, JSON.stringify(data[k]))
+        }
+        location.reload()
+      } catch {
+        setBackupMsg('Datei konnte nicht gelesen werden — ist das ein BackToClimb-Backup?')
+      }
+    }
+    reader.readAsText(file)
+  }
 
   const Field = ({ label, children }) => (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -164,6 +200,42 @@ export default function ScreenProfile() {
             ? 'Aufstieg pausiert — 2× „Deutlich" in 7 Tagen.'
             : 'Physio-Freigabe ' + (b.physioGate ? 'erteilt' : 'noch offen') + '.'}
         </div>
+      </Card>
+
+      {/* backup */}
+      <SectionRule>Deine Daten</SectionRule>
+      <Card pad={`${s(4)}px ${s(18)}px`} style={{ marginBottom: s(18) }}>
+        <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.inkSoft,
+          lineHeight: 1.55, padding: `${s(12)}px 0` }}>
+          Alles wird lokal auf diesem Gerät gespeichert. Lade dir regelmäßig ein Backup
+          herunter, damit dein Fortschritt auch bei Gerätewechsel oder Browser-Putzaktionen
+          sicher ist.
+        </div>
+        <div style={{ display: 'flex', gap: s(10), paddingBottom: s(14) }}>
+          <button onClick={exportBackup} style={{
+            flex: 1, border: 'none', background: theme.primaryTint, cursor: 'pointer',
+            borderRadius: s(11), padding: `${s(12)}px 0`,
+            fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 700, color: theme.primary,
+          }}>
+            Backup exportieren
+          </button>
+          <button onClick={() => fileRef.current?.click()} style={{
+            flex: 1, border: `1.5px solid ${theme.line}`, background: theme.surface,
+            cursor: 'pointer', borderRadius: s(11), padding: `${s(12)}px 0`,
+            fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 700, color: theme.inkSoft,
+          }}>
+            Wiederherstellen
+          </button>
+          <input ref={fileRef} type="file" accept="application/json,.json"
+            style={{ display: 'none' }}
+            onChange={e => { if (e.target.files?.[0]) importBackup(e.target.files[0]); e.target.value = '' }} />
+        </div>
+        {backupMsg && (
+          <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute,
+            lineHeight: 1.5, paddingBottom: s(12) }}>
+            {backupMsg}
+          </div>
+        )}
       </Card>
 
       {/* reset */}

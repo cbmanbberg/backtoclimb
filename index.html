@@ -25,6 +25,9 @@
     .btc-scroll { scrollbar-width: none; -ms-overflow-style: none; }
     button { font-family: inherit; -webkit-tap-highlight-color: transparent; }
     input { font-family: inherit; }
+    /* iOS renders date values centered with extra intrinsic width — normalize */
+    input::-webkit-date-and-time-value { text-align: left; margin: 0; }
+    input[type="date"] { -webkit-appearance: none; appearance: none; }
     @keyframes btcFade { from { transform: translateY(4px); opacity: 0; } to { transform: none; opacity: 1; } }
     @keyframes btcSheet { from { transform: translateY(18px); opacity: 0; } to { transform: none; opacity: 1; } }
     @keyframes btcCelebrate { from { transform: scale(.96); opacity: 0; } to { transform: none; opacity: 1; } }
