@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useBtc, fmtDate, fmtShort, parseD } from '../store'
-import { FONTS } from '../tokens'
+import { FONTS, ACCENTS } from '../tokens'
 import { useUI, Icon, SectionRule, Card, Toggle, Bar } from '../ui'
 
 export default function ScreenProfile() {
-  const { theme, s } = useUI()
+  const { theme, s, appearance } = useUI()
   const b = useBtc()
   const set = (k, v) => b.actions.setProfile(p => ({ ...p, [k]: v }))
   const readyCount = b.readiness.filter(Boolean).length
@@ -84,6 +84,36 @@ export default function ScreenProfile() {
           on={b.profile.cSection} onChange={v => set('cSection', v)} />
         <ToggleRow label="Physio-Freigabe" sub="Hartes Tor für Phase 3" gate
           on={b.profile.physioCleared} onChange={v => set('physioCleared', v)} />
+      </Card>
+
+      {/* appearance */}
+      <SectionRule>Darstellung</SectionRule>
+      <Card pad={`${s(2)}px ${s(18)}px`} style={{ marginBottom: s(18) }}>
+        <ToggleRow label="Dunkelmodus" sub="Helles oder dunkles Design"
+          on={appearance.dark} onChange={appearance.setDarkMode} />
+        <div style={{ padding: `${s(13)}px 0` }}>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 14, fontWeight: 700,
+            color: theme.ink, marginBottom: s(3) }}>Akzentfarbe</div>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute,
+            marginBottom: s(12) }}>
+            {ACCENTS[appearance.accent]?.label || 'Lavendel'}
+          </div>
+          <div style={{ display: 'flex', gap: s(12) }}>
+            {Object.entries(ACCENTS).map(([key, a]) => {
+              const on = appearance.accent === key
+              const col = theme.dark ? a.dark : a.light
+              return (
+                <button key={key} onClick={() => appearance.setAccent(key)} style={{
+                  width: s(34), height: s(34), borderRadius: '50%', cursor: 'pointer',
+                  background: col, padding: 0,
+                  border: on ? `2.5px solid ${theme.ink}` : `2px solid ${theme.line}`,
+                  boxShadow: on ? `inset 0 0 0 2.5px ${theme.surface}` : 'none',
+                  transition: 'all .15s',
+                }} aria-label={a.label} />
+              )
+            })}
+          </div>
+        </div>
       </Card>
 
       {/* unlocks */}

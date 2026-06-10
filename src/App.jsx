@@ -112,27 +112,43 @@ function AppShell({ onGoHistory }) {
   )
 }
 
+const UI_KEY = 'anna_ui_v1'
+const loadUiPrefs = () => {
+  try { return JSON.parse(localStorage.getItem(UI_KEY)) || {} } catch { return {} }
+}
+
 export default function App() {
-  const [dark, setDark] = useState(() =>
+  const [sysDark, setSysDark] = useState(() =>
     window.matchMedia('(prefers-color-scheme: dark)').matches
   )
+  // dark: undefined = follow system; accent: undefined = lavendel
+  const [uiPrefs, setUiPrefs] = useState(loadUiPrefs)
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)')
-    const handler = (e) => setDark(e.matches)
+    const handler = (e) => setSysDark(e.matches)
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
   }, [])
 
-  const theme = getTheme(dark, 'teal')
+  useEffect(() => {
+    try { localStorage.setItem(UI_KEY, JSON.stringify(uiPrefs)) } catch {}
+  }, [uiPrefs])
+
+  const dark = uiPrefs.dark ?? sysDark
+  const accent = uiPrefs.accent ?? 'lavendel'
+  const theme = getTheme(dark, accent)
   const s = getSpace('wohlig')
 
   useEffect(() => {
     document.body.style.background = theme.page
   }, [theme.page])
 
+  const setDarkMode = (v) => setUiPrefs(p => ({ ...p, dark: v }))
+  const setAccent = (a) => setUiPrefs(p => ({ ...p, accent: a }))
+
   return (
-    <ThemeCtx.Provider value={{ theme, s, fonts: FONTS }}>
+    <ThemeCtx.Provider value={{ theme, s, fonts: FONTS, appearance: { dark, accent, setDarkMode, setAccent } }}>
       <AppShell />
     </ThemeCtx.Provider>
   )

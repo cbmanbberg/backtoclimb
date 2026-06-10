@@ -5,6 +5,7 @@ export function mix(a, pct, b) {
 }
 
 export const ACCENTS = {
+  lavendel: { label: 'Lavendel', light: 'oklch(0.52 0.105 295)', dark: 'oklch(0.74 0.10 293)' },
   teal:     { label: 'Teal',     light: 'oklch(0.52 0.085 200)', dark: 'oklch(0.70 0.09 197)' },
   petrol:   { label: 'Petrol',   light: 'oklch(0.47 0.075 232)', dark: 'oklch(0.68 0.082 230)' },
   pinie:    { label: 'Pinie',    light: 'oklch(0.50 0.072 158)', dark: 'oklch(0.70 0.078 158)' },
