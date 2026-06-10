@@ -80,7 +80,7 @@ export default function ScreenHistory() {
         {b.sessions.length === 0 && (
           <div style={{ padding: `${s(24)}px 0`, textAlign: 'center',
             fontFamily: FONTS.sans, fontSize: 13.5, color: theme.inkMute }}>
-            Noch keine Sessions — los geht's!
+            Noch keine Sessions. Die erste kommt nach deiner ersten Einheit.
           </div>
         )}
         {b.sessions.map((sess, i) => {

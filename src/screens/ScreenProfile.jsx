@@ -26,7 +26,7 @@ export default function ScreenProfile() {
     a.download = `backtoclimb-backup-${isoDay(TODAY)}.json`
     a.click()
     URL.revokeObjectURL(url)
-    setBackupMsg('Backup heruntergeladen — am besten in der Cloud (z.B. iCloud/Drive) ablegen.')
+    setBackupMsg('Backup heruntergeladen. Am besten gleich in iCloud oder Google Drive ablegen.')
   }
 
   const importBackup = (file) => {
@@ -40,7 +40,7 @@ export default function ScreenProfile() {
         }
         location.reload()
       } catch {
-        setBackupMsg('Datei konnte nicht gelesen werden — ist das ein BackToClimb-Backup?')
+        setBackupMsg('Diese Datei konnte nicht gelesen werden. Ist das wirklich ein BackToClimb-Backup?')
       }
     }
     reader.readAsText(file)
@@ -114,11 +114,11 @@ export default function ScreenProfile() {
       {/* toggles */}
       <SectionRule index={2}>Status</SectionRule>
       <Card pad={`${s(2)}px ${s(18)}px`} style={{ marginBottom: s(18) }}>
-        <ToggleRow label="Stillen" sub="Beeinflusst Bindegewebe & Belastbarkeit"
+        <ToggleRow label="Stillen" sub="Relaxin bleibt erhöht und beeinflusst Bindegewebe"
           on={b.profile.breastfeeding} onChange={v => set('breastfeeding', v)} />
-        <ToggleRow label="Kaiserschnitt" sub="Passt frühe Rumpf-Progression an"
+        <ToggleRow label="Kaiserschnitt" sub="Braucht mehr Zeit für die Bauchdecke"
           on={b.profile.cSection} onChange={v => set('cSection', v)} />
-        <ToggleRow label="Physio-Freigabe" sub="Hartes Tor für Phase 3" gate
+        <ToggleRow label="Physio-Freigabe" sub="Pflichtfreigabe für Phase 3" gate
           on={b.profile.physioCleared} onChange={v => set('physioCleared', v)} />
       </Card>
 
@@ -197,8 +197,8 @@ export default function ScreenProfile() {
           {b.advancedAt
             ? `Phase 3 freigeschaltet am ${fmtDate(parseD(b.advancedAt))}.`
             : b.symptomBlock
-            ? 'Aufstieg pausiert — 2× „Deutlich" in 7 Tagen.'
-            : 'Physio-Freigabe ' + (b.physioGate ? 'erteilt' : 'noch offen') + '.'}
+            ? 'Kurzpause: zweimal deutliche Symptome diese Woche.'
+            : 'Physio-Freigabe ' + (b.physioGate ? 'erteilt.' : 'noch ausstehend.')}
         </div>
       </Card>
 
@@ -207,9 +207,7 @@ export default function ScreenProfile() {
       <Card pad={`${s(4)}px ${s(18)}px`} style={{ marginBottom: s(18) }}>
         <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.inkSoft,
           lineHeight: 1.55, padding: `${s(12)}px 0` }}>
-          Alles wird lokal auf diesem Gerät gespeichert. Lade dir regelmäßig ein Backup
-          herunter, damit dein Fortschritt auch bei Gerätewechsel oder Browser-Putzaktionen
-          sicher ist.
+          Dein Fortschritt liegt auf diesem Gerät. Lad dir ab und zu ein Backup herunter, damit er bei einem Gerätewechsel erhalten bleibt.
         </div>
         <div style={{ display: 'flex', gap: s(10), paddingBottom: s(14) }}>
           <button onClick={exportBackup} style={{
@@ -252,11 +250,11 @@ export default function ScreenProfile() {
           padding: `${s(16)}px ${s(18)}px`, background: theme.terracottaSoft }}>
           <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 700,
             color: theme.terracottaInk, marginBottom: s(6) }}>
-            Alles löschen?
+            Sicher?
           </div>
           <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.terracottaInk,
             lineHeight: 1.5, marginBottom: s(14) }}>
-            Sessions, Serie und alle Einstellungen werden unwiderruflich gelöscht.
+            Sessions, Serie und alle Einstellungen werden gelöscht. Das lässt sich nicht rückgängig machen.
           </div>
           <div style={{ display: 'flex', gap: s(10) }}>
             <button onClick={() => setConfirmReset(false)} style={{

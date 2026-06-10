@@ -10,11 +10,11 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
     ? { title: 'Klettern ist offen', sub: 'Wähl deine Einheit im Klettern-Tab', go: onGoClimb }
     : b.phase === 2
     ? { title: b.canAdvance ? 'Phase 3 wartet auf dich' : 'Readiness-Check',
-        sub: b.canAdvance ? 'Alle Kriterien erfüllt — schalte frei'
+        sub: b.canAdvance ? 'Alle Kriterien erfüllt. Bereit für Phase 3.'
           : `${b.readiness.filter(Boolean).length}/5 Kriterien für Phase 3 erfüllt`, go: onGoPlan }
     : { title: b.canAdvance ? 'Phase 2 wartet auf dich' : 'Phase 2 ab Woche 6',
-        sub: b.canAdvance ? 'Kriterien erfüllt — jetzt freischalten'
-          : `Du bist in Woche ${b.weeksPP} — die Grundlage zählt`, go: onGoPlan }
+        sub: b.canAdvance ? 'Kriterien erfüllt. Los geht Phase 2.'
+          : `Du bist in Woche ${b.weeksPP}. Die Grundlage zählt.`, go: onGoPlan }
 
   const days = Array.from({ length: 7 }, (_, k) => {
     const date = addDays(TODAY, -(6 - k))
@@ -91,7 +91,7 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
             background: theme.terracottaSoft, borderRadius: s(13), padding: `${s(12)}px ${s(13)}px` }}>
             <Icon name="info" size={18} color={theme.terracotta} stroke={2} />
             <div style={{ fontFamily: FONTS.sans, fontSize: 13, lineHeight: 1.45, color: theme.terracottaInk }}>
-              2× „Deutlich" in den letzten 7 Tagen — diese Woche bewusst sanfter. Dein Körper sagt dir etwas.
+              Zweimal deutliche Symptome diese Woche. Kürzer treten ist jetzt genau das Richtige.
             </div>
           </div>
         )}
@@ -191,7 +191,7 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
               background: theme.gold }} />
             <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, lineHeight: 1.5,
               color: theme.inkMute }}>
-              Relaxin beim Stillen: Finger, Handgelenke und Schultern heute bewusst schonen.
+              Relaxin durch Stillen: Finger, Handgelenke und Schultern heute etwas schonen.
             </div>
           </div>
         )}

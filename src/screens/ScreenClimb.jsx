@@ -12,7 +12,7 @@ const CLIMB = {
         ST('Beckenboden-Set', 45, 'Kurzer Check: anspannen, halten, lösen. Nimm die Spannung mit in den Hang.'),
         ST('Repeater 1', 60, 'Offene Hand, große Leiste. 7 Sek. hängen, 3 Sek. lösen. Schultern aktiv, ausatmen beim Belasten.'),
         ST('Pause', 60, 'Komplett ausschütteln. Atme ruhig, lass die Unterarme entspannen.'),
-        ST('Repeater 2', 60, 'Zweiter Satz, gleiche Qualität. Lieber sauber als hart — kein Crimp.'),
+        ST('Repeater 2', 60, 'Zweiter Satz, gleiche Qualität. Lieber sauber als hart. Kein Crimp.'),
         ST('Ausklang', 60, 'Unterarme dehnen, Handgelenke mobilisieren.'),
       ]},
     { name: 'Aktiver Hang · Last', focus: 'Schulter · Rumpf', dur: '~7 Min', kind: 'Fingerboard',
@@ -67,7 +67,7 @@ export default function ScreenClimb({ onStart, onGoPlan }) {
           </div>
           <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, lineHeight: 1.55, color: theme.inkSoft,
             marginTop: s(10) }}>
-            Sehnen und Beckenboden brauchen erst die Aufbau-Basis. Das ist kein Zeitplan, den man aussitzt — es ist ein Tor, das du durch Readiness öffnest.
+            Sehnen und Beckenboden brauchen zuerst die Aufbau-Basis. Kein Zeitplan zum Aussitzen, sondern ein Tor, das du durch deinen Fortschritt öffnest.
           </div>
           <button onClick={onGoPlan} style={{
             marginTop: s(20), border: 'none', cursor: 'pointer',
@@ -115,7 +115,7 @@ export default function ScreenClimb({ onStart, onGoPlan }) {
         borderRadius: s(15), padding: `${s(13)}px ${s(15)}px`, marginBottom: s(4) }}>
         <Icon name="info" size={19} color={theme.terracotta} stroke={2} />
         <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, lineHeight: 1.45, color: theme.terracottaInk }}>
-          <b>Vor jeder Einheit:</b> Beckenboden-Check. Spürst du Druck, Schwere oder Nässe — brich ab und notiere es. Das ist Stärke, nicht Schwäche.
+          <b>Vor jeder Einheit:</b> kurz nach innen hören. Spürst du Druck, Schwere oder Nässe, brich ab und schreib es auf. Das gehört dazu.
         </div>
       </div>
 
@@ -146,7 +146,7 @@ export default function ScreenClimb({ onStart, onGoPlan }) {
         ))}
         <div style={{ fontFamily: FONTS.sans, fontSize: 11.5, color: theme.inkMute, lineHeight: 1.5,
           padding: `${s(2)}px ${s(4)}px` }}>
-          Geschlossene Crimps belasten die Ringbänder maximal. Die Sehnen brauchen bis Monat 8–9, um postpartal wieder voll belastbar zu sein — darum ein echtes Tor, kein Hinweis.
+          Crimps belasten die Ringbänder am stärksten. Postpartal brauchen die Sehnen bis Monat 8 oder 9, um das wieder zu vertragen. Deshalb kein Hinweis, sondern ein echtes Tor.
         </div>
       </div>
     </div>

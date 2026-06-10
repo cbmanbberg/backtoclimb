@@ -10,12 +10,12 @@ export default function ScreenPlan({ onGoProfile }) {
 
   const advanceBlockReason = () => {
     if (b.phase === 1) {
-      if (b.symptomBlock) return 'Aufstieg pausiert — 2× Deutlich in 7 Tagen'
-      if (!b.p2TimeMet) return `Phase 2 ab Woche ${b.p2MinWeeks} — du bist in Woche ${b.weeksPP}`
+      if (b.symptomBlock) return 'Pause eingelegt: zweimal deutlich diese Woche'
+      if (!b.p2TimeMet) return `Noch ${b.p2MinWeeks - b.weeksPP} ${b.p2MinWeeks - b.weeksPP === 1 ? 'Woche' : 'Wochen'} bis Phase 2`
       return null
     }
-    if (b.symptomBlock) return 'Aufstieg pausiert — 2× Deutlich in 7 Tagen'
-    if (!b.physioGate) return 'Physio-Freigabe fehlt (Profil → Status)'
+    if (b.symptomBlock) return 'Pause eingelegt: zweimal deutlich diese Woche'
+    if (!b.physioGate) return 'Physio-Freigabe fehlt. Im Profil aktivieren.'
     if (!b.readinessMet) return `${b.readiness.filter(Boolean).length}/5 Kriterien erfüllt`
     return null
   }
@@ -34,7 +34,7 @@ export default function ScreenPlan({ onGoProfile }) {
             letterSpacing: '-.01em', marginTop: s(14) }}>Phase 3 freigeschaltet.</div>
           <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, color: theme.inkSoft, marginTop: s(8),
             lineHeight: 1.5 }}>
-            Du bist zurück an der Wand. Geh zum Klettern-Tab für deine Einheiten.
+            Du bist zurück. Die Klettern-Einheiten warten im nächsten Tab.
           </div>
         </Card>
 
@@ -74,7 +74,7 @@ export default function ScreenPlan({ onGoProfile }) {
           <Card pad={`${s(2)}px ${s(16)}px`} style={{ marginBottom: s(20) }}>
             {[
               { ok: b.p2TimeMet, label: `Mindestens ${b.p2MinWeeks} Wochen postpartum${b.profile.cSection ? ' (Kaiserschnitt)' : ''}`,
-                sub: b.p2TimeMet ? `Du bist in Woche ${b.weeksPP}` : `Aktuell Woche ${b.weeksPP} — Gewebe braucht diese Zeit` },
+                sub: b.p2TimeMet ? `Du bist in Woche ${b.weeksPP}` : `Woche ${b.weeksPP}. Das Gewebe braucht diese Zeit.` },
               { ok: !b.symptomBlock, label: 'Keine wiederholten deutlichen Symptome',
                 sub: b.symptomBlock ? '2× „Deutlich" in den letzten 7 Tagen' : 'Alles im grünen Bereich' },
             ].map((c, i) => (
@@ -100,7 +100,7 @@ export default function ScreenPlan({ onGoProfile }) {
             ))}
             <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute, lineHeight: 1.5,
               padding: `${s(10)}px 0 ${s(4)}px` }}>
-              Diese Kriterien prüft die App automatisch. Wenn du unsicher bist, warte auf deinen Rückbildungs-Check.
+              Diese Kriterien prüft die App für dich. Im Zweifel: lieber auf den Rückbildungs-Check warten.
             </div>
             <button onClick={b.actions.advancePhase} disabled={!!blockReason} style={{
               width: '100%', border: 'none', cursor: blockReason ? 'default' : 'pointer',
@@ -171,7 +171,7 @@ export default function ScreenPlan({ onGoProfile }) {
               Physio-Freigabe
             </div>
             <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute, marginTop: 2 }}>
-              {b.physioGate ? 'Erteilt' : 'Hartes Tor — im Profil aktivieren'}
+              {b.physioGate ? 'Erteilt' : 'Pflichtfreigabe. Im Profil aktivieren.'}
             </div>
           </div>
           <Icon name="chevron" size={16} color={theme.inkMute} />
@@ -186,7 +186,7 @@ export default function ScreenPlan({ onGoProfile }) {
           }}>
             <Icon name="info" size={18} color={theme.terracotta} stroke={2} />
             <div style={{ fontFamily: FONTS.sans, fontSize: 13, lineHeight: 1.45, color: theme.terracottaInk }}>
-              Aufstieg pausiert — 2× „Deutlich" in den letzten 7 Tagen. Gib deinem Körper Zeit.
+              Zweimal deutliche Symptome diese Woche. Lass dem Körper etwas Zeit, das zahlt sich aus.
             </div>
           </div>
         )}

@@ -153,7 +153,7 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
                 background: theme.terracottaSoft, borderRadius: s(13), padding: `${s(12)}px ${s(13)}px` }}>
                 <Icon name="info" size={18} color={theme.terracotta} stroke={2} />
                 <div style={{ fontFamily: FONTS.sans, fontSize: 13, lineHeight: 1.45, color: theme.terracottaInk }}>
-                  Danke fürs Ehrlichsein. Sprich mit deiner Physio, bevor du weiter belastest — das ist Teil des Trainings.
+                  Danke fürs Ehrlichsein. Sprich kurz mit deiner Physio, bevor du weitermachst. Das ernst nehmen gehört zum Training.
                 </div>
               </div>
               <button onClick={() => onComplete('deutlich')} style={{
@@ -161,7 +161,7 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
                 background: theme.terracotta, color: theme.onPrimary, borderRadius: s(13),
                 padding: `${s(14)}px 0`, fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700,
               }}>
-                Verstanden — speichern
+                Alles klar, speichern
               </button>
             </>
           )}

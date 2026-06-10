@@ -246,12 +246,12 @@ export function useGuidedTimer(steps) {
 
 // ── SerieLedger ───────────────────────────────────────────────────────────────
 const MILESTONE_META = {
-  3:  { title: 'Drei Tage.',          body: 'Du hast angefangen — und aufgehört, anzufangen.' },
+  3:  { title: 'Drei Tage.',          body: 'Du hast angefangen. Das zählt.' },
   7:  { title: 'Eine ganze Woche.',   body: 'Sieben Tage. Jeden einzeln entschieden.' },
   14: { title: 'Zwei Wochen.',        body: 'Eine Gewohnheit braucht Wiederholung. Du hast sie.' },
-  21: { title: 'Drei Wochen.',        body: 'Die Wissenschaft sagt, jetzt ist etwas verdrahtet.' },
-  30: { title: 'Ein ganzer Monat.',   body: 'Dreißig Tage konsistent. Das ist Athletinnen-Mindset.' },
-  50: { title: 'Fünfzig Tage.',       body: 'Fünfzig Tage. Kein Zufall mehr — das bist du.' },
+  21: { title: 'Drei Wochen.',        body: 'Nach drei Wochen sitzt das. Wirklich.' },
+  30: { title: 'Ein ganzer Monat.',   body: 'Dreißig Tage am Stück. Du weißt jetzt, was du kannst.' },
+  50: { title: 'Fünfzig Tage.',       body: 'Fünfzig Tage. Das ist kein Zufall mehr.' },
 }
 
 // Maps the serie onto the evenly spaced milestone rail: the fill line always
@@ -286,7 +286,7 @@ export function SerieLedger({ compact }) {
               TAGE</span>
           </div>
           <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute, marginTop: s(3) }}>
-            {ml.last ? `${ml.last}-Tage-Meilenstein erreicht` : 'Kontinuität aufbauen'}
+            {ml.last ? `${ml.last}-Tage-Meilenstein erreicht` : 'Serie im Aufbau'}
           </div>
         </div>
         <div style={{ display: 'flex', gap: s(6), alignItems: 'center' }}>
@@ -318,7 +318,7 @@ export function SerieLedger({ compact }) {
             TAGE IN FOLGE</div>
           {ml.next && (
             <div style={{ fontFamily: FONTS.sans, fontSize: 12, color: theme.inkMute, marginTop: 2 }}>
-              Noch {ml.next - b.serie} bis zum nächsten Meilenstein</div>
+              Noch {ml.next - b.serie} bis zum nächsten</div>
           )}
         </div>
       </div>

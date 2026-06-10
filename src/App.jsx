@@ -40,8 +40,8 @@ function AppShell({ onGoHistory }) {
   const HEADERS = {
     plan:    { kicker: 'Dein Weg', title: 'Plan' },
     history: { kicker: 'Rückblick', title: 'Verlauf' },
-    climb:   { kicker: store.climbingUnlocked ? 'Phase 3 · offen' : 'Gesperrt', title: 'Klettern' },
-    profile: { kicker: 'Konto', title: 'Profil' },
+    climb:   { kicker: store.climbingUnlocked ? 'Phase 3 · offen' : 'Noch gesperrt', title: 'Klettern' },
+    profile: { kicker: 'Dein Bereich', title: 'Profil' },
   }
 
   let screen = null

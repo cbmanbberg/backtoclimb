@@ -31,7 +31,7 @@ export const PHASES = [
   { n: 2, name: 'Aufbau', tag: 'Load', weeks: 'Woche 6–12+',
     blurb: 'Belastung dosiert steigern. Sehnen und Beckenboden auf Zug vorbereiten.' },
   { n: 3, name: 'Zurück an die Wand', tag: 'Return', weeks: 'ab Monat 3',
-    blurb: 'Fingerboard und Boulder — kontrolliert. Crimp bleibt gesperrt bis Monat 8.' },
+    blurb: 'Fingerboard, Boulder, erste echte Züge. Crimp kommt erst ab Monat 8.' },
 ]
 
 const ST = (name, dur, cue) => ({ name, dur, cue })
@@ -39,12 +39,12 @@ export const WORKOUTS = [
   { id: 'w0', phases: [1], name: 'Tiefenspannung & Atem', focus: 'Beckenboden · Rumpf', kind: 'Aufbau',
     dur: '~9 Min', steps: [
       ST('Ankommen', 60, 'Rücken am Boden, Knie gebeugt. Atme tief in den Bauch und spüre, wie sich die Rippen seitlich weiten.'),
-      ST('Beckenboden wecken', 90, 'Mit der Ausatmung den Beckenboden langsam anspannen — als hebst du eine Blaubeere an. Halte 5 Sek., löse vollständig.'),
+      ST('Beckenboden wecken', 90, 'Mit der Ausatmung den Beckenboden langsam anspannen, als würdest du eine Blaubeere anheben. Fünf Sekunden, dann vollständig lösen.'),
       ST('Dead Bug', 120, 'Gegengleich Arm und Bein absenken. Die Rippen bleiben unten, kein Hohlkreuz. Ruhig weiteratmen.'),
       ST('Atempause', 45, 'Lass alles los. Drei lange Atemzüge. Spüre nach, ohne zu bewerten.'),
       ST('Seitstütz (Knie)', 90, 'Auf dem Unterarm, Knie gebeugt. Hüfte heben, lange Linie von Knie zu Kopf. Schulter stabil halten.'),
       ST('Aktives Hängen', 60, 'An der Stange, Schultern aktiv nach unten ziehen. Spüre die Verbindung von Schulter zu Rumpf.'),
-      ST('Ausklang', 60, 'Kindshaltung. Atme in den Rücken. Du hast Spannung aufgebaut — nicht verloren.'),
+      ST('Ausklang', 60, 'Kindshaltung. Atme in den Rücken. Du baust auf, nichts geht verloren.'),
     ]},
   { id: 'w0b', phases: [1], name: 'Beckenboden & Becken', focus: 'Tiefe Schicht · sanft', kind: 'Aufbau',
     dur: '~8 Min', steps: [
@@ -71,7 +71,7 @@ export const WORKOUTS = [
       ST('Glute Bridge', 90, 'Becken heben, oben 3 Sek. halten. Ausatmen beim Heben, Beckenboden sanft mitnehmen.'),
       ST('Kniebeugen', 120, 'Langsam und kontrolliert, wie auf einen Stuhl setzen. Gewicht auf der ganzen Sohle.'),
       ST('Atempause', 45, 'Ausschütteln, drei ruhige Atemzüge.'),
-      ST('Ausfallschritte', 120, 'Kontrolliert nach hinten absteigen. Rumpf aufrecht — das ist deine Wandstabilität.'),
+      ST('Ausfallschritte', 120, 'Kontrolliert nach hinten absteigen. Rumpf aufrecht. Das ist schon deine Wandstabilität.'),
       ST('Seitstütz', 90, 'Auf dem Unterarm, gern auf den Knien. Lange Linie, ruhige Atmung.'),
       ST('Ausklang', 60, 'Hüftbeuger dehnen, beide Seiten. Lange ausatmen.'),
     ]},
@@ -88,8 +88,8 @@ export const WORKOUTS = [
 export const MOODS = [
   { id: 'gut',    label: 'Gut',    note: null },
   { id: 'mittel', label: 'Mittel', note: 'Heute bewusst auf 70 %. Qualität vor Intensität.' },
-  { id: 'muede',  label: 'Müde',   note: 'Wir tauschen auf eine ruhige Einheit. Regeneration ist Aufbau.' },
-  { id: 'pause',  label: 'Pause',  note: 'Ruhetag. Bewegung ist eingeladen, nichts ist Pflicht.' },
+  { id: 'muede',  label: 'Müde',   note: 'Heute lieber die sanfte Einheit. Erholen ist auch Aufbau.' },
+  { id: 'pause',  label: 'Pause',  note: 'Ruhetag. Ein Spaziergang ist willkommen, sonst nichts.' },
 ]
 
 export const READINESS = [
@@ -114,7 +114,7 @@ export function useBtc() { return useContext(BtcContext) }
 const DEFAULT_PROFILE = {
   name: 'Anna',
   childBirth: isoDay(addDays(TODAY, -49)),
-  goal: 'Zurück an den Fels — 7a bouldern',
+  goal: 'Zurück an den Fels, 7a bouldern',
   breastfeeding: true, cSection: false, physioCleared: false,
 }
 

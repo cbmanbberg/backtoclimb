@@ -56,8 +56,7 @@ export default function ScreenOnboarding() {
         </div>
         <div style={{ fontFamily: FONTS.sans, fontSize: 14.5, lineHeight: 1.65,
           color: theme.inkSoft }}>
-          Ein strukturiertes Programm für die postpartale Rückkehr zum Klettern —
-          evidenzbasiert, in deinem Tempo.
+          Dein Weg zurück an den Fels. Strukturiert, durchdacht, in deinem Tempo.
         </div>
       </div>
 
