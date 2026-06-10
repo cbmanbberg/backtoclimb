@@ -144,16 +144,19 @@ export function createBtcStore() {
   const [sessions, setSessions] = useState(saved?.sessions ?? [])
   const [rests, setRests] = useState(saved?.rests ?? [])
   const [advancedAt, setAdvancedAt] = useState(saved?.advancedAt ?? null)
+  const [startedAt, setStartedAt] = useState(saved?.startedAt ?? null)
 
   // persist on change
   useEffect(() => {
-    save({ started, profile, phase, mood, moodDay: isoDay(TODAY), readiness, sessions, rests, advancedAt, workoutIdx })
-  }, [started, profile, phase, mood, readiness, sessions, rests, advancedAt])
+    save({ started, profile, phase, mood, moodDay: isoDay(TODAY), readiness, sessions, rests, advancedAt, workoutIdx, startedAt })
+  }, [started, profile, phase, mood, readiness, sessions, rests, advancedAt, startedAt])
 
   // derived
   const birth = parseD(profile.childBirth)
-  const weeksPP = weeksSince(birth)
+  const weeksPP = weeksSince(birth)           // weeks since birth — medical reference only
   const monthsPP = monthsSince(birth)
+  // weeks since program start (1-based); falls back to weeksPP for existing saves without startedAt
+  const programWeek = startedAt ? weeksSince(parseD(startedAt)) + 1 : weeksPP
   const crimpUnlock = addMonths(birth, 8)
   const crimpUnlocked = TODAY >= startOfDay(crimpUnlock)
   const climbingUnlocked = phase >= 3
@@ -226,20 +229,21 @@ export function createBtcStore() {
     startProgram: (childBirth, name) => {
       setProfile({ ...DEFAULT_PROFILE, childBirth, name: name || DEFAULT_PROFILE.name })
       setPhase(1)
+      setStartedAt(isoDay(TODAY))
       setStarted(true)
     },
     reset: () => {
       localStorage.removeItem(STORAGE_KEY)
       setStarted(false); setPhase(1); setMood(null); setWorkoutIdx(0); setRests([])
       setReadiness([false,false,false,false,false]); setSessions([]); setAdvancedAt(null)
-      setProfile({ ...DEFAULT_PROFILE })
+      setStartedAt(null); setProfile({ ...DEFAULT_PROFILE })
     },
   }
 
   return {
     started, profile, phase, mood, moodObj, restDay, restToday, workoutIdx,
-    readiness, sessions, rests, advancedAt,
-    birth, weeksPP, monthsPP, crimpUnlock, crimpUnlocked, climbingUnlocked,
+    readiness, sessions, rests, advancedAt, startedAt,
+    birth, weeksPP, programWeek, monthsPP, crimpUnlock, crimpUnlocked, climbingUnlocked,
     deutlich7d, symptomBlock, readinessMet, physioGate, canAdvance, p2TimeMet, p2MinWeeks, streak,
     serie, milestones: {
       list: MILESTONES, next: nextMilestone, earned: earnedMilestones,

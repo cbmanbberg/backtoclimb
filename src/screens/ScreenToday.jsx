@@ -36,7 +36,7 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           marginBottom: s(18) }}>
           <DataTag tone="mute">{todayLong}</DataTag>
-          <DataTag tone="primary">W{String(b.weeksPP).padStart(2,'0')} · PH{b.phase}</DataTag>
+          <DataTag tone="primary">W{String(b.programWeek).padStart(2,'0')} · PH{b.phase}</DataTag>
         </div>
         <div style={{ fontFamily: FONTS.mono, fontSize: 11, fontWeight: 500, letterSpacing: '.04em',
           textTransform: 'uppercase', color: theme.inkMute, marginBottom: s(12) }}>
@@ -44,7 +44,7 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
         </div>
         <div style={{ fontFamily: FONTS.serif, fontSize: s(44), fontWeight: 500, color: theme.ink,
           letterSpacing: '-.035em', lineHeight: .94 }}>
-          Woche {b.weeksPP}.<br />
+          Woche {b.programWeek}.<br />
           <span style={{ fontStyle: 'italic', color: theme.primary }}>Bleib dran.</span>
         </div>
       </div>
