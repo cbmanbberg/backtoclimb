@@ -169,7 +169,7 @@ function ClimbSection({ index, label, units, onStart }) {
               {u.name}
             </div>
             <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.inkMute, marginTop: s(4) }}>
-              {u.focus} · {u.steps.length} Schritte
+              {u.focus} · {u.steps.length} Übungen
             </div>
             <button onClick={() => onStart(u)} style={{
               marginTop: s(13), width: '100%', border: 'none', cursor: 'pointer',

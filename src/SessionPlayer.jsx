@@ -104,7 +104,7 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
       </div>
       <div style={{ fontFamily: FONTS.sans, fontSize: 12, fontWeight: 600, color: theme.inkMute,
         textAlign: 'center', padding: `${s(8)}px 0 0` }}>
-        Schritt {t.i + 1} von {t.n}
+        Übung {t.i + 1} von {t.n}
       </div>
 
       {/* timer */}

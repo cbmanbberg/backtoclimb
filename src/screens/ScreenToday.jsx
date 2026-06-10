@@ -166,7 +166,7 @@ export default function ScreenToday({ onStart, onGoPlan, onGoClimb }) {
               <span style={{ width: 3, height: 3, borderRadius: '50%', background: theme.inkMute }} />
               <DataTag tone="mute">{w.dur.replace('~','')}</DataTag>
               <span style={{ width: 3, height: 3, borderRadius: '50%', background: theme.inkMute }} />
-              <DataTag tone="mute">{String(w.steps.length).padStart(2,'0')} SCHRITTE</DataTag>
+              <DataTag tone="mute">{String(w.steps.length).padStart(2,'0')} ÜBUNGEN</DataTag>
             </div>
             <div style={{ fontFamily: FONTS.serif, fontSize: s(28), fontWeight: 500, color: theme.ink,
               letterSpacing: '-.02em', lineHeight: 1.05 }}>{w.name}</div>
