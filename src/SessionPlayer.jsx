@@ -23,15 +23,16 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
 
   // Contraction pacer: derive the current hold / release phase from elapsed time.
   const pulse = t.step?.pulse
-  let pulseActive = false, pulsePhase = null, pulseScale = 0, pulseLabel = null
+  let pulseActive = false, pulsePhase = null, pulseScale = 0, pulseLabel = null, holdRem = null
   if (pulse && t.playing && !t.done) {
     pulseActive = true
     const period = pulse.hold + pulse.release
     const tc = t.elapsed % period
     if (tc < pulse.hold) {
       pulsePhase = 'on'
-      pulseScale = easeInOut(Math.min(1, tc / pulse.hold))
-      pulseLabel = pulse.on || 'Anspannen'
+      pulseScale = 1                               // frozen at full contraction
+      holdRem = Math.ceil(pulse.hold - tc)         // countdown: 5 → 4 → 3 …
+      pulseLabel = pulse.on || 'Halten'
     } else {
       pulsePhase = 'off'
       pulseScale = 1 - easeInOut(Math.min(1, (tc - pulse.hold) / pulse.release))
@@ -124,18 +125,31 @@ export default function SessionPlayer({ workout, onClose, onComplete }) {
           )}
           <div style={{ position: 'relative', zIndex: 1, display: 'flex',
             flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ fontFamily: FONTS.serif, fontSize: s(52), fontWeight: 500, color: theme.ink,
-              letterSpacing: '-.02em', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
-              {mmss}
-            </div>
-            <div style={{ fontFamily: FONTS.sans, fontSize: pulseActive ? 14 : 12.5,
-              fontWeight: 700, marginTop: s(6),
-              letterSpacing: pulseActive ? '.04em' : 0,
-              color: pulseActive
-                ? (pulsePhase === 'on' ? theme.primary : theme.inkMute)
-                : theme.inkMute }}>
-              {pulseActive ? pulseLabel : (t.playing ? 'läuft' : t.done ? 'fertig' : 'pausiert')}
-            </div>
+            {holdRem !== null ? (
+              <>
+                <div style={{ fontFamily: FONTS.serif, fontSize: s(52), fontWeight: 500, color: theme.primary,
+                  letterSpacing: '-.02em', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+                  {holdRem}
+                </div>
+                <div style={{ fontFamily: FONTS.sans, fontSize: 13, fontWeight: 700, marginTop: s(5),
+                  letterSpacing: '.06em', textTransform: 'uppercase', color: theme.primary }}>
+                  {pulseLabel}
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={{ fontFamily: FONTS.serif, fontSize: s(52), fontWeight: 500, color: theme.ink,
+                  letterSpacing: '-.02em', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+                  {mmss}
+                </div>
+                <div style={{ fontFamily: FONTS.sans, fontSize: pulseActive ? 14 : 12.5,
+                  fontWeight: 700, marginTop: s(6),
+                  letterSpacing: pulseActive ? '.04em' : 0,
+                  color: pulseActive ? theme.inkMute : theme.inkMute }}>
+                  {pulseActive ? pulseLabel : (t.playing ? 'läuft' : t.done ? 'fertig' : 'pausiert')}
+                </div>
+              </>
+            )}
           </div>
         </CircleTimer>
       </div>
