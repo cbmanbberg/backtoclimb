@@ -1,202 +1,126 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { loadState, saveState } from './store'
-import HomeTab from './components/HomeTab'
-import PlanTab from './components/PlanTab'
-import HistoryTab from './components/HistoryTab'
-import ClimbTab from './components/ClimbTab'
-import ProfileTab from './components/ProfileTab'
-import TimerScreen from './components/TimerScreen'
-import ReadinessCheck from './components/ReadinessCheck'
-import BottomNav from './components/BottomNav'
+import { useState, useEffect } from 'react'
+import { BtcContext, createBtcStore, isoDay, TODAY } from './store'
+import { getTheme, getSpace, FONTS } from './tokens'
+import { ThemeCtx, useUI, StatusBar, ScreenHead, TabBar, MilestoneCelebration } from './ui'
+import ScreenToday from './screens/ScreenToday'
+import ScreenPlan from './screens/ScreenPlan'
+import ScreenHistory from './screens/ScreenHistory'
+import ScreenClimb from './screens/ScreenClimb'
+import ScreenProfile from './screens/ScreenProfile'
+import SessionPlayer from './SessionPlayer'
 
-const GLOBAL_STYLES = `
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-  }
-  :root {
-    --bg: #312C51;
-    --bg2: #48426D;
-    --white: #FFFFFF;
-    --lavender: #F0C38E;
-    --lavender-light: #F1AA98;
-    --lavender-pale: rgba(240,195,142,0.15);
-    --green: #5BB88A;
-    --coral: #F1AA98;
-    --text: #F5F0FF;
-    --muted: #B8AECE;
-    --border: rgba(240,195,142,0.18);
-    --card-bg: rgba(72,66,109,0.60);
-    --radius: 22px;
-    --shadow: 0 8px 32px rgba(0,0,0,0.40);
-  }
-  body { overflow-x: hidden; background: var(--bg); }
-  .screen {
-    min-height: 100dvh;
-    background: var(--bg);
-    padding-bottom: 80px;
-    position: relative;
-    overflow-x: hidden;
-  }
-  /* organic background blobs */
-  .screen::before {
-    content: '';
-    position: fixed;
-    top: -160px; left: -120px;
-    width: 520px; height: 500px;
-    background: radial-gradient(ellipse at 40% 40%, rgba(72,66,109,0.70) 0%, transparent 65%);
-    border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
-    pointer-events: none;
-    z-index: 0;
-    animation: blobFloat 12s ease-in-out infinite;
-  }
-  .screen::after {
-    content: '';
-    position: fixed;
-    bottom: 40px; right: -130px;
-    width: 440px; height: 420px;
-    background: radial-gradient(ellipse at 60% 60%, rgba(241,170,152,0.18) 0%, transparent 65%);
-    border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
-    pointer-events: none;
-    z-index: 0;
-    animation: blobFloat 16s ease-in-out infinite reverse;
-  }
-  @keyframes blobFloat {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    33% { transform: translate(12px, -18px) rotate(3deg); }
-    66% { transform: translate(-8px, 10px) rotate(-2deg); }
-  }
-  .content { position: relative; z-index: 1; padding: 28px 20px 0; }
-  .card {
-    background: var(--card-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    padding: 20px;
-    margin-bottom: 14px;
-  }
-  .card-lavender {
-    background: linear-gradient(135deg, rgba(240,195,142,0.12) 0%, rgba(241,170,152,0.06) 100%);
-    border-color: rgba(240,195,142,0.28);
-  }
-  .pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 5px 14px;
-    border-radius: 100px;
-    font-size: 12px; font-weight: 700;
-    letter-spacing: 0.03em;
-  }
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 14px 24px;
-    border-radius: 100px;
-    border: none; cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-    font-size: 15px; font-weight: 700;
-    transition: transform 0.15s, box-shadow 0.15s;
-    letter-spacing: 0.01em;
-  }
-  .btn:active { transform: scale(0.96); }
-  .btn-primary {
-    background: linear-gradient(135deg, #F0C38E 0%, #F1AA98 100%);
-    color: #312C51;
-    box-shadow: 0 8px 28px rgba(240,195,142,0.38);
-  }
-  .btn-secondary {
-    background: rgba(72,66,109,0.60);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-green {
-    background: linear-gradient(135deg, #3D8060 0%, #5BB88A 100%);
-    color: white;
-    box-shadow: 0 8px 24px rgba(78,145,113,0.35);
-  }
-  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
-  h1 { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
-  h2 { font-size: 19px; font-weight: 700; color: var(--text); }
-  h3 { font-size: 15px; font-weight: 700; color: var(--text); }
-  p { font-size: 14px; color: var(--muted); line-height: 1.65; }
-`
+// AppShell: called after ThemeCtx and BtcContext are both available
+function AppShell({ onGoHistory }) {
+  const { theme, s } = useUI()
+  const store = createBtcStore()
 
-export default function App() {
-  const [state, setState] = useState(() => loadState())
-  const [activeTab, setActiveTab] = useState('home')
-  const [timerWorkout, setTimerWorkout] = useState(null)
-  const [showReadiness, setShowReadiness] = useState(false)
+  const [tab, setTab] = useState('today')
+  const [session, setSession] = useState(null)
+  const [toast, setToast] = useState(null)
+  const [celebrate, setCelebrate] = useState(null)
 
-  useEffect(() => {
-    saveState(state)
-  }, [state])
+  const startSession = (w) => setSession(w)
 
-  const updateState = useCallback((updater) => {
-    setState(prev => {
-      const next = typeof updater === 'function' ? updater(prev) : { ...prev, ...updater }
-      return next
-    })
-  }, [])
-
-  const startWorkout = useCallback((workout) => {
-    setTimerWorkout(workout)
-  }, [])
-
-  const finishWorkout = useCallback((workout, skipped) => {
-    const today = new Date().toISOString().split('T')[0]
-    updateState(prev => ({
-      ...prev,
-      sessions: [...prev.sessions, {
-        id: `s_${Date.now()}`,
-        date: today,
-        type: workout.type,
-        title: workout.title,
-        completed: !skipped,
-        durationMin: workout.durationMin,
-        skipped: skipped || false,
-      }],
-    }))
-    setTimerWorkout(null)
-  }, [updateState])
-
-  if (timerWorkout) {
-    return (
-      <>
-        <style>{GLOBAL_STYLES}</style>
-        <TimerScreen
-          workout={timerWorkout}
-          onFinish={(skipped) => finishWorkout(timerWorkout, skipped)}
-          onBack={() => setTimerWorkout(null)}
-        />
-      </>
-    )
+  const completeSession = (sym) => {
+    const todayActive = store.restToday || store.sessions.some(x => x.date === isoDay(TODAY))
+    const newSerie = todayActive ? store.serie : store.serie + 1
+    const hitsMilestone = !todayActive && store.milestones.list.includes(newSerie)
+    store.actions.completeSession(session, sym)
+    setSession(null)
+    const labels = { keine: 'Keine Symptome', leicht: 'Leichter Druck', deutlich: 'Deutlich' }
+    if (hitsMilestone) {
+      setCelebrate({ milestone: newSerie, serie: newSerie })
+    } else {
+      setToast(`Session gespeichert · ${labels[sym]}`)
+      setTimeout(() => setToast(null), 2600)
+    }
   }
 
-  if (showReadiness) {
-    return (
-      <>
-        <style>{GLOBAL_STYLES}</style>
-        <ReadinessCheck
-          state={state}
-          updateState={updateState}
-          onBack={() => setShowReadiness(false)}
-        />
-      </>
-    )
+  const HEADERS = {
+    plan:    { kicker: 'Dein Weg', title: 'Plan' },
+    history: { kicker: 'Rückblick', title: 'Verlauf' },
+    climb:   { kicker: store.climbingUnlocked ? 'Phase 3 · offen' : 'Gesperrt', title: 'Klettern' },
+    profile: { kicker: 'Konto', title: 'Profil' },
   }
 
-  const tabProps = { state, updateState, startWorkout, setShowReadiness, setActiveTab }
+  let screen = null
+  if (tab === 'today')        screen = <ScreenToday onStart={startSession} />
+  else if (tab === 'plan')    screen = <ScreenPlan onGoProfile={() => setTab('profile')} />
+  else if (tab === 'history') screen = <ScreenHistory />
+  else if (tab === 'climb')   screen = <ScreenClimb onStart={startSession} onGoPlan={() => setTab('plan')} />
+  else if (tab === 'profile') screen = <ScreenProfile />
 
   return (
-    <>
-      <style>{GLOBAL_STYLES}</style>
-      <div style={{ position: 'relative', minHeight: '100dvh' }}>
-        {activeTab === 'home' && <HomeTab {...tabProps} />}
-        {activeTab === 'plan' && <PlanTab {...tabProps} />}
-        {activeTab === 'history' && <HistoryTab {...tabProps} />}
-        {activeTab === 'climb' && <ClimbTab {...tabProps} />}
-        {activeTab === 'profile' && <ProfileTab {...tabProps} />}
-        <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
+    <BtcContext.Provider value={store}>
+      <div style={{
+        height: '100%', display: 'flex', flexDirection: 'column',
+        background: theme.bg, position: 'relative', overflow: 'hidden',
+        maxWidth: 430, margin: '0 auto', minHeight: '100dvh',
+      }}>
+        <StatusBar />
+        <div style={{ flex: 1, position: 'relative', minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+          {HEADERS[tab] && (
+            <div style={{ flexShrink: 0, paddingTop: s(4) }}>
+              <ScreenHead kicker={HEADERS[tab].kicker} title={HEADERS[tab].title} />
+            </div>
+          )}
+          <div className="btc-scroll" key={tab}
+            style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', paddingBottom: s(20) }}>
+            {screen}
+          </div>
+          <TabBar tab={tab} onTab={setTab} climbingUnlocked={store.climbingUnlocked} />
+
+          {toast && (
+            <div style={{ position: 'absolute', left: 0, right: 0, bottom: s(78),
+              display: 'flex', justifyContent: 'center', pointerEvents: 'none', zIndex: 45 }}>
+              <div style={{ background: theme.ink, color: theme.bg, fontFamily: FONTS.sans,
+                fontSize: 13, fontWeight: 600, padding: `${s(10)}px ${s(16)}px`, borderRadius: 999,
+                boxShadow: theme.shadowLg, animation: 'btcFade .3s ease' }}>
+                {toast}
+              </div>
+            </div>
+          )}
+
+          {session && (
+            <SessionPlayer workout={session} onClose={() => setSession(null)}
+              onComplete={completeSession} />
+          )}
+
+          {celebrate && (
+            <MilestoneCelebration
+              milestone={celebrate.milestone}
+              serie={celebrate.serie}
+              onClose={() => { setCelebrate(null); setTab('history') }}
+            />
+          )}
+        </div>
       </div>
-    </>
+    </BtcContext.Provider>
+  )
+}
+
+export default function App() {
+  const [dark, setDark] = useState(() =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  )
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = (e) => setDark(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  const theme = getTheme(dark, 'teal')
+  const s = getSpace('wohlig')
+
+  useEffect(() => {
+    document.body.style.background = theme.page
+  }, [theme.page])
+
+  return (
+    <ThemeCtx.Provider value={{ theme, s, fonts: FONTS }}>
+      <AppShell />
+    </ThemeCtx.Provider>
   )
 }

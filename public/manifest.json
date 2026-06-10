@@ -1,13 +1,12 @@
 {
-  "name": "Return to Climb",
-  "short_name": "RtC",
-  "description": "Postnatal Return-to-Sport — kletterspezifische Rückbildung",
-  "start_url": "/backtoclimb/",
+  "name": "BackToClimb",
+  "short_name": "BackToClimb",
+  "description": "Postpartale Rückkehr zum Klettern — strukturiert, evidenzbasiert.",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#FDF6EF",
-  "theme_color": "#FDF6EF",
-  "orientation": "portrait",
+  "background_color": "#f0ece5",
+  "theme_color": "#f0ece5",
   "icons": [
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
 }

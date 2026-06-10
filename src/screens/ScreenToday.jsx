@@ -1,0 +1,188 @@
+import { useBtc, MOODS, TODAY, addDays, isoDay, weekdayLetter } from '../store'
+import { FONTS } from '../tokens'
+import { useUI, Icon, SectionRule, DataTag, SerieLedger, Card } from '../ui'
+
+export default function ScreenToday({ onStart }) {
+  const { theme, s } = useUI()
+  const b = useBtc()
+
+  const days = Array.from({ length: 7 }, (_, k) => {
+    const date = addDays(TODAY, -(6 - k))
+    const iso = isoDay(date)
+    const sess = b.sessions.find(x => x.date === iso)
+    const rest = b.rests.includes(iso)
+    const isToday = iso === isoDay(TODAY)
+    return { date, iso, done: !!sess, rest, symptom: sess?.symptom, isToday }
+  })
+
+  const w = b.workout
+  const optional = b.restDay
+  const todayLong = TODAY.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })
+
+  return (
+    <div style={{ padding: `0 0 ${s(8)}px` }}>
+      {/* masthead */}
+      <div style={{ padding: `${s(8)}px ${s(22)}px ${s(20)}px` }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          marginBottom: s(18) }}>
+          <DataTag tone="mute">{todayLong}</DataTag>
+          <DataTag tone="primary">W{String(b.weeksPP).padStart(2,'0')} · PH{b.phase}</DataTag>
+        </div>
+        <div style={{ fontFamily: FONTS.mono, fontSize: 11, fontWeight: 500, letterSpacing: '.04em',
+          textTransform: 'uppercase', color: theme.inkMute, marginBottom: s(12) }}>
+          Guten Morgen, {b.profile.name}
+        </div>
+        <div style={{ fontFamily: FONTS.serif, fontSize: s(44), fontWeight: 500, color: theme.ink,
+          letterSpacing: '-.035em', lineHeight: .94 }}>
+          Woche {b.weeksPP}.<br />
+          <span style={{ fontStyle: 'italic', color: theme.primary }}>Bleib dran.</span>
+        </div>
+      </div>
+
+      {/* mood register */}
+      <div style={{ padding: `0 ${s(22)}px` }}>
+        <SectionRule index={1}>Wie fühlst du dich</SectionRule>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)',
+          border: `1px solid ${theme.line}`, borderRadius: s(13), overflow: 'hidden' }}>
+          {MOODS.map((m, i) => {
+            const on = b.mood === m.id
+            return (
+              <button key={m.id} onClick={() => b.actions.setMood(m.id)} style={{
+                border: 'none', borderLeft: i ? `1px solid ${theme.line}` : 'none',
+                cursor: 'pointer',
+                background: on ? theme.primary : theme.surface,
+                padding: `${s(13)}px 0 ${s(11)}px`,
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: s(7),
+                transition: 'background .15s',
+              }}>
+                <span style={{ fontFamily: FONTS.mono, fontSize: 10, fontWeight: 500,
+                  color: on ? theme.onPrimary : theme.inkMute, opacity: on ? .8 : 1 }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span style={{ fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: on ? 700 : 600,
+                  color: on ? theme.onPrimary : theme.inkSoft }}>
+                  {m.label}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+        {b.moodObj?.note && (
+          <div style={{ marginTop: s(11), display: 'flex', gap: s(11), alignItems: 'flex-start',
+            paddingLeft: s(2) }}>
+            <span style={{ marginTop: s(5), width: s(18), height: 1, flexShrink: 0,
+              background: optional ? theme.terracotta : theme.primary }} />
+            <div style={{ fontFamily: FONTS.sans, fontSize: 13, lineHeight: 1.5,
+              color: theme.inkSoft }}>{b.moodObj.note}</div>
+          </div>
+        )}
+      </div>
+
+      {/* week register */}
+      <div style={{ padding: `${s(24)}px ${s(22)}px 0` }}>
+        <SectionRule index={2} action={<DataTag tone="mute">7 TAGE</DataTag>}>Woche</SectionRule>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          {days.map((d, i) => {
+            const sevCol = d.symptom === 'deutlich' ? theme.terracotta
+              : d.symptom === 'leicht' ? theme.gold : theme.primary
+            return (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: s(8) }}>
+                <span style={{ fontFamily: FONTS.mono, fontSize: 10, fontWeight: 500,
+                  color: d.isToday ? theme.primary : theme.inkMute }}>
+                  {weekdayLetter(d.date)}
+                </span>
+                <div style={{
+                  width: 32, height: 32, borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: d.done ? sevCol : 'transparent',
+                  border: d.isToday
+                    ? `2px solid ${theme.primary}`
+                    : d.done ? 'none'
+                    : `1.5px solid ${d.rest ? theme.lineStrong : theme.line}`,
+                }}>
+                  {d.done && <Icon name="check" size={15} color={theme.onPrimary} stroke={2.6} />}
+                  {!d.done && d.rest && (
+                    <div style={{ width: 7, height: 7, borderRadius: '50%', border: `1.5px solid ${theme.inkMute}` }} />
+                  )}
+                  {d.isToday && !d.done && !d.rest && (
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: theme.primary }} />
+                  )}
+                </div>
+                <span style={{ fontFamily: FONTS.mono, fontSize: 10, color: theme.inkMute }}>
+                  {d.date.getDate()}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* serie */}
+      <div style={{ padding: `${s(24)}px ${s(22)}px 0` }}>
+        <SectionRule index={3}>Serie</SectionRule>
+        <SerieLedger compact />
+      </div>
+
+      {/* today's session */}
+      <div style={{ padding: `${s(24)}px ${s(22)}px 0` }}>
+        <SectionRule index={4}
+          action={
+            <button onClick={b.actions.swapWorkout} style={{
+              display: 'inline-flex', alignItems: 'center', gap: s(5),
+              border: 'none', background: 'none', cursor: 'pointer', padding: 0,
+              color: theme.primary, fontFamily: FONTS.sans, fontSize: 11, fontWeight: 700,
+              letterSpacing: '.04em',
+            }}>
+              <Icon name="swap" size={14} color={theme.primary} stroke={2} />
+              TAUSCHEN
+            </button>
+          }>
+          {optional ? 'Heute · optional' : 'Heutige Einheit'}
+        </SectionRule>
+        <div style={{ border: `1px solid ${theme.line}`, borderRadius: s(15), overflow: 'hidden',
+          background: theme.surface, boxShadow: theme.shadow }}>
+          <div style={{ padding: s(20), paddingBottom: s(18) }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: s(10), marginBottom: s(13) }}>
+              <DataTag tone={w.light ? 'terracotta' : 'primary'}>{w.kind.toUpperCase()}</DataTag>
+              <span style={{ width: 3, height: 3, borderRadius: '50%', background: theme.inkMute }} />
+              <DataTag tone="mute">{w.dur.replace('~','')}</DataTag>
+              <span style={{ width: 3, height: 3, borderRadius: '50%', background: theme.inkMute }} />
+              <DataTag tone="mute">{String(w.steps.length).padStart(2,'0')} SCHRITTE</DataTag>
+            </div>
+            <div style={{ fontFamily: FONTS.serif, fontSize: s(28), fontWeight: 500, color: theme.ink,
+              letterSpacing: '-.02em', lineHeight: 1.05 }}>{w.name}</div>
+            <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, color: theme.inkMute, marginTop: s(7) }}>
+              {w.focus}
+            </div>
+          </div>
+          <button onClick={() => onStart(w)} style={{
+            width: '100%', border: 'none', borderTop: `1px solid ${theme.line}`,
+            cursor: 'pointer', background: theme.primary, color: theme.onPrimary,
+            padding: `${s(16)}px 0`, fontFamily: FONTS.sans, fontSize: 15, fontWeight: 700,
+            letterSpacing: '.01em', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: s(9),
+          }}>
+            <Icon name="play" size={16} color={theme.onPrimary} />
+            {optional ? 'Trotzdem starten' : 'Session starten'}
+          </button>
+        </div>
+      </div>
+
+      {/* up next */}
+      <div style={{ padding: `${s(22)}px ${s(22)}px 0` }}>
+        <SectionRule index={5}>Als nächstes</SectionRule>
+        <div style={{ display: 'flex', alignItems: 'center', gap: s(14), padding: `${s(4)}px ${s(2)}px` }}>
+          <DataTag tone="mute" style={{ fontSize: 13 }}>→</DataTag>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700, color: theme.ink }}>
+              Phasen-Check steht an
+            </div>
+            <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.inkMute, marginTop: 2 }}>
+              Readiness erfüllen, um Phase 3 freizuschalten
+            </div>
+          </div>
+          <Icon name="chevron" size={17} color={theme.inkMute} />
+        </div>
+      </div>
+    </div>
+  )
+}

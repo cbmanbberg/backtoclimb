@@ -1,0 +1,172 @@
+import { useState } from 'react'
+import { FONTS } from './tokens'
+import { useUI, Icon, CircleTimer, Sheet, useGuidedTimer } from './ui'
+import { mix } from './tokens'
+
+export default function SessionPlayer({ workout, onClose, onComplete }) {
+  const { theme, s } = useUI()
+  const t = useGuidedTimer(workout.steps)
+  const [picked, setPicked] = useState(null)
+
+  const cSec = Math.ceil(t.rem)
+  const mmss = `${Math.floor(cSec / 60)}:${String(cSec % 60).padStart(2, '0')}`
+
+  const ghostBtn = {
+    width: s(54), height: s(54), borderRadius: '50%',
+    border: `1.5px solid ${theme.line}`, background: theme.surface,
+    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    flexShrink: 0,
+  }
+
+  const log = (sym) => {
+    if (sym === 'deutlich') setPicked('deutlich')
+    else onComplete(sym)
+  }
+
+  return (
+    <div style={{ position: 'absolute', inset: 0, zIndex: 50, background: theme.bg,
+      display: 'flex', flexDirection: 'column' }}>
+      {/* header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: `${s(14)}px ${s(20)}px ${s(6)}px` }}>
+        <button onClick={onClose} style={{ ...ghostBtn, width: s(40), height: s(40),
+          border: 'none', background: theme.surface2 }}>
+          <Icon name="close" size={20} color={theme.inkSoft} stroke={2.2} />
+        </button>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 11, fontWeight: 700, letterSpacing: '.1em',
+            textTransform: 'uppercase', color: theme.inkMute }}>{workout.kind || 'Session'}</div>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, fontWeight: 700, color: theme.ink, marginTop: 2 }}>
+            {workout.name}
+          </div>
+        </div>
+        <div style={{ width: s(40) }} />
+      </div>
+
+      {/* step rail */}
+      <div style={{ display: 'flex', gap: s(5), padding: `${s(14)}px ${s(22)}px ${s(4)}px` }}>
+        {workout.steps.map((_, i) => {
+          const fill = i < t.i ? 1 : i === t.i ? (t.done ? 1 : t.progress) : 0
+          return (
+            <div key={i} style={{ flex: 1, height: 5, borderRadius: 999, background: theme.surface2,
+              overflow: 'hidden' }}>
+              <div style={{ width: `${Math.max(0, Math.min(1, fill)) * 100}%`, height: '100%',
+                background: theme.primary, borderRadius: 999, transition: 'width .25s linear' }} />
+            </div>
+          )
+        })}
+      </div>
+      <div style={{ fontFamily: FONTS.sans, fontSize: 12, fontWeight: 600, color: theme.inkMute,
+        textAlign: 'center', padding: `${s(8)}px 0 0` }}>
+        Schritt {t.i + 1} von {t.n}
+      </div>
+
+      {/* timer */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+        justifyContent: 'center', gap: s(4), minHeight: 0 }}>
+        <CircleTimer size={s(236)} stroke={s(13)} progress={t.done ? 1 : t.progress}
+          color={theme.primary} track={theme.primaryRing}>
+          <div style={{ fontFamily: FONTS.serif, fontSize: s(52), fontWeight: 500, color: theme.ink,
+            letterSpacing: '-.02em', fontVariantNumeric: 'tabular-nums', lineHeight: 1 }}>
+            {mmss}
+          </div>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, fontWeight: 600, color: theme.inkMute,
+            marginTop: s(6) }}>
+            {t.playing ? 'läuft' : t.done ? 'fertig' : 'pausiert'}
+          </div>
+        </CircleTimer>
+      </div>
+
+      {/* cue card */}
+      <div style={{ padding: `0 ${s(22)}px` }}>
+        <div style={{ background: theme.primaryTint, borderRadius: s(18), padding: s(18),
+          borderLeft: `3px solid ${theme.primary}` }}>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 12, fontWeight: 700, letterSpacing: '.04em',
+            textTransform: 'uppercase', color: theme.primary, marginBottom: s(7) }}>
+            {t.step.name}
+          </div>
+          <div style={{ fontFamily: FONTS.sans, fontSize: 15, lineHeight: 1.5, color: theme.ink }}>
+            {t.step.cue}
+          </div>
+        </div>
+      </div>
+
+      {/* controls */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: s(22),
+        padding: `${s(22)}px 0 ${s(28)}px` }}>
+        <button onClick={t.prev} style={ghostBtn}>
+          <Icon name="prev" size={22} color={theme.inkSoft} />
+        </button>
+        <button onClick={t.toggle} style={{
+          width: s(78), height: s(78), borderRadius: '50%', border: 'none',
+          background: theme.primary, cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: theme.shadowLg, paddingLeft: t.playing ? 0 : s(4),
+        }}>
+          <Icon name={t.playing ? 'pause' : 'play'} size={s(32)} color={theme.onPrimary} />
+        </button>
+        <button onClick={t.next} style={ghostBtn}>
+          <Icon name="next" size={22} color={theme.inkSoft} />
+        </button>
+      </div>
+
+      {/* symptom log */}
+      {t.done && (
+        <Sheet onClose={() => {}} align="center">
+          <div style={{ textAlign: 'center', marginBottom: s(6) }}>
+            <div style={{ width: s(48), height: s(48), borderRadius: '50%', margin: '0 auto',
+              background: theme.primarySoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="check" size={26} color={theme.primary} stroke={2.4} />
+            </div>
+            <div style={{ fontFamily: FONTS.serif, fontSize: s(22), fontWeight: 500, color: theme.ink,
+              marginTop: s(12), letterSpacing: '-.01em' }}>Geschafft.</div>
+            <div style={{ fontFamily: FONTS.sans, fontSize: 13.5, color: theme.inkSoft, marginTop: s(6) }}>
+              Wie hat sich das angefühlt?
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: s(9), marginTop: s(16) }}>
+            {[
+              ['keine',    'Keine Symptome', theme.primary],
+              ['leicht',   'Leichter Druck', theme.gold],
+              ['deutlich', 'Deutlich',        theme.terracotta],
+            ].map(([id, label, col]) => {
+              const on = picked === id
+              return (
+                <button key={id} onClick={() => log(id)} style={{
+                  display: 'flex', alignItems: 'center', gap: s(12),
+                  border: `1.5px solid ${on ? col : theme.line}`, cursor: 'pointer',
+                  background: on ? mix(col, theme.dark ? 20 : 11, theme.surface) : theme.surface,
+                  borderRadius: s(14), padding: `${s(14)}px ${s(16)}px`, textAlign: 'left',
+                  transition: 'all .15s',
+                }}>
+                  <div style={{ width: 13, height: 13, borderRadius: '50%', background: col, flexShrink: 0 }} />
+                  <span style={{ flex: 1, fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700,
+                    color: theme.ink }}>{label}</span>
+                  <Icon name="chevron" size={16} color={theme.inkMute} />
+                </button>
+              )
+            })}
+          </div>
+          {picked === 'deutlich' && (
+            <>
+              <div style={{ display: 'flex', gap: s(10), alignItems: 'flex-start', marginTop: s(13),
+                background: theme.terracottaSoft, borderRadius: s(13), padding: `${s(12)}px ${s(13)}px` }}>
+                <Icon name="info" size={18} color={theme.terracotta} stroke={2} />
+                <div style={{ fontFamily: FONTS.sans, fontSize: 13, lineHeight: 1.45, color: theme.terracottaInk }}>
+                  Danke fürs Ehrlichsein. Sprich mit deiner Physio, bevor du weiter belastest — das ist Teil des Trainings.
+                </div>
+              </div>
+              <button onClick={() => onComplete('deutlich')} style={{
+                marginTop: s(12), width: '100%', border: 'none', cursor: 'pointer',
+                background: theme.terracotta, color: theme.onPrimary, borderRadius: s(13),
+                padding: `${s(14)}px 0`, fontFamily: FONTS.sans, fontSize: 14.5, fontWeight: 700,
+              }}>
+                Verstanden — speichern
+              </button>
+            </>
+          )}
+        </Sheet>
+      )}
+    </div>
+  )
+}
