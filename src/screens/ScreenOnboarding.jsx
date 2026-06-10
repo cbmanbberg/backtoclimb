@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { useBtc, PHASES, isoDay, addDays, TODAY } from '../store'
 import { FONTS } from '../tokens'
 import { useUI, Icon } from '../ui'
+import { Figure } from '../figures'
+
+const PHASE_FIGS = ['pelvic', 'hang', 'climbWall']
 
 export default function ScreenOnboarding() {
   const { theme, s } = useUI()
@@ -86,7 +89,7 @@ export default function ScreenOnboarding() {
               }}>
                 {p.n}
               </div>
-              <div>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: s(8),
                   marginBottom: s(4) }}>
                   <span style={{ fontFamily: FONTS.sans, fontSize: 14, fontWeight: 700,
@@ -97,6 +100,8 @@ export default function ScreenOnboarding() {
                 <div style={{ fontFamily: FONTS.sans, fontSize: 13, lineHeight: 1.5,
                   color: theme.inkSoft }}>{p.blurb}</div>
               </div>
+              <Figure pose={PHASE_FIGS[i]} size={s(48)} color={theme.primary}
+                style={{ flexShrink: 0, alignSelf: 'center', opacity: .8 }} />
             </div>
           ))}
         </div>

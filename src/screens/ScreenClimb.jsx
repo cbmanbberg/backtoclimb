@@ -1,46 +1,47 @@
 import { useBtc, fmtDate, fmtShort } from '../store'
 import { FONTS } from '../tokens'
 import { useUI, Icon, SectionRule, DataTag, Card, Pill } from '../ui'
+import { Figure } from '../figures'
 
-const ST = (name, dur, cue, pulse) => ({ name, dur, cue, ...(pulse && { pulse }) })
+const ST = (name, dur, cue, pulse, fig) => ({ name, dur, cue, ...(pulse && { pulse }), ...(fig && { fig }) })
 
 const CLIMB = {
   fingerboard: [
-    { name: 'Fingerboard · Open Hand', focus: 'Sehnen · 7-3 Repeaters', dur: '~8 Min', kind: 'Fingerboard',
+    { name: 'Fingerboard · Open Hand', focus: 'Sehnen · 7-3 Repeaters', dur: '~8 Min', kind: 'Fingerboard', fig: 'board',
       steps: [
-        ST('Aufwärmen', 90, 'Finger und Unterarme locker kreisen, dann Handgelenke in beide Richtungen. Zwei leichte Hänge mit komplett offener Hand, je 10 bis 15 Sekunden. Sehnen brauchen länger zum Aufwärmen als Muskeln.'),
-        ST('Beckenboden-Set', 45, 'Kurzer Check vor dem Hängen: einatmen, mit der Ausatmung Beckenboden anspannen, drei Sekunden halten, vollständig lösen. Zweimal wiederholen. Nimm dieses Bewusstsein mit in jeden Hang.'),
-        ST('Repeater 1', 60, 'Offene Hand, große Leiste oder Jugs. Schulterblätter aktiv nach unten, Ellbogen minimal gebeugt. Beim Belasten ausatmen, beim Lösen einatmen. Kein Crimp, kein halboffener Griff.', { hold: 7, release: 3, on: 'Hängen', off: 'Lösen' }),
-        ST('Pause', 60, 'Arme komplett ausschütteln, Hände öffnen und schließen. Atme ruhig, lass die Unterarme vollständig entspannen. Merke dir, wie die Finger sich anfühlen.'),
-        ST('Repeater 2', 60, 'Zweiter Satz, gleiche Qualität wie der erste. Wenn die Schulter nicht mehr stabil bleibt oder die Finger schlapp werden, kürze die Hangzeit auf fünf Sekunden. Lieber sauber als hart.', { hold: 7, release: 3, on: 'Hängen', off: 'Lösen' }),
-        ST('Ausklang', 60, 'Unterarme dehnen: Arm nach vorne strecken, Handfläche nach oben, mit der anderen Hand die Finger sanft nach unten ziehen. Dann Handfläche nach unten. Handgelenke kreisen. Beide Seiten.'),
+        ST('Aufwärmen', 90, 'Finger und Unterarme locker kreisen, dann Handgelenke in beide Richtungen. Zwei leichte Hänge mit komplett offener Hand, je 10 bis 15 Sekunden. Sehnen brauchen länger zum Aufwärmen als Muskeln.', null, 'shake'),
+        ST('Beckenboden-Set', 45, 'Kurzer Check vor dem Hängen: einatmen, mit der Ausatmung Beckenboden anspannen, drei Sekunden halten, vollständig lösen. Zweimal wiederholen. Nimm dieses Bewusstsein mit in jeden Hang.', null, 'pelvicStand'),
+        ST('Repeater 1', 60, 'Offene Hand, große Leiste oder Jugs. Schulterblätter aktiv nach unten, Ellbogen minimal gebeugt. Beim Belasten ausatmen, beim Lösen einatmen. Kein Crimp, kein halboffener Griff.', { hold: 7, release: 3, on: 'Hängen', off: 'Lösen' }, 'board'),
+        ST('Pause', 60, 'Arme komplett ausschütteln, Hände öffnen und schließen. Atme ruhig, lass die Unterarme vollständig entspannen. Merke dir, wie die Finger sich anfühlen.', null, 'shake'),
+        ST('Repeater 2', 60, 'Zweiter Satz, gleiche Qualität wie der erste. Wenn die Schulter nicht mehr stabil bleibt oder die Finger schlapp werden, kürze die Hangzeit auf fünf Sekunden. Lieber sauber als hart.', { hold: 7, release: 3, on: 'Hängen', off: 'Lösen' }, 'board'),
+        ST('Ausklang', 60, 'Unterarme dehnen: Arm nach vorne strecken, Handfläche nach oben, mit der anderen Hand die Finger sanft nach unten ziehen. Dann Handfläche nach unten. Handgelenke kreisen. Beide Seiten.', null, 'stretchArm'),
       ]},
-    { name: 'Aktiver Hang · Last', focus: 'Schulter · Rumpf', dur: '~7 Min', kind: 'Fingerboard',
+    { name: 'Aktiver Hang · Last', focus: 'Schulter · Rumpf', dur: '~7 Min', kind: 'Fingerboard', fig: 'hang',
       steps: [
-        ST('Mobilisieren', 75, 'Schultern in großen Kreisen vorwärts und rückwärts. Brustwirbelsäule öffnen: Hände im Nacken, Ellbogen weit aufmachen, sanft nach hinten. Seitneigung der Halswirbelsäule links und rechts.'),
-        ST('Beckenboden-Set', 45, 'Ausatmen und Beckenboden anspannen, drei Sekunden halten, vollständig lösen. Zweimal. Verbindung von Rumpf und Beckenboden wachrufen, bevor du hängst.'),
-        ST('Aktiver Hang', 75, 'Schulterblätter nach unten und innen ziehen, als wolltest du sie in die Hosentaschen stecken. Kinn leicht eingezogen, Becken neutral, kein Hohlkreuz. Spüre die Körperlinie von den Händen bis zu den Füßen. Ruhig atmen.'),
-        ST('Pause', 45, 'Ausschütteln, tief atmen, kurz gehen. Lass den Schultergürtel vollständig los.'),
-        ST('Negativ-Hang', 60, 'Beginne oben in aktiver Zugposition. Senke dich so langsam ab, dass du mindestens fünf Sekunden brauchst. Der Widerstand kommt aus Kontrolle, nicht aus Kraft. Nicht fallen lassen.'),
-        ST('Ausklang', 45, 'Arme lockern, Schultern kreisen. Beide Unterarme an den Türrahmen, einen Schritt vor, Brust öffnen. Drei tiefe Atemzüge.'),
+        ST('Mobilisieren', 75, 'Schultern in großen Kreisen vorwärts und rückwärts. Brustwirbelsäule öffnen: Hände im Nacken, Ellbogen weit aufmachen, sanft nach hinten. Seitneigung der Halswirbelsäule links und rechts.', null, 'stand'),
+        ST('Beckenboden-Set', 45, 'Ausatmen und Beckenboden anspannen, drei Sekunden halten, vollständig lösen. Zweimal. Verbindung von Rumpf und Beckenboden wachrufen, bevor du hängst.', null, 'pelvicStand'),
+        ST('Aktiver Hang', 75, 'Schulterblätter nach unten und innen ziehen, als wolltest du sie in die Hosentaschen stecken. Kinn leicht eingezogen, Becken neutral, kein Hohlkreuz. Spüre die Körperlinie von den Händen bis zu den Füßen. Ruhig atmen.', null, 'hang'),
+        ST('Pause', 45, 'Ausschütteln, tief atmen, kurz gehen. Lass den Schultergürtel vollständig los.', null, 'shake'),
+        ST('Negativ-Hang', 60, 'Beginne oben in aktiver Zugposition. Senke dich so langsam ab, dass du mindestens fünf Sekunden brauchst. Der Widerstand kommt aus Kontrolle, nicht aus Kraft. Nicht fallen lassen.', null, 'hang'),
+        ST('Ausklang', 45, 'Arme lockern, Schultern kreisen. Beide Unterarme an den Türrahmen, einen Schritt vor, Brust öffnen. Drei tiefe Atemzüge.', null, 'chest'),
       ]},
   ],
   boulder: [
-    { name: 'Boulder · Vertikal', focus: 'Technik · leichte Züge', dur: '~15 Min', kind: 'Boulder',
+    { name: 'Boulder · Vertikal', focus: 'Technik · leichte Züge', dur: '~15 Min', kind: 'Boulder', fig: 'climbWall',
       steps: [
-        ST('Beckenboden-Set', 45, 'Vor dem ersten Zug innehalten. Mit der Ausatmung Beckenboden anspannen, halten, lösen. Hör auf deinen Körper: spürst du Druck oder Schwere? Dann heute nur Technik, kein Krafteinsatz.'),
-        ST('Leichte Traverse', 120, 'Senkrechte Wand, maximal 5a oder 5b. Große Tritte, Füße präzise setzen, Hüfte nah zur Wand. Ruhig atmen, kein Pressen in den Zügen. Bei Druck oder Schwere sofort Pause.'),
-        ST('Easy Boulder', 150, 'Zwei oder drei leichte Probleme, niedriger Grad. Lies jede Route vor dem Start. Bei Symptomen von Druck oder Erschöpfung im Beckenboden direkt abbrechen. Qualität vor Grad, immer.'),
-        ST('Pause', 60, 'Trinken, Schuhe lockern, Schultern ausschütteln. Bewerte kurz, wie sich der Beckenboden anfühlt, das ist dein Barometer.'),
-        ST('Ausklang', 60, 'Unterarme dehnen und Hüfte mobilisieren. Finger öffnen und schließen. Hole dir die Woche, nicht diesen einen Tag.'),
+        ST('Beckenboden-Set', 45, 'Vor dem ersten Zug innehalten. Mit der Ausatmung Beckenboden anspannen, halten, lösen. Hör auf deinen Körper: spürst du Druck oder Schwere? Dann heute nur Technik, kein Krafteinsatz.', null, 'pelvicStand'),
+        ST('Leichte Traverse', 120, 'Senkrechte Wand, maximal 5a oder 5b. Große Tritte, Füße präzise setzen, Hüfte nah zur Wand. Ruhig atmen, kein Pressen in den Zügen. Bei Druck oder Schwere sofort Pause.', null, 'climbWall'),
+        ST('Easy Boulder', 150, 'Zwei oder drei leichte Probleme, niedriger Grad. Lies jede Route vor dem Start. Bei Symptomen von Druck oder Erschöpfung im Beckenboden direkt abbrechen. Qualität vor Grad, immer.', null, 'climbWall'),
+        ST('Pause', 60, 'Trinken, Schuhe lockern, Schultern ausschütteln. Bewerte kurz, wie sich der Beckenboden anfühlt, das ist dein Barometer.', null, 'shake'),
+        ST('Ausklang', 60, 'Unterarme dehnen und Hüfte mobilisieren. Finger öffnen und schließen. Hole dir die Woche, nicht diesen einen Tag.', null, 'stretchArm'),
       ]},
-    { name: 'Spannung an der Platte', focus: 'Core · Füße', dur: '~12 Min', kind: 'Boulder',
+    { name: 'Spannung an der Platte', focus: 'Core · Füße', dur: '~12 Min', kind: 'Boulder', fig: 'climbWall',
       steps: [
-        ST('Beckenboden-Set', 45, 'Anspannen beim Ausatmen, halten, vollständig lösen. Spüre, wie mit der Anspannung auch das tiefe Bauchmuskelkorsett erwacht. Das ist die Körperspannung, die du gleich an der Platte brauchst.'),
-        ST('Fußtechnik', 120, 'An der Platte mit sanftem Winkel. Gewicht bewusst über die Füße bringen, Hüfte nah zur Wand, Rumpf hält die Linie. Kein Abrutschen durch Kontrolle verhindern, nicht durch Kraft. Beim Belasten ausatmen, Luft nicht anhalten.'),
-        ST('Spannungszüge', 120, 'Kontrollierte Züge mit aktivem Core und Beckenboden. Ausatmen beim Belasten, einatmen beim Strecken. Beckenboden mit jeder Lastphase sanft anspannen. Spürst du Druck nach unten, mach Pause.'),
-        ST('Pause', 60, 'Ausschütteln, Hüfte locker, trinken. Wie fühlt sich der Beckenboden jetzt an? Das ist dein ehrlichstes Feedback.'),
-        ST('Ausklang', 60, 'Hüfte in alle Richtungen kreisen, Brustwirbelsäule drehen, Arme ausschütteln. Steh kurz ruhig und spüre nach.'),
+        ST('Beckenboden-Set', 45, 'Anspannen beim Ausatmen, halten, vollständig lösen. Spüre, wie mit der Anspannung auch das tiefe Bauchmuskelkorsett erwacht. Das ist die Körperspannung, die du gleich an der Platte brauchst.', null, 'pelvicStand'),
+        ST('Fußtechnik', 120, 'An der Platte mit sanftem Winkel. Gewicht bewusst über die Füße bringen, Hüfte nah zur Wand, Rumpf hält die Linie. Kein Abrutschen durch Kontrolle verhindern, nicht durch Kraft. Beim Belasten ausatmen, Luft nicht anhalten.', null, 'climbWall'),
+        ST('Spannungszüge', 120, 'Kontrollierte Züge mit aktivem Core und Beckenboden. Ausatmen beim Belasten, einatmen beim Strecken. Beckenboden mit jeder Lastphase sanft anspannen. Spürst du Druck nach unten, mach Pause.', null, 'climbWall'),
+        ST('Pause', 60, 'Ausschütteln, Hüfte locker, trinken. Wie fühlt sich der Beckenboden jetzt an? Das ist dein ehrlichstes Feedback.', null, 'shake'),
+        ST('Ausklang', 60, 'Hüfte in alle Richtungen kreisen, Brustwirbelsäule drehen, Arme ausschütteln. Steh kurz ruhig und spüre nach.', null, 'stand'),
       ]},
   ],
   crimp: [
@@ -165,11 +166,19 @@ function ClimbSection({ index, label, units, onStart }) {
               <Pill tone="primary">{u.kind}</Pill>
               <Pill>{u.dur}</Pill>
             </div>
-            <div style={{ fontFamily: FONTS.serif, fontSize: s(19), fontWeight: 500, color: theme.ink }}>
-              {u.name}
-            </div>
-            <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.inkMute, marginTop: s(4) }}>
-              {u.focus} · {u.steps.length} Schritte
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: s(12) }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: FONTS.serif, fontSize: s(19), fontWeight: 500, color: theme.ink }}>
+                  {u.name}
+                </div>
+                <div style={{ fontFamily: FONTS.sans, fontSize: 12.5, color: theme.inkMute, marginTop: s(4) }}>
+                  {u.focus} · {u.steps.length} Schritte
+                </div>
+              </div>
+              {u.fig && (
+                <Figure pose={u.fig} size={s(54)} color={theme.primary}
+                  style={{ flexShrink: 0, opacity: .85 }} />
+              )}
             </div>
             <button onClick={() => onStart(u)} style={{
               marginTop: s(13), width: '100%', border: 'none', cursor: 'pointer',
