@@ -42,8 +42,8 @@ export const MICRO_SESSION = {
   id: 'w_micro', name: 'Beckenboden-Check', focus: 'Täglich · 2–3×', kind: 'Mikro',
   dur: '~3 Min', micro: true,
   steps: [
-    ST('Kurze Kontraktion', 60, 'Beim Ausatmen anspannen, zwei Sekunden halten, vollständig lösen und drei Sekunden warten. Zehnmal. Im Stehen, Sitzen oder Liegen. Auch beim Stillen möglich.', { hold: 2, release: 3 }),
-    ST('Lange Kontraktion', 60, 'Sanft anspannen, fünf Sekunden halten, dabei ruhig weiteratmen. Vollständig lösen und fünf Sekunden Pause. Fünfmal. Nicht pressen, nur heben und vollständig loslassen.', { hold: 5, release: 5 }),
+    ST('Kurze Kontraktion', 60, 'Beim Ausatmen anspannen, zwei Sekunden halten, vollständig lösen und drei Sekunden warten. Zehnmal. Im Stehen, Sitzen oder Liegen. Auch beim Stillen möglich.', { up: 1, hold: 2, release: 3 }),
+    ST('Lange Kontraktion', 60, 'Sanft anspannen, fünf Sekunden halten, dabei ruhig weiteratmen. Vollständig lösen und fünf Sekunden Pause. Fünfmal. Nicht pressen, nur heben und vollständig loslassen.', { up: 2, hold: 5, release: 5 }),
     ST('Nachspüren', 45, 'Einatmen, beim Ausatmen alles loslassen. Kurz wahrnehmen, ob du einen Unterschied spürst. Das war es.'),
   ]
 }
@@ -70,7 +70,7 @@ export const WORKOUTS = [
       ST('Aktives Hängen', 60, 'Greife die Stange schulterbreit, Handflächen von dir weg. Ziehe beide Schulterblätter aktiv nach unten, als wolltest du sie in die Hosentaschen stecken. Ellbogen minimal gebeugt, Becken neutral. Halte die Verbindung zwischen Schulter und Rumpf bewusst, ruhig atmen.'),
       ST('Seitstütz auf Knien', 90, 'Auf dem Unterarm seitlich, Ellbogen direkt unter der Schulter, Knie gebeugt. Hebe die Hüfte, bis Knie, Hüfte und Schulter eine gerade Linie bilden. Bauchnabel leicht nach innen, untere Seite aktiv halten. Etwa 45 Sekunden je Seite, dabei ruhig weiteratmen.'),
       ST('Ankommen', 60, 'Leg dich auf den Rücken, Knie angestellt, Füße hüftbreit. Lass dein Gewicht vollständig in den Boden sinken. Eine Hand auf den Bauch, eine auf die Brust. Beobachte, wo sich die Atmung ausbreitet, ohne sie zu verändern.'),
-      ST('Beckenboden wecken', 90, 'Mit der Ausatmung den Beckenboden sanft nach oben und innen heben, als würdest du eine Blaubeere aufnehmen. Nicht pressen, nur heben. Fünf Sekunden halten, dann vollständig loslassen und drei Sekunden entspannen. Das Lösen ist genauso wichtig wie das Anspannen.', { hold: 5, release: 5 }),
+      ST('Beckenboden wecken', 90, 'Mit der Ausatmung den Beckenboden sanft nach oben und innen heben, als würdest du eine Blaubeere aufnehmen. Nicht pressen, nur heben. Fünf Sekunden halten, dann vollständig loslassen und drei Sekunden entspannen. Das Lösen ist genauso wichtig wie das Anspannen.', { up: 2, hold: 5, release: 5 }),
       ST('Dead Bug', 120, 'Rückenlage, Arme senkrecht zur Decke, Hüften und Knie 90 Grad gebeugt. Senke gleichzeitig den rechten Arm über den Kopf und das linke Bein zum Boden, ohne dass der untere Rücken den Kontakt zum Boden verliert. Langsam zurück, dann Seite wechseln. Rippen bleiben unten, kein Hohlkreuz, ruhig weiteratmen.'),
       ST('Atempause', 45, 'Lass alles los. Arme seitlich, Beine ausgestreckt oder Knie gebeugt, wie es sich besser anfühlt. Drei lange Atemzüge, bei jedem Ausatmen etwas tiefer ins Loslassen sinken.'),
       ST('Ausklang', 60, 'Komm in die Kindshaltung: Knie breit, Hüfte Richtung Fersen, Stirn auf dem Boden, Arme nach vorne gestreckt. Atme in den Rücken, spüre die Dehnung zwischen den Schulterblättern. Du baust auf, nichts geht verloren.'),
@@ -78,8 +78,8 @@ export const WORKOUTS = [
   { id: 'w0b', phases: [1], name: 'Beckenboden & Becken', focus: 'Tiefe Schicht · sanft', kind: 'Aufbau',
     dur: '~8 Min', steps: [
       ST('Ankommen', 60, 'Rückenlage, Knie angestellt, Füße flach. Hände auf dem Bauch, Augen geschlossen. Beobachte, wie sich der Bauch beim Einatmen hebt und beim Ausatmen sinkt. Drei bewusste Atemzüge, dann gehts los.'),
-      ST('Beckenboden kurz', 90, 'Beim Ausatmen den Beckenboden sanft anspannen, als würdest du den Harnstrahl kurz unterbrechen und gleichzeitig leicht nach innen ziehen. Zwei Sekunden halten, dann komplett loslassen und drei Sekunden warten. Das vollständige Lösen ist entscheidend, trainiere beides gleich bewusst.', { hold: 2, release: 3 }),
-      ST('Beckenboden lang', 90, 'Dieselbe sanfte Anspannung, jetzt acht Sekunden halten. Atme dabei ruhig weiter, die Spannung soll beim Einatmen nicht zusammenbrechen. Vollständig lösen und sechs Sekunden Pause. Falls acht Sekunden zu lang sind, kürze auf fünf, das ist kein Rückschritt.', { hold: 8, release: 6 }),
+      ST('Beckenboden kurz', 90, 'Beim Ausatmen den Beckenboden sanft anspannen, als würdest du den Harnstrahl kurz unterbrechen und gleichzeitig leicht nach innen ziehen. Zwei Sekunden halten, dann komplett loslassen und drei Sekunden warten. Das vollständige Lösen ist entscheidend, trainiere beides gleich bewusst.', { up: 1, hold: 2, release: 3 }),
+      ST('Beckenboden lang', 90, 'Dieselbe sanfte Anspannung, jetzt acht Sekunden halten. Atme dabei ruhig weiter, die Spannung soll beim Einatmen nicht zusammenbrechen. Vollständig lösen und sechs Sekunden Pause. Falls acht Sekunden zu lang sind, kürze auf fünf, das ist kein Rückschritt.', { up: 2, hold: 8, release: 6 }),
       ST('Heel Slides', 90, 'Ein Bein langsam ausstrecken, Ferse gleitet am Boden entlang, dann zurück. Das Becken bleibt vollständig ruhig, kein Hohlkreuz, Rippen unten. Mit jeder Ausatmung ein Gleiten. Abwechselnd links und rechts.'),
       ST('Sanfte Brücke', 90, 'Füße flach, hüftbreit. Beim Ausatmen Wirbel für Wirbel das Becken heben: zuerst Steißbein, dann Lendenwirbel, dann Mitte. Oben kurz halten. Beim Einatmen langsam abrollen. Nicht das Gesäß pressen, die Bewegung kommt aus den hinteren Oberschenkeln und der tiefen Körpermitte.'),
       ST('Ausklang', 60, 'Lass die Knie locker zur Seite fallen, so weit wie es sich angenehm anfühlt. Arme neben dem Körper, Handflächen nach oben. Atme tief ein und beim Ausatmen lass jede Spannung los. Spüre, was sich verändert hat.'),
